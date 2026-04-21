@@ -305,6 +305,16 @@
             color: #888;
         }
 
+        .limited-badge {
+            display: inline-block;
+            border: 1px solid #FFB000;
+            color: #FFB000;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            margin-left: 0.5rem;
+            letter-spacing: 1px;
+        }
+
         /* === GALERIA VISUAL === */
         .visual-gallery {
             display: grid;
@@ -416,6 +426,12 @@
             font-size: 0.65rem;
             color: #666;
             text-transform: uppercase;
+        }
+
+        .shirt-stock {
+            font-size: 0.65rem;
+            color: #FFB000;
+            margin-top: 0.3rem;
         }
 
         .color-legend {
@@ -567,11 +583,20 @@
             font-size: 1.2rem;
             color: var(--cat-color);
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .code-msg {
             font-size: 1rem;
             color: #CCC;
+        }
+
+        .code-stock {
+            font-size: 0.75rem;
+            color: #FFB000;
+            margin-top: 0.3rem;
         }
 
         .btn {
@@ -590,6 +615,17 @@
         .btn:hover {
             background: var(--cat-color);
             color: #0A0A0A;
+        }
+
+        .btn:disabled {
+            border-color: #333;
+            color: #333;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            background: transparent;
+            color: #333;
         }
 
         /* === DECODE PAGE === */
@@ -748,37 +784,40 @@
             </div>
             
             <div class="section-title">> PROTOCOLO DECODED.TXT</div>
-            <div class="section-sub">Ropa que habla. Mensajes que se descubren. Conexiones que no necesitan permiso.</div>
+            <div class="section-sub">Una nueva forma de comunicar sin hablar.</div>
             
             <div class="about-content">
                 <div class="about-block">
                     <h3>> EL CONCEPTO</h3>
-                    <p>Cada camiseta DECODED.TXT es un mensaje en código. Un estado de ánimo, una disponibilidad, una postura política o un chiste que no quieres explicar con palabras.</p>
-                    <p>Llevamos en el pecho lo que pensamos. En la espalda, la clave para que extraños entren en contacto sin romper el hielo.</p>
+                    <p>DECODED.TXT nace como una marca de ropa con una sola premisa: <strong>que la gente se comunique sin necesidad de romper el hielo.</strong></p>
+                    <p>Cada camiseta porta un mensaje en código. Quien la lleva está diciendo algo sin abrir la boca. Quien la lee, puede responder sin revelar su identidad. Es un puente silencioso entre desconocidos.</p>
+                    <p>Imagina ver siempre a la misma persona en el metro, en el parque, en la escalera. Le quieres decir algo, pero no sabes cómo empezar. Si lleva una DECODED.TXT, solo necesitas leer su código.</p>
                 </div>
                 
                 <div class="about-block">
                     <h3>> CÓMO FUNCIONA</h3>
-                    <p><span style="color:#33FF33">Código público (S-017):</span> está en la camiseta. Quien lo vea entra a decodedtxt.com, lo teclea y descubre el mensaje completo.</p>
-                    <p><span style="color:#33FF33">Código privado (6 dígitos):</span> impreso en la espalda. Solo quien esté físicamente cerca puede verlo. Con él, puede enviar un mensaje directo al portador sin revelar identidades.</p>
-                    <p>El portador decide: ¿activo el canal o lo cierro? ¿Recibo mensajes o prefiero solo ser leído?</p>
+                    <p><span style="color:#33FF33">Código público (S-017):</span> visible en la camiseta. Entras a la web, lo tecleas, y descubres el mensaje completo.</p>
+                    <p><span style="color:#33FF33">Código privado (6 dígitos):</span> impreso en la espalda. Solo quien esté físicamente cerca puede verlo. Con él, puedes enviar un mensaje directo al portador. Anónimo o con contacto. Él decide si responder.</p>
+                    <p>El portador controla su canal: puede activarlo, pausarlo o cerrarlo cuando quiera.</p>
                 </div>
                 
                 <div class="about-block">
-                    <h3>> QUIÉNES SOMOS</h3>
-                    <p>DECODED.TXT nace en España como marca de ropa con intención. Antifascista, de izquierdas, sin complejos.</p>
-                    <p>Creemos que la ropa puede ser un medio, no solo un producto. Un catalizador de conversaciones que de otro modo no ocurrirían. Una forma de señalizar quién eres sin tener que gritarlo.</p>
+                    <h3>> PRODUCCIÓN LIMITADA <span class="limited-badge">5 UNIDADES</span></h3>
+                    <p>Cada mensaje se fabrica en <strong>5 camisetas exclusivas</strong>. Punto. No hay reimpresiones. No hay réplicas.</p>
+                    <p>Si compras una S-017, serás uno de cinco humanos en el mundo con ese código exacto. Cuando se agoten, ese mensaje pasa a ser historia. La exclusividad es real, no de marketing.</p>
+                    <p>Esto convierte cada camiseta en un objeto de edición limitada. No fast fashion. Comunicación con fecha de caducidad.</p>
                 </div>
                 
                 <div class="about-block">
-                    <h3>> LAS 10 CATEGORÍAS</h3>
-                    <p>Single. Barrio. Activismo. Adulto. Mood. Friki. Humor. Profesional. Creativo. Travel.</p>
-                    <p>Cada una tiene su color, su tono y su comunidad. Todos los mensajes son reales, escritos por humanos, no por algoritmos de marketing.</p>
+                    <h3>> COMMUNITY BASE</h3>
+                    <p>Los siguientes mensajes no los elegimos nosotros. Los elige la comunidad.</p>
+                    <p>Cualquiera puede proponer un código. La comunidad vota. Los más votados entran a la siguiente tanda de 5 unidades. Cada tanda es única. Cada mensaje es irrepetible.</p>
+                    <p>Así la marca crece horizontalmente, no verticalmente. No somos una fábrica. Somos un sistema de mensajería vestida.</p>
                 </div>
                 
                 <div class="about-cta" onclick="showMarketplace()">
                     <div class="about-cta-title">[ ENTRAR AL MARKETPLACE ]</div>
-                    <div class="about-cta-sub">Selecciona modelo, código y talla. Tu camiseta con mensaje propio.</div>
+                    <div class="about-cta-sub">Solo 5 unidades por mensaje. Cuando se agoten, no vuelven.</div>
                 </div>
             </div>
         </div>
@@ -906,66 +945,66 @@
 <script>
 // ===== DATABASE =====
 const DB = {
-    'S-017': { cat:'SINGLE / DATING', color:'#33FF33', short:'ESTOY SINGLE. SÍ, DE VERDAD.', long:'Disponibilidad no es desesperación. Estoy solo porque elijo estarlo, no porque nadie me quiera. Si entras, entra con intención. No con curiosidad. No con pena. Con ganas de construir algo que no necesite etiquetas para existir.' },
-    'S-002': { cat:'SINGLE / DATING', color:'#33FF33', short:'PÍDEME EL NÚMERO. NO MUERDO.', long:'La directitud es un filtro. Si te asusta que alguien sepa lo que quiere, probablemente no estás listo para lo que ofrezco. El número es el principio. El resto se negocia cara a cara.' },
-    'S-003': { cat:'SINGLE / DATING', color:'#33FF33', short:'NO VENGO CON NADIE. TÚ TAMPOCO.', long:'Miradas que se cruzan, silencios que se entienden. No estoy buscando compañía para llenar un vacío. Estoy buscando alguien que también camine solo y quiera compartir el trayecto.' },
-    'S-004': { cat:'SINGLE / DATING', color:'#33FF33', short:'DISPONIBLE. HASTA QUE ALGUIEN ME AGUANTE.', long:'Ironía como armadura. Si no captas el humor, no captarás nada más. Disponible significa selectivo. Y selectivo significa que tengo estándares, no prisa.' },
-    'S-005': { cat:'SINGLE / DATING', color:'#33FF33', short:'ME DEJARON HACE POCO. SE ACEPTAN ABRAZOS.', long:'Vulnerable de forma estratégica. No busco un rebound. Busco reconstrucción. Si tu plan es aprovechar el hueco, cierra la pestaña. Si tu plan es construir, quédate.' },
+    'S-017': { cat:'SINGLE / DATING', color:'#33FF33', short:'ESTOY SINGLE. SÍ, DE VERDAD.', long:'Disponibilidad no es desesperación. Estoy solo porque elijo estarlo, no porque nadie me quiera. Si entras, entra con intención. No con curiosidad. No con pena. Con ganas de construir algo que no necesite etiquetas para existir.', stock: 3 },
+    'S-002': { cat:'SINGLE / DATING', color:'#33FF33', short:'PÍDEME EL NÚMERO. NO MUERDO.', long:'La directitud es un filtro. Si te asusta que alguien sepa lo que quiere, probablemente no estás listo para lo que ofrezco. El número es el principio. El resto se negocia cara a cara.', stock: 5 },
+    'S-003': { cat:'SINGLE / DATING', color:'#33FF33', short:'NO VENGO CON NADIE. TÚ TAMPOCO.', long:'Miradas que se cruzan, silencios que se entienden. No estoy buscando compañía para llenar un vacío. Estoy buscando alguien que también camine solo y quiera compartir el trayecto.', stock: 1 },
+    'S-004': { cat:'SINGLE / DATING', color:'#33FF33', short:'DISPONIBLE. HASTA QUE ALGUIEN ME AGUANTE.', long:'Ironía como armadura. Si no captas el humor, no captarás nada más. Disponible significa selectivo. Y selectivo significa que tengo estándares, no prisa.', stock: 4 },
+    'S-005': { cat:'SINGLE / DATING', color:'#33FF33', short:'ME DEJARON HACE POCO. SE ACEPTAN ABRAZOS.', long:'Vulnerable de forma estratégica. No busco un rebound. Busco reconstrucción. Si tu plan es aprovechar el hueco, cierra la pestaña. Si tu plan es construir, quédate.', stock: 2 },
     
-    'B-007': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'TOURIST PASSING BY, OK. TOURIST STAYING, GO HOME.', long:'Airbnb killed my barrio. Your weekend trip costs my landlord\'s greed. Take a photo, leave no trace, or better: leave.' },
-    'B-023': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'MY RENT WENT UP 40%. MY WAGES DIDN\'T.', long:'Speculation is not housing. Every empty flat owned by a fund is a family sleeping in a car. This shirt costs less than your daily coffee. The message costs more than your portfolio.' },
-    'B-041': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'METRO DELAYED AGAIN. LIKE MY FUTURE.', long:'Public transport run by private profit. Broken elevators, broken AC, broken dignity. They want us tired, late, compliant. Fuck that.' },
-    'B-058': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'THIS SCHOOL HAS NO HEAT. BUT PLENTY OF FLAGS.', long:'Education budget cut again. Patriotic symbols budget increased again. They teach obedience, not critical thought. Wear this near a school board.' },
-    'B-076': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'YOUR SECOND HOME IS MY EVICTION NOTICE.', long:'Seasonal residents, empty winters, doubled prices. The \'charming neighborhood\' you discovered was a community before you Airbnb\'d it. Go home. Or stay and fight with us.' },
+    'B-007': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'TOURIST PASSING BY, OK. TOURIST STAYING, GO HOME.', long:'Airbnb killed my barrio. Your weekend trip costs my landlord\'s greed. Take a photo, leave no trace, or better: leave.', stock: 5 },
+    'B-023': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'MY RENT WENT UP 40%. MY WAGES DIDN\'T.', long:'Speculation is not housing. Every empty flat owned by a fund is a family sleeping in a car. This shirt costs less than your daily coffee. The message costs more than your portfolio.', stock: 3 },
+    'B-041': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'METRO DELAYED AGAIN. LIKE MY FUTURE.', long:'Public transport run by private profit. Broken elevators, broken AC, broken dignity. They want us tired, late, compliant. Fuck that.', stock: 4 },
+    'B-058': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'THIS SCHOOL HAS NO HEAT. BUT PLENTY OF FLAGS.', long:'Education budget cut again. Patriotic symbols budget increased again. They teach obedience, not critical thought. Wear this near a school board.', stock: 2 },
+    'B-076': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'YOUR SECOND HOME IS MY EVICTION NOTICE.', long:'Seasonal residents, empty winters, doubled prices. The \'charming neighborhood\' you discovered was a community before you Airbnb\'d it. Go home. Or stay and fight with us.', stock: 1 },
     
-    'G-012': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'THE PLANET IS NOT DYING. IT\'S BEING KILLED.', long:'By corporations you buy from. By politicians you voted for. By convenience you chose over consequence. This shirt is polyester. I\'m complicit too. The difference is: I know it, and I\'m screaming.' },
-    'G-029': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'FREE PALESTINE IS NOT A SLOGAN. IT\'S A DEMAND.', long:'75 years of occupation. 75 years of \'complex situation\' rhetoric. There is nothing complex about ethnic cleansing. There is nothing nuanced about apartheid. Stop asking both sides. There is a right side.' },
-    'G-037': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'YOUR SILENCE IS A POLICY CHOICE.', long:'Not neutral. Not apolitical. Not \'avoiding drama.\' Every time you look away, a policy passes. A border closes. A wage freezes. A planet burns. Your silence is the system\'s favorite sound.' },
-    'G-051': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'THEY SAID TECH WOULD FREE US. WE GOT SURVEILLANCE.', long:'Every app is a snitch. Every like is a data point. Every \'free\' service sells your attention to the highest bidder. The revolution will not be streamed. It will be worn, whispered, encrypted.' },
-    'G-068': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'BORDERS ARE DRAWN IN BLOOD. YOU CROSS THEM FOR FUN.', long:'Passport privilege is violence made paperwork. While you \'find yourself\' in Bali, others drown in the Mediterranean. Tourism and migration: same movement, different welcome. Ask why.' },
+    'G-012': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'THE PLANET IS NOT DYING. IT\'S BEING KILLED.', long:'By corporations you buy from. By politicians you voted for. By convenience you chose over consequence. This shirt is polyester. I\'m complicit too. The difference is: I know it, and I\'m screaming.', stock: 5 },
+    'G-029': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'FREE PALESTINE IS NOT A SLOGAN. IT\'S A DEMAND.', long:'75 years of occupation. 75 years of \'complex situation\' rhetoric. There is nothing complex about ethnic cleansing. There is nothing nuanced about apartheid. Stop asking both sides. There is a right side.', stock: 3 },
+    'G-037': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'YOUR SILENCE IS A POLICY CHOICE.', long:'Not neutral. Not apolitical. Not \'avoiding drama.\' Every time you look away, a policy passes. A border closes. A wage freezes. A planet burns. Your silence is the system\'s favorite sound.', stock: 4 },
+    'G-051': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'THEY SAID TECH WOULD FREE US. WE GOT SURVEILLANCE.', long:'Every app is a snitch. Every like is a data point. Every \'free\' service sells your attention to the highest bidder. The revolution will not be streamed. It will be worn, whispered, encrypted.', stock: 2 },
+    'G-068': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'BORDERS ARE DRAWN IN BLOOD. YOU CROSS THEM FOR FUN.', long:'Passport privilege is violence made paperwork. While you \'find yourself\' in Bali, others drown in the Mediterranean. Tourism and migration: same movement, different welcome. Ask why.', stock: 1 },
     
-    'X-013': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'I FUCK ON THE FIRST DATE. PROBLEM?', long:'Consent is my only rule. Slut-shaming is yours. I\'m not \'easy\' — I\'m decisive. I know what I want, when I want it, and I ask for it clearly. The problem is your projection, not my pleasure.' },
-    'X-027': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'PEG ME OR LEAVE ME.', long:'Gender roles are a cage. I top, I bottom, I switch, I decide. Your fragile masculinity is not my sexual emergency. Ask. Listen. Adapt. Or watch me find someone who will.' },
-    'X-044': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'MY ONLY KINK IS COMMUNICATION.', long:'Safe word is \'politics.\' Aftercare is mandatory. I don\'t do \'surprise me\' — I do \'tell me exactly.\' The hottest thing you can say is \'What do you need?\' The second hottest: \'I heard you.\'' },
-    'X-061': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'POLYAMORY IS NOT CHEATING WITH EXTRA STEPS.', long:'Three partners. Zero lies. Infinite calendars. Jealousy? We talk about it. Insecurity? We name it. Monogamy is valid. So is this. The only wrong way is the one that hurts someone silently.' },
-    'X-089': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'I SWALLOW. CONSENT AND CONVERSATION FIRST.', long:'Oral sex is not a favor. It\'s not a transaction. It\'s not \'expected.\' I do what I want because I want it, not because you earned it. Ask first. Every time. The answer might be yes. The asking is the point.' },
+    'X-013': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'I FUCK ON THE FIRST DATE. PROBLEM?', long:'Consent is my only rule. Slut-shaming is yours. I\'m not \'easy\' — I\'m decisive. I know what I want, when I want it, and I ask for it clearly. The problem is your projection, not my pleasure.', stock: 5 },
+    'X-027': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'PEG ME OR LEAVE ME.', long:'Gender roles are a cage. I top, I bottom, I switch, I decide. Your fragile masculinity is not my sexual emergency. Ask. Listen. Adapt. Or watch me find someone who will.', stock: 3 },
+    'X-044': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'MY ONLY KINK IS COMMUNICATION.', long:'Safe word is \'politics.\' Aftercare is mandatory. I don\'t do \'surprise me\' — I do \'tell me exactly.\' The hottest thing you can say is \'What do you need?\' The second hottest: \'I heard you.\'', stock: 4 },
+    'X-061': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'POLYAMORY IS NOT CHEATING WITH EXTRA STEPS.', long:'Three partners. Zero lies. Infinite calendars. Jealousy? We talk about it. Insecurity? We name it. Monogamy is valid. So is this. The only wrong way is the one that hurts someone silently.', stock: 2 },
+    'X-089': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'I SWALLOW. CONSENT AND CONVERSATION FIRST.', long:'Oral sex is not a favor. It\'s not a transaction. It\'s not \'expected.\' I do what I want because I want it, not because you earned it. Ask first. Every time. The answer might be yes. The asking is the point.', stock: 1 },
     
-    'M-019': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'DO NOT DISTURB. UNLESS YOU HAVE DOGS.', long:'Or snacks. Or a solution to the problem I didn\'t ask you to solve. I\'m not \'in a mood\' — I\'m in a process. Respect the boundary. The door opens when I\'m ready, not when you\'re uncomfortable.' },
-    'M-033': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'SOCIALLY BATTERY: 3%. CHARGER NOT FOUND.', long:'Introvert is not shy. It\'s depleted. Every interaction costs. Every smile is a transaction. I\'m not rude — I\'m accounting. Today the balance is negative. Check again tomorrow.' },
-    'M-047': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'ASK ME ANYTHING. I MIGHT ANSWER.', long:'Open book, selective pages. Curiosity is welcome. Entitlement is not. \'Why are you like this?\' is not a question. \'What happened?\' might be. Context matters. So does my right to silence.' },
-    'M-054': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'PROCESSING. PLEASE DO NOT INTERRUPT.', long:'Neurodivergent mode engaged. Stimulating environment. Sensory input maximum. I am not \'zoning out\' — I am compiling. The output will come. The interruption resets the timer. Wait. Or leave.' },
-    'M-071': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'TODAY I AM 90% SARCASM. APPROACH ACCORDINGLY.', long:'Not \'in a bad mood.\' In a precise mood. Irony is my love language. Deadpan is my default. If you need earnest, ask explicitly. I can switch. But I won\'t guess. Clarity is kindness.' },
+    'M-019': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'DO NOT DISTURB. UNLESS YOU HAVE DOGS.', long:'Or snacks. Or a solution to the problem I didn\'t ask you to solve. I\'m not \'in a mood\' — I\'m in a process. Respect the boundary. The door opens when I\'m ready, not when you\'re uncomfortable.', stock: 5 },
+    'M-033': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'SOCIALLY BATTERY: 3%. CHARGER NOT FOUND.', long:'Introvert is not shy. It\'s depleted. Every interaction costs. Every smile is a transaction. I\'m not rude — I\'m accounting. Today the balance is negative. Check again tomorrow.', stock: 3 },
+    'M-047': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'ASK ME ANYTHING. I MIGHT ANSWER.', long:'Open book, selective pages. Curiosity is welcome. Entitlement is not. \'Why are you like this?\' is not a question. \'What happened?\' might be. Context matters. So does my right to silence.', stock: 4 },
+    'M-054': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'PROCESSING. PLEASE DO NOT INTERRUPT.', long:'Neurodivergent mode engaged. Stimulating environment. Sensory input maximum. I am not \'zoning out\' — I am compiling. The output will come. The interruption resets the timer. Wait. Or leave.', stock: 2 },
+    'M-071': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'TODAY I AM 90% SARCASM. APPROACH ACCORDINGLY.', long:'Not \'in a bad mood.\' In a precise mood. Irony is my love language. Deadpan is my default. If you need earnest, ask explicitly. I can switch. But I won\'t guess. Clarity is kindness.', stock: 1 },
     
-    'F-015': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'1V1 ME. LOSER BUYS COFFEE.', long:'LoL / Valorant / Fighting games. Elo is a number. Pride is forever. I don\'t flame — I outplay. If you can\'t handle the L, don\'t queue up. My main is not my personality. Except it kind of is.' },
-    'F-032': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'MY AIM IS BETTER THAN YOUR EXCUSES.', long:'FPS (Valorant, CS2, Apex). 2000 hours. 1000 deaths. 1 headshot that matters. \'Luck\' is preparation plus timing. I\'m always prepared. You\'re always lagging. Coincidence?' },
-    'F-048': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'TANK DIFF. LOOKING AT YOU.', long:'MMO / LoL. I peel for carries who don\'t kite. I engage for teams that don\'t follow. I die so you can run it down mid. And you blame me? Check the damage charts. Then check yourself.' },
-    'F-065': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'SPEEDRUNNING LIFE. ANY% GLITCHLESS.', long:'Speedrunning community. WR pace until real life RNG hits. Frames matter. Consistency matters. The run is never over. Reset, adapt, optimize. My PB is tomorrow.' },
-    'F-082': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'MY DECK IS META. MY SOUL IS NOT.', long:'TCG (MTG, Yu-Gi-Oh!, Hearthstone). Netdeck to learn. Homebrew to live. I know the tier list. I ignore it. Victory is sweeter when they didn\'t see it coming. \'Jank\' is just innovation they haven\'t copied yet.' },
+    'F-015': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'1V1 ME. LOSER BUYS COFFEE.', long:'LoL / Valorant / Fighting games. Elo is a number. Pride is forever. I don\'t flame — I outplay. If you can\'t handle the L, don\'t queue up. My main is not my personality. Except it kind of is.', stock: 5 },
+    'F-032': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'MY AIM IS BETTER THAN YOUR EXCUSES.', long:'FPS (Valorant, CS2, Apex). 2000 hours. 1000 deaths. 1 headshot that matters. \'Luck\' is preparation plus timing. I\'m always prepared. You\'re always lagging. Coincidence?', stock: 3 },
+    'F-048': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'TANK DIFF. LOOKING AT YOU.', long:'MMO / LoL. I peel for carries who don\'t kite. I engage for teams that don\'t follow. I die so you can run it down mid. And you blame me? Check the damage charts. Then check yourself.', stock: 4 },
+    'F-065': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'SPEEDRUNNING LIFE. ANY% GLITCHLESS.', long:'Speedrunning community. WR pace until real life RNG hits. Frames matter. Consistency matters. The run is never over. Reset, adapt, optimize. My PB is tomorrow.', stock: 2 },
+    'F-082': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'MY DECK IS META. MY SOUL IS NOT.', long:'TCG (MTG, Yu-Gi-Oh!, Hearthstone). Netdeck to learn. Homebrew to live. I know the tier list. I ignore it. Victory is sweeter when they didn\'t see it coming. \'Jank\' is just innovation they haven\'t copied yet.', stock: 1 },
     
-    'H-011': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'I HAVE A DARK SENSE OF HUMOR. AND A BRIGHT SENSE OF IRONY.', long:'I joke about capitalism while buying coffee. I mock tech bros on my iPhone. Hypocrisy? No. Complexity. The system is inescapable. Laughter is not surrender — it\'s sabotage with better timing.' },
-    'H-028': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'MY SPIRIT ANIMAL IS A ERROR 404.', long:'Not found. Not lost. Intentionally absent. Your search query does not match my reality. Try different keywords. Or accept that some pages are not meant to be indexed.' },
-    'H-039': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'I\'M NOT LAZY. I\'M ENERGY EFFICIENT.', long:'Newton\'s first law, applied to personality. An object at rest stays at rest unless acted upon by genuine motivation. Your urgency is not my force. My friction coefficient is high. Respect the physics.' },
-    'H-052': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'SARCASM IS MY LOVE LANGUAGE. FLUENCY REQUIRED.', long:'Literal interpretation is a disqualifier. \'That\'s so funny\' is not laughter. I don\'t do translation services. If you need a /s tag, we\'re not compatible. Find someone who speaks basic.' },
-    'H-067': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'PROFESSIONALLY UNIMPRESSED. PERSONALLY AMUSED.', long:'Your pitch deck is not revolutionary. Your playlist is not obscure. Your trauma is not unique. And yet — I like you anyway. The liking is earned, not the impressing. Keep trying. It\'s cute.' },
+    'H-011': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'I HAVE A DARK SENSE OF HUMOR. AND A BRIGHT SENSE OF IRONY.', long:'I joke about capitalism while buying coffee. I mock tech bros on my iPhone. Hypocrisy? No. Complexity. The system is inescapable. Laughter is not surrender — it\'s sabotage with better timing.', stock: 5 },
+    'H-028': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'MY SPIRIT ANIMAL IS A ERROR 404.', long:'Not found. Not lost. Intentionally absent. Your search query does not match my reality. Try different keywords. Or accept that some pages are not meant to be indexed.', stock: 3 },
+    'H-039': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'I\'M NOT LAZY. I\'M ENERGY EFFICIENT.', long:'Newton\'s first law, applied to personality. An object at rest stays at rest unless acted upon by genuine motivation. Your urgency is not my force. My friction coefficient is high. Respect the physics.', stock: 4 },
+    'H-052': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'SARCASM IS MY LOVE LANGUAGE. FLUENCY REQUIRED.', long:'Literal interpretation is a disqualifier. \'That\'s so funny\' is not laughter. I don\'t do translation services. If you need a /s tag, we\'re not compatible. Find someone who speaks basic.', stock: 2 },
+    'H-067': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'PROFESSIONALLY UNIMPRESSED. PERSONALLY AMUSED.', long:'Your pitch deck is not revolutionary. Your playlist is not obscure. Your trauma is not unique. And yet — I like you anyway. The liking is earned, not the impressing. Keep trying. It\'s cute.', stock: 1 },
     
-    'P-014': { cat:'PROFESIONAL / NETWORKING', color:'#0066CC', short:'I BUILD THINGS. HIRE ME OR GET OUT OF MY WAY.', long:'Not \'looking for opportunities.\' Creating them. My GitHub is my CV. My side projects are my references. I don\'t network — I collaborate. If you can\'t contribute, you\'re traffic.' },
+    'P-014': { cat:'PROFESIONAL / NETWORKING', color:'#0066CC', short:'I BUILD THINGS. HIRE ME OR GET OUT OF MY WAY.', long:'Not \'looking for opportunities.\' Creating them. My GitHub is my CV. My side projects are my references. I don\'t network — I collaborate. If you can\'t contribute, you\'re traffic.', stock: 5 },
     
-    'C-016': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'I MAKE NOISE. SOME OF IT IS MUSIC.', long:'Guitar, synth, found sound, feedback. Genre is a store shelf. I don\'t fit. I don\'t try. The 3AM recording is the honest one. The polished track is the compromise. Come to the show. Hear the difference.' },
-    'C-031': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'MY STUDIO IS A CLOSET. MY AMBITION IS NOT.', long:'No budget. No space. No excuse. I paint on cardboard. I shoot on phone. I edit on pirated software. The work exists despite the system, not because of it. Support the hustle. Or fund the upgrade.' },
-    'C-049': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'WRITER. WILL TRADE WORDS FOR RENT.', long:'Novelist, copywriter, poet, ghost. All of the above. None paid enough. Every sentence is a transaction. Every silence is a rejection. I write what you need. I need what you have. Barter?' },
-    'C-062': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'PHOTOGRAPHER. I SHOOT RAW. AND REAL.', long:'No filters. No staging. No \'content.\' I document what exists before it disappears. Your Instagram is my opposite. My darkroom is my church. The print is the truth. The screen is the lie.' },
-    'C-077': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'EXHIBITION OPENING. ASK FOR THE ADDRESS.', long:'Not in a gallery. In a warehouse. In a squat. In a borrowed room. Art is where you put it. The institution is not validation. The audience is. Show up. Or don\'t. The work remains.' },
+    'C-016': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'I MAKE NOISE. SOME OF IT IS MUSIC.', long:'Guitar, synth, found sound, feedback. Genre is a store shelf. I don\'t fit. I don\'t try. The 3AM recording is the honest one. The polished track is the compromise. Come to the show. Hear the difference.', stock: 5 },
+    'C-031': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'MY STUDIO IS A CLOSET. MY AMBITION IS NOT.', long:'No budget. No space. No excuse. I paint on cardboard. I shoot on phone. I edit on pirated software. The work exists despite the system, not because of it. Support the hustle. Or fund the upgrade.', stock: 3 },
+    'C-049': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'WRITER. WILL TRADE WORDS FOR RENT.', long:'Novelist, copywriter, poet, ghost. All of the above. None paid enough. Every sentence is a transaction. Every silence is a rejection. I write what you need. I need what you have. Barter?', stock: 4 },
+    'C-062': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'PHOTOGRAPHER. I SHOOT RAW. AND REAL.', long:'No filters. No staging. No \'content.\' I document what exists before it disappears. Your Instagram is my opposite. My darkroom is my church. The print is the truth. The screen is the lie.', stock: 2 },
+    'C-077': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'EXHIBITION OPENING. ASK FOR THE ADDRESS.', long:'Not in a gallery. In a warehouse. In a squat. In a borrowed room. Art is where you put it. The institution is not validation. The audience is. Show up. Or don\'t. The work remains.', stock: 1 },
     
-    'T-009': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'PASSING THROUGH. RECOMMEND SOMETHING REAL.', long:'Not the TripAdvisor top 10. Not the \'hidden gem\' with 5000 reviews. The bar your grandfather drank at. The street food that made you sick. The view that has no hashtag. I travel for texture, not content.' },
-    'T-024': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'DIGITAL NOMAD. WIFI IS MY VISA.', long:'Passport: strong. Borders: arbitrary. Office: anywhere with outlets. Time zones: suggestions. The \'freedom\' is real. The loneliness is too. The trade is worth it. Until it\'s not. Then I move again.' },
-    'T-042': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'SOLO TRAVELER. NOT BECAUSE I\'M BROKEN.', long:'Because I\'m whole alone. Because groups move at the slowest pace. Because \'we should do this\' never happens. I eat alone. I decide alone. I meet people precisely because I don\'t need them.' },
-    'T-063': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'MY SUITCASE WEIGHS MORE THAN MY COMMITMENTS.', long:'Minimalism is a privilege. I carry everything that matters. The rest I left or lost. Every object is a decision. Every weight is a choice. Travel light, they say. I travel honest.' },
-    'T-091': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'LOCAL GUIDE WANTED. NOT FROM A BOOKING APP.', long:'I don\'t want your tour. I want your Tuesday. Your laundromat. Your complaint about the mayor. Show me the city you endure, not the one you sell. I\'ll buy the coffee. You bring the honesty.' }
+    'T-009': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'PASSING THROUGH. RECOMMEND SOMETHING REAL.', long:'Not the TripAdvisor top 10. Not the \'hidden gem\' with 5000 reviews. The bar your grandfather drank at. The street food that made you sick. The view that has no hashtag. I travel for texture, not content.', stock: 5 },
+    'T-024': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'DIGITAL NOMAD. WIFI IS MY VISA.', long:'Passport: strong. Borders: arbitrary. Office: anywhere with outlets. Time zones: suggestions. The \'freedom\' is real. The loneliness is too. The trade is worth it. Until it\'s not. Then I move again.', stock: 3 },
+    'T-042': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'SOLO TRAVELER. NOT BECAUSE I\'M BROKEN.', long:'Because I\'m whole alone. Because groups move at the slowest pace. Because \'we should do this\' never happens. I eat alone. I decide alone. I meet people precisely because I don\'t need them.', stock: 4 },
+    'T-063': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'MY SUITCASE WEIGHS MORE THAN MY COMMITMENTS.', long:'Minimalism is a privilege. I carry everything that matters. The rest I left or lost. Every object is a decision. Every weight is a choice. Travel light, they say. I travel honest.', stock: 2 },
+    'T-091': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'LOCAL GUIDE WANTED. NOT FROM A BOOKING APP.', long:'I don\'t want your tour. I want your Tuesday. Your laundromat. Your complaint about the mayor. Show me the city you endure, not the one you sell. I\'ll buy the coffee. You bring the honesty.', stock: 1 }
 };
 
 const CATEGORIES = {
     'S': { name:'SINGLE / DATING', color:'#33FF33', desc:'Disponibilidad romántica' },
-    'B': { name:'BARRIO / LOCAL', color:'#FFB000', desc:'Vecindad, comunidad, antifascismo' },
+    'B': { name:'BARRIO / LOCAL', color:'#FFB000', desc:'Vecindad, comunidad' },
     'G': { name:'GLOBAL / ACTIVISMO', color:'#00FFFF', desc:'Environmental, político, social' },
     'X': { name:'XPLICIT / ADULTO', color:'#FF3333', desc:'Explícito, consentimiento, adulto' },
     'M': { name:'MOOD / ESTADO', color:'#9D00FF', desc:'Vibe del día, neurodivergencia' },
@@ -1087,6 +1126,7 @@ function renderVisualGallery() {
                 <div class="shirt-code-id">${code}</div>
                 <div class="shirt-cat">${data.cat}</div>
             </div>
+            <div class="shirt-stock">${data.stock} de 5 unidades disponibles</div>
         `;
         grid.appendChild(card);
     });
@@ -1100,21 +1140,23 @@ function renderModelCodes(model) {
     
     header.innerHTML = `
         <div class="section-title" style="color:#33FF33">${info.name}</div>
-        <div class="section-sub">Precio base: ${info.price} ${info.extra} — Todos los códigos disponibles en este formato</div>
+        <div class="section-sub">Precio base: ${info.price} ${info.extra} — Edición limitada: 5 unidades por código</div>
         <div style="width:100%;height:2px;background:#33FF33;margin-bottom:2rem;"></div>
     `;
     
     list.innerHTML = '';
     Object.entries(DB).forEach(([code, data]) => {
+        const soldOut = data.stock === 0;
         const item = document.createElement('div');
         item.className = 'code-item';
         item.style.setProperty('--cat-color', data.color);
         item.innerHTML = `
             <div class="code-info">
-                <div class="code-id">${code}</div>
+                <div class="code-id">${code}${soldOut ? ' <span style="color:#FF3333;font-size:0.7rem;">[AGOTADO]</span>' : ''}</div>
                 <div class="code-msg">${data.short}</div>
+                <div class="code-stock">${soldOut ? '0 de 5 — No se repondrá' : data.stock + ' de 5 unidades restantes'}</div>
             </div>
-            <button class="btn" onclick="alert('Compra ${code} en formato ${info.name}\\n\\nEsto conectará con Stripe en el Bloque 6.')">COMPRAR ${info.price}</button>
+            <button class="btn" ${soldOut ? 'disabled' : ''} onclick="${soldOut ? '' : 'alert(\'Compra ' + code + ' en formato ' + info.name + '\\n\\nEsto conectará con Stripe en el Bloque 6.\')'}">${soldOut ? 'AGOTADO' : 'COMPRAR ' + info.price}</button>
         `;
         list.appendChild(item);
     });

@@ -20,9 +20,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        /* === LANDING === */
         .terminal-container {
             width: 90%;
             max-width: 700px;
@@ -35,8 +40,6 @@
             height: 2px;
             background-color: #33FF33;
             margin-bottom: 3rem;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
         }
 
         .terminal-title {
@@ -44,24 +47,18 @@
             color: #8C8C8C;
             margin-bottom: 3rem;
             letter-spacing: 2px;
-            opacity: 0;
-            animation: fadeIn 1s ease 0.3s forwards;
         }
 
         .terminal-text {
             font-size: 1.5rem;
             line-height: 1.4;
             margin-bottom: 1rem;
-            opacity: 0;
-            animation: fadeIn 1s ease 0.6s forwards;
         }
 
         .terminal-question {
             font-size: 1.2rem;
             color: #8C8C8C;
             margin-bottom: 2.5rem;
-            opacity: 0;
-            animation: fadeIn 1s ease 0.9s forwards;
         }
 
         .input-group {
@@ -69,8 +66,6 @@
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 0.5rem;
-            opacity: 0;
-            animation: fadeIn 1s ease 1.2s forwards;
         }
 
         .prompt {
@@ -106,14 +101,10 @@
             font-size: 0.8rem;
             color: #555555;
             margin-top: 1rem;
-            opacity: 0;
-            animation: fadeIn 1s ease 1.5s forwards;
         }
 
         .terminal-actions {
             margin-top: 3rem;
-            opacity: 0;
-            animation: fadeIn 1s ease 1.8s forwards;
         }
 
         .terminal-link {
@@ -121,11 +112,180 @@
             text-decoration: none;
             font-size: 0.9rem;
             transition: opacity 0.3s;
+            cursor: pointer;
         }
 
         .terminal-link:hover {
             text-decoration: underline;
             opacity: 0.8;
+        }
+
+        /* === DECODE PAGE === */
+        .decode-container {
+            width: 90%;
+            max-width: 700px;
+            text-align: left;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .decode-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .decode-category {
+            color: #33FF33;
+            font-size: 0.8rem;
+            border: 1px solid #33FF33;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .decode-code {
+            color: #8C8C8C;
+            font-size: 0.8rem;
+        }
+
+        .decode-line {
+            width: 100%;
+            height: 2px;
+            background-color: #33FF33;
+            margin-bottom: 2rem;
+        }
+
+        .decode-short {
+            font-size: 2rem;
+            line-height: 1.3;
+            margin-bottom: 2rem;
+            color: #F0F0F0;
+        }
+
+        .decode-long {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #AAAAAA;
+            margin-bottom: 3rem;
+            border-left: 2px solid #33FF33;
+            padding-left: 1rem;
+        }
+
+        .decode-divider {
+            width: 100%;
+            height: 1px;
+            background-color: #333333;
+            margin: 2rem 0;
+        }
+
+        .decode-question {
+            font-size: 1.1rem;
+            color: #F0F0F0;
+            margin-bottom: 1rem;
+        }
+
+        .decode-sub {
+            font-size: 0.9rem;
+            color: #8C8C8C;
+            margin-bottom: 1.5rem;
+        }
+
+        .private-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #privateCodeInput {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #33FF33;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5rem;
+            padding: 0.2rem 0.5rem;
+            width: 200px;
+            outline: none;
+            letter-spacing: 0.3rem;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid #33FF33;
+            color: #33FF33;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background: #33FF33;
+            color: #0A0A0A;
+        }
+
+        .message-textarea {
+            width: 100%;
+            background: #141414;
+            border: 1px solid #333333;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .message-textarea:focus {
+            outline: none;
+            border-color: #33FF33;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #8C8C8C;
+        }
+
+        .checkbox-group input {
+            accent-color: #33FF33;
+        }
+
+        .status-closed {
+            color: #FF3333;
+            font-size: 1.1rem;
+            margin: 2rem 0;
+        }
+
+        .status-closed-text {
+            color: #AAAAAA;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-actions {
+            margin-top: 3rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #555555;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: #33FF33;
         }
 
         .footer-label {
@@ -138,20 +298,34 @@
             padding: 0.3rem 0.6rem;
         }
 
+        .back-link {
+            color: #8C8C8C;
+            text-decoration: none;
+            font-size: 0.8rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            color: #33FF33;
+        }
+
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
 
         @keyframes fadeIn {
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 600px) {
-            .terminal-text {
+            .terminal-text, .decode-short {
                 font-size: 1.2rem;
             }
-            #codeInput {
+            #codeInput, #privateCodeInput {
                 width: 180px;
                 font-size: 1.2rem;
             }
@@ -159,13 +333,15 @@
     </style>
 </head>
 <body>
-    <div class="terminal-container">
+
+    <!-- === LANDING === -->
+    <div id="landing" class="terminal-container">
         <div class="terminal-line"></div>
         
         <h1 class="terminal-title">DECODED.TXT</h1>
         
-        <p class="terminal-text">Si has entrado aquí es porque alguien te quiere mandar un mensaje.</p>
-        <p class="terminal-question">¿Qué mensaje tenía la camiseta?</p>
+        <p class="terminal-text">Da igual cómo hayas llegado. Si estás aquí, algo te trajo.</p>
+        <p class="terminal-question">¿Qué mensaje tenía la camiseta? O... ¿quieres descifrar el mensaje oculto?</p>
         
         <div class="input-group">
             <span class="prompt">></span>
@@ -176,38 +352,156 @@
         <p class="terminal-hint">Escribe el código público (ej: S-017, B-023, G-012)</p>
         
         <div class="terminal-actions">
-            <a href="#" class="terminal-link">NO TENGO CÓDIGO → Ver galería</a>
+            <a href="#" class="terminal-link" onclick="alert('Galería en construcción (Bloque 3)')">NO TENGO CÓDIGO → Ver galería</a>
+        </div>
+    </div>
+
+    <!-- === DECODE PAGE (S-017) === -->
+    <div id="decodePage" class="decode-container hidden">
+        <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+        
+        <div class="decode-header">
+            <span class="decode-category">SINGLE / DATING</span>
+            <span class="decode-code">S-017 — Verde Terminal</span>
+        </div>
+        
+        <div class="decode-line"></div>
+        
+        <div class="decode-short">"ESTOY SINGLE. SÍ, DE VERDAD."</div>
+        
+        <div class="decode-long">
+            Disponibilidad no es desesperación. Estoy solo porque elijo estarlo, 
+            no porque nadie me quiera. Si entras, entra con intención. No con curiosidad. 
+            No con pena. Con ganas de construir algo que no necesite etiquetas para existir.
+        </div>
+        
+        <div class="decode-divider"></div>
+        
+        <div id="messageSection">
+            <div class="decode-question">¿Has visto el código de 6 dígitos en la parte inferior de la espalda?</div>
+            <div class="decode-sub">Es un número de 6 dígitos. Si lo has visto, introdúcelo aquí y podrás enviarle un mensaje directamente a quien lleva esta camiseta.</div>
+            
+            <div class="private-input-group">
+                <span class="prompt">></span>
+                <input type="text" id="privateCodeInput" placeholder="000000" maxlength="6" autocomplete="off">
+            </div>
+            
+            <button class="btn" onclick="checkPrivateCode()">ENVIAR MENSAJE</button>
+            
+            <div style="margin-top: 1.5rem;">
+                <a href="#" class="terminal-link" style="color: #8C8C8C; font-size: 0.8rem;" onclick="showNoCode()">No lo he visto</a>
+            </div>
+        </div>
+        
+        <div id="composeSection" class="hidden">
+            <div class="decode-question">Canal abierto.</div>
+            <div class="decode-sub">Escribe tu mensaje. Puedes ser anónimo o dejar un contacto.</div>
+            
+            <textarea class="message-textarea" placeholder="Escribe aquí..."></textarea>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="anonymous" checked>
+                <label for="anonymous">Enviar anónimamente</label>
+            </div>
+            
+            <button class="btn" onclick="alert('Mensaje enviado (demo). En el Bloque 5 esto llegará al área privada.')">ENVIAR</button>
+        </div>
+        
+        <div id="closedSection" class="hidden">
+            <div class="status-closed">⚪ Este canal ha sido cerrado.</div>
+            <div class="status-closed-text" id="closedMessage">El portador ya ha encontrado lo que buscaba.</div>
+        </div>
+        
+        <div id="noCodeSection" class="hidden">
+            <div class="decode-question" style="color: #8C8C8C;">Oh, no lo has visto.</div>
+            <div class="decode-sub">
+                La próxima vez, si ves un número de 6 dígitos en la parte inferior de la espalda, 
+                vuelves aquí. Ese número es la clave para hablar con esa persona sin decirle 
+                una palabra en la calle.
+            </div>
+        </div>
+        
+        <div class="footer-actions">
+            <a href="#" class="footer-link" onclick="alert('Tienda en construcción (Bloque 3)')">[ Comprar S-017 ]</a>
+            <a href="#" class="footer-link" onclick="alert('Colección en construcción (Bloque 3)')">[ Ver colección Single ]</a>
         </div>
     </div>
 
     <div class="footer-label">DECODED.TXT</div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const input = document.getElementById('codeInput');
-            
-            input.focus();
-            
-            document.addEventListener('click', function(e) {
-                if (e.target !== input) {
-                    input.focus();
-                }
-            });
-            
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    const value = input.value.trim().toUpperCase();
-                    if (value) {
-                        alert('Código recibido: ' + value + '\n\nEn el Bloque 2 esto te llevará al mensaje decodificado.');
-                        input.value = '';
-                    }
-                }
-            });
-            
-            input.addEventListener('input', function() {
-                this.value = this.value.toUpperCase();
-            });
+        // === LANDING LOGIC ===
+        const codeInput = document.getElementById('codeInput');
+        const landing = document.getElementById('landing');
+        const decodePage = document.getElementById('decodePage');
+        
+        codeInput.focus();
+        
+        document.addEventListener('click', function(e) {
+            if (e.target !== codeInput && !e.target.closest('#decodePage')) {
+                codeInput.focus();
+            }
         });
+        
+        codeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const value = this.value.trim().toUpperCase();
+                if (value === 'S-017' || value === 'S017' || value === '017') {
+                    showDecode();
+                } else if (value) {
+                    alert('Código no encontrado en la base de datos.\n\nPrueba con: S-017\n\nEn el futuro esto buscará en todas las categorías.');
+                    this.value = '';
+                }
+            }
+        });
+        
+        codeInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+        
+        // === NAVIGATION ===
+        function showLanding() {
+            decodePage.classList.add('hidden');
+            landing.classList.remove('hidden');
+            codeInput.value = '';
+            codeInput.focus();
+            
+            // Reset sub-sections
+            document.getElementById('messageSection').classList.remove('hidden');
+            document.getElementById('composeSection').classList.add('hidden');
+            document.getElementById('closedSection').classList.add('hidden');
+            document.getElementById('noCodeSection').classList.add('hidden');
+        }
+        
+        function showDecode() {
+            landing.classList.add('hidden');
+            decodePage.classList.remove('hidden');
+        }
+        
+        // === PRIVATE CODE LOGIC ===
+        function checkPrivateCode() {
+            const input = document.getElementById('privateCodeInput');
+            const val = input.value.trim();
+            
+            if (val.length !== 6 || !/^\d{6}$/.test(val)) {
+                alert('Introduce un código de 6 dígitos numéricos.');
+                return;
+            }
+            
+            // Demo: 847392 = abierto, cualquier otro = cerrado
+            if (val === '847392') {
+                document.getElementById('messageSection').classList.add('hidden');
+                document.getElementById('composeSection').classList.remove('hidden');
+            } else {
+                document.getElementById('messageSection').classList.add('hidden');
+                document.getElementById('closedSection').classList.remove('hidden');
+            }
+        }
+        
+        function showNoCode() {
+            document.getElementById('messageSection').classList.add('hidden');
+            document.getElementById('noCodeSection').classList.remove('hidden');
+        }
     </script>
 </body>
 </html>

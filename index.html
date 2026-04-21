@@ -66,7 +66,7 @@
         .section-sub {
             color: #555;
             font-size: 0.9rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
         .footer-label {
@@ -93,6 +93,7 @@
             max-width: 700px;
             text-align: left;
             padding: 2rem;
+            position: relative;
         }
 
         .terminal-line {
@@ -166,7 +167,12 @@
             margin-top: 1rem;
         }
 
-        .terminal-actions { margin-top: 3rem; }
+        .terminal-actions {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
 
         .terminal-link {
             color: #33FF33;
@@ -177,6 +183,17 @@
         }
 
         .terminal-link:hover { text-decoration: underline; opacity: 0.8; }
+
+        .terminal-link-alt {
+            color: #33FF33;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            text-align: right;
+        }
+
+        .terminal-link-alt:hover { text-decoration: underline; opacity: 0.8; }
 
         /* === INTERMEDIA === */
         .choice-grid {
@@ -235,6 +252,57 @@
 
         @media (max-width: 700px) {
             .choice-grid { grid-template-columns: 1fr; }
+            .terminal-actions { flex-direction: column; gap: 1rem; }
+            .terminal-link-alt { text-align: left; }
+        }
+
+        /* === ABOUT / CONCEPTO === */
+        .about-content {
+            max-width: 700px;
+        }
+
+        .about-block {
+            margin-bottom: 2.5rem;
+            border-left: 2px solid #33FF33;
+            padding-left: 1.5rem;
+        }
+
+        .about-block h3 {
+            color: #33FF33;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .about-block p {
+            color: #AAA;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+
+        .about-cta {
+            margin-top: 3rem;
+            padding: 2rem;
+            border: 1px solid #33FF33;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .about-cta:hover {
+            background: rgba(51, 255, 51, 0.05);
+        }
+
+        .about-cta-title {
+            font-size: 1.3rem;
+            color: #33FF33;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-cta-sub {
+            font-size: 0.9rem;
+            color: #888;
         }
 
         /* === GALERIA VISUAL === */
@@ -666,6 +734,52 @@
             <p class="terminal-hint">Escribe el código público (ej: S-017, B-023, G-012)</p>
             <div class="terminal-actions">
                 <a class="terminal-link" onclick="showIntermedia()">NO TENGO CÓDIGO → Ver opciones</a>
+                <a class="terminal-link-alt" onclick="showAbout()">¿Qué es DECODED.TXT? →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ABOUT / CONCEPTO ===== -->
+    <div id="about" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            
+            <div class="section-title">> PROTOCOLO DECODED.TXT</div>
+            <div class="section-sub">Ropa que habla. Mensajes que se descubren. Conexiones que no necesitan permiso.</div>
+            
+            <div class="about-content">
+                <div class="about-block">
+                    <h3>> EL CONCEPTO</h3>
+                    <p>Cada camiseta DECODED.TXT es un mensaje en código. Un estado de ánimo, una disponibilidad, una postura política o un chiste que no quieres explicar con palabras.</p>
+                    <p>Llevamos en el pecho lo que pensamos. En la espalda, la clave para que extraños entren en contacto sin romper el hielo.</p>
+                </div>
+                
+                <div class="about-block">
+                    <h3>> CÓMO FUNCIONA</h3>
+                    <p><span style="color:#33FF33">Código público (S-017):</span> está en la camiseta. Quien lo vea entra a decodedtxt.com, lo teclea y descubre el mensaje completo.</p>
+                    <p><span style="color:#33FF33">Código privado (6 dígitos):</span> impreso en la espalda. Solo quien esté físicamente cerca puede verlo. Con él, puede enviar un mensaje directo al portador sin revelar identidades.</p>
+                    <p>El portador decide: ¿activo el canal o lo cierro? ¿Recibo mensajes o prefiero solo ser leído?</p>
+                </div>
+                
+                <div class="about-block">
+                    <h3>> QUIÉNES SOMOS</h3>
+                    <p>DECODED.TXT nace en España como marca de ropa con intención. Antifascista, de izquierdas, sin complejos.</p>
+                    <p>Creemos que la ropa puede ser un medio, no solo un producto. Un catalizador de conversaciones que de otro modo no ocurrirían. Una forma de señalizar quién eres sin tener que gritarlo.</p>
+                </div>
+                
+                <div class="about-block">
+                    <h3>> LAS 10 CATEGORÍAS</h3>
+                    <p>Single. Barrio. Activismo. Adulto. Mood. Friki. Humor. Profesional. Creativo. Travel.</p>
+                    <p>Cada una tiene su color, su tono y su comunidad. Todos los mensajes son reales, escritos por humanos, no por algoritmos de marketing.</p>
+                </div>
+                
+                <div class="about-cta" onclick="showMarketplace()">
+                    <div class="about-cta-title">[ ENTRAR AL MARKETPLACE ]</div>
+                    <div class="about-cta-sub">Selecciona modelo, código y talla. Tu camiseta con mensaje propio.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -873,6 +987,7 @@ let currentFilter = 'ALL';
 // ===== NAVIGATION =====
 function hideAll() {
     document.getElementById('landing').classList.add('hidden');
+    document.getElementById('about').classList.add('hidden');
     document.getElementById('intermedia').classList.add('hidden');
     document.getElementById('visualGallery').classList.add('hidden');
     document.getElementById('marketplace').classList.add('hidden');
@@ -884,6 +999,11 @@ function showLanding() {
     hideAll();
     document.getElementById('landing').classList.remove('hidden');
     document.getElementById('codeInput').focus();
+}
+
+function showAbout() {
+    hideAll();
+    document.getElementById('about').classList.remove('hidden');
 }
 
 function showIntermedia() {
@@ -926,7 +1046,6 @@ function renderVisualGallery() {
     grid.innerHTML = '';
     legend.innerHTML = '';
     
-    // "All" button
     const allBtn = document.createElement('div');
     allBtn.className = 'legend-item' + (currentFilter === 'ALL' ? ' active' : '');
     allBtn.style.setProperty('--legend-color', '#888');
@@ -934,7 +1053,6 @@ function renderVisualGallery() {
     allBtn.onclick = () => { currentFilter = 'ALL'; renderVisualGallery(); };
     legend.appendChild(allBtn);
     
-    // Category buttons
     Object.entries(CATEGORIES).forEach(([letter, info]) => {
         const item = document.createElement('div');
         item.className = 'legend-item' + (currentFilter === letter ? ' active' : '');
@@ -944,7 +1062,6 @@ function renderVisualGallery() {
         legend.appendChild(item);
     });
     
-    // Filtered cards
     let entries = Object.entries(DB);
     if (currentFilter !== 'ALL') {
         entries = entries.filter(([k,v]) => k.startsWith(currentFilter));
@@ -1117,7 +1234,7 @@ codeInput.addEventListener('input', function() {
 });
 
 document.addEventListener('click', function(e) {
-    if (!e.target.closest('#decodePage') && !e.target.closest('#intermedia') && !e.target.closest('#visualGallery') && !e.target.closest('#marketplace') && !e.target.closest('#modelCodes')) {
+    if (!e.target.closest('#decodePage') && !e.target.closest('#about') && !e.target.closest('#intermedia') && !e.target.closest('#visualGallery') && !e.target.closest('#marketplace') && !e.target.closest('#modelCodes')) {
         if (!document.getElementById('landing').classList.contains('hidden')) {
             codeInput.focus();
         }

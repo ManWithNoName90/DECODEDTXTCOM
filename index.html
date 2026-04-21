@@ -5,29 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DECODED.TXT</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: #0A0A0A;
             color: #F0F0F0;
             font-family: 'Courier New', Courier, monospace;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             overflow-x: hidden;
         }
 
-        .hidden {
-            display: none !important;
+        .hidden { display: none !important; }
+
+        .page-container {
+            width: 90%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #222;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            color: #8C8C8C;
+            letter-spacing: 3px;
+        }
+
+        .logo span { color: #33FF33; }
+
+        .back-link {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover { color: #33FF33; }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #F0F0F0;
+        }
+
+        .section-sub {
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-label {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            color: #333;
+            border: 1px solid #333;
+            padding: 0.3rem 0.6rem;
+            z-index: 100;
         }
 
         /* === LANDING === */
+        .landing-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .terminal-container {
             width: 90%;
             max-width: 700px;
@@ -87,9 +147,7 @@
             text-transform: uppercase;
         }
 
-        #codeInput::placeholder {
-            color: #333333;
-        }
+        #codeInput::placeholder { color: #333; }
 
         .cursor {
             color: #33FF33;
@@ -97,49 +155,346 @@
             animation: blink 1s step-end infinite;
         }
 
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
         .terminal-hint {
             font-size: 0.8rem;
-            color: #555555;
+            color: #555;
             margin-top: 1rem;
         }
 
-        .terminal-actions {
-            margin-top: 3rem;
-        }
+        .terminal-actions { margin-top: 3rem; }
 
         .terminal-link {
             color: #33FF33;
             text-decoration: none;
             font-size: 0.9rem;
-            transition: opacity 0.3s;
             cursor: pointer;
+            transition: opacity 0.3s;
         }
 
-        .terminal-link:hover {
-            text-decoration: underline;
-            opacity: 0.8;
+        .terminal-link:hover { text-decoration: underline; opacity: 0.8; }
+
+        /* === INTERMEDIA === */
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .choice-card {
+            border: 1px solid #333;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .choice-card:hover {
+            border-color: #33FF33;
+            background: rgba(51, 255, 51, 0.03);
+            transform: translateY(-3px);
+        }
+
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #33FF33;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .choice-card:hover::before { opacity: 1; }
+
+        .choice-num {
+            font-size: 3rem;
+            color: #33FF33;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .choice-title {
+            font-size: 1.2rem;
+            color: #F0F0F0;
+            margin-bottom: 0.5rem;
+        }
+
+        .choice-desc {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 700px) {
+            .choice-grid { grid-template-columns: 1fr; }
+        }
+
+        /* === GALERIA VISUAL === */
+        .visual-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .shirt-card {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .shirt-card:hover { transform: scale(1.02); }
+
+        .shirt-front, .shirt-back {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shirt-front {
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .shirt-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.4s;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 2rem;
+        }
+
+        .shirt-card:hover .shirt-back { opacity: 1; }
+
+        .shirt-line-top {
+            width: 60%;
+            height: 2px;
+            background: var(--cat-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .shirt-msg {
+            font-size: 1.3rem;
+            text-align: center;
+            color: #F0F0F0;
+            line-height: 1.3;
+        }
+
+        .shirt-code {
+            position: absolute;
+            bottom: 15%;
+            font-size: 1.5rem;
+            color: #F0F0F0;
+            letter-spacing: 2px;
+        }
+
+        .shirt-private {
+            position: absolute;
+            bottom: 8%;
+            font-size: 1.2rem;
+            color: #AAA;
+            letter-spacing: 3px;
+        }
+
+        .shirt-qr {
+            width: 80px;
+            height: 80px;
+            background: #FFF;
+            position: absolute;
+            bottom: 20%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: #000;
+        }
+
+        .shirt-meta {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shirt-code-id {
+            font-size: 1.2rem;
+            color: var(--cat-color);
+            font-weight: bold;
+        }
+
+        .shirt-cat {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .shirt-hint {
+            text-align: center;
+            color: #444;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* === MARKETPLACE === */
+        .model-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .model-card {
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #333;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .model-card:hover {
+            border-color: #33FF33;
+            background: rgba(51, 255, 51, 0.03);
+        }
+
+        .model-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #33FF33;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .model-card:hover::before { opacity: 1; }
+
+        .model-name {
+            font-size: 1.5rem;
+            color: #F0F0F0;
+            margin-bottom: 0.5rem;
+        }
+
+        .model-price {
+            font-size: 1.2rem;
+            color: #33FF33;
+            margin-bottom: 1rem;
+        }
+
+        .model-desc {
+            font-size: 0.9rem;
+            color: #888;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .model-features {
+            font-size: 0.8rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .model-features span {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .model-features .yes { color: #33FF33; }
+        .model-features .no { color: #555; }
+
+        /* === CATEGORY LIST === */
+        .code-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .code-item {
+            border: 1px solid #222;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .code-item:hover {
+            border-color: var(--cat-color);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .code-info { flex: 1; }
+
+        .code-id {
+            font-size: 1.2rem;
+            color: var(--cat-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .code-msg {
+            font-size: 1rem;
+            color: #CCC;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--cat-color);
+            color: var(--cat-color);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--cat-color);
+            color: #0A0A0A;
         }
 
         /* === DECODE PAGE === */
-        .decode-container {
-            width: 90%;
-            max-width: 700px;
-            text-align: left;
-            padding: 2rem;
-            animation: fadeIn 0.5s ease;
-        }
+        .decode-container { animation: fadeIn 0.5s ease; }
 
         .decode-header {
             display: flex;
             align-items: center;
             gap: 1rem;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
 
         .decode-category {
-            color: #33FF33;
             font-size: 0.8rem;
-            border: 1px solid #33FF33;
+            border: 1px solid;
             padding: 0.2rem 0.5rem;
         }
 
@@ -151,7 +506,6 @@
         .decode-line {
             width: 100%;
             height: 2px;
-            background-color: #33FF33;
             margin-bottom: 2rem;
         }
 
@@ -165,30 +519,21 @@
         .decode-long {
             font-size: 1rem;
             line-height: 1.6;
-            color: #AAAAAA;
+            color: #AAA;
             margin-bottom: 3rem;
-            border-left: 2px solid #33FF33;
+            border-left: 2px solid;
             padding-left: 1rem;
         }
 
         .decode-divider {
             width: 100%;
             height: 1px;
-            background-color: #333333;
+            background-color: #333;
             margin: 2rem 0;
         }
 
-        .decode-question {
-            font-size: 1.1rem;
-            color: #F0F0F0;
-            margin-bottom: 1rem;
-        }
-
-        .decode-sub {
-            font-size: 0.9rem;
-            color: #8C8C8C;
-            margin-bottom: 1.5rem;
-        }
+        .decode-question { font-size: 1.1rem; color: #F0F0F0; margin-bottom: 1rem; }
+        .decode-sub { font-size: 0.9rem; color: #8C8C8C; margin-bottom: 1.5rem; }
 
         .private-input-group {
             display: flex;
@@ -200,7 +545,7 @@
         #privateCodeInput {
             background: transparent;
             border: none;
-            border-bottom: 1px solid #33FF33;
+            border-bottom: 1px solid;
             color: #F0F0F0;
             font-family: 'Courier New', Courier, monospace;
             font-size: 1.5rem;
@@ -210,27 +555,10 @@
             letter-spacing: 0.3rem;
         }
 
-        .btn {
-            background: transparent;
-            border: 1px solid #33FF33;
-            color: #33FF33;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 1rem;
-        }
-
-        .btn:hover {
-            background: #33FF33;
-            color: #0A0A0A;
-        }
-
         .message-textarea {
             width: 100%;
             background: #141414;
-            border: 1px solid #333333;
+            border: 1px solid #333;
             color: #F0F0F0;
             font-family: 'Courier New', Courier, monospace;
             font-size: 1rem;
@@ -240,10 +568,7 @@
             min-height: 100px;
         }
 
-        .message-textarea:focus {
-            outline: none;
-            border-color: #33FF33;
-        }
+        .message-textarea:focus { outline: none; }
 
         .checkbox-group {
             display: flex;
@@ -254,21 +579,8 @@
             color: #8C8C8C;
         }
 
-        .checkbox-group input {
-            accent-color: #33FF33;
-        }
-
-        .status-closed {
-            color: #FF3333;
-            font-size: 1.1rem;
-            margin: 2rem 0;
-        }
-
-        .status-closed-text {
-            color: #AAAAAA;
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
+        .status-closed { font-size: 1.1rem; margin: 2rem 0; }
+        .status-closed-text { color: #AAA; font-size: 0.9rem; margin-bottom: 2rem; }
 
         .footer-actions {
             margin-top: 3rem;
@@ -278,142 +590,434 @@
         }
 
         .footer-link {
-            color: #555555;
+            color: #555;
             text-decoration: none;
             font-size: 0.8rem;
             transition: color 0.3s;
-        }
-
-        .footer-link:hover {
-            color: #33FF33;
-        }
-
-        .footer-label {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 0.7rem;
-            color: #333333;
-            border: 1px solid #333333;
-            padding: 0.3rem 0.6rem;
-        }
-
-        .back-link {
-            color: #8C8C8C;
-            text-decoration: none;
-            font-size: 0.8rem;
-            margin-bottom: 2rem;
-            display: inline-block;
             cursor: pointer;
         }
 
-        .back-link:hover {
-            color: #33FF33;
+        .footer-link:hover { color: var(--cat-color); }
+
+        .color-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #666;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
         }
 
         @media (max-width: 600px) {
-            .terminal-text, .decode-short {
-                font-size: 1.2rem;
-            }
-            #codeInput, #privateCodeInput {
-                width: 180px;
-                font-size: 1.2rem;
-            }
+            .terminal-text, .decode-short { font-size: 1.2rem; }
+            #codeInput, #privateCodeInput { width: 180px; font-size: 1.2rem; }
+            .choice-grid { grid-template-columns: 1fr; }
+            .shirt-card, .model-card { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- === LANDING === -->
-    <div id="landing" class="terminal-container">
-        <div class="terminal-line"></div>
-        
-        <h1 class="terminal-title">DECODED.TXT</h1>
-        
-        <p class="terminal-text">Da igual cómo hayas llegado. Si estás aquí, algo te trajo.</p>
-        <p class="terminal-question">¿Qué mensaje tenía la camiseta? O... ¿quieres descifrar el mensaje oculto?</p>
-        
-        <div class="input-group">
-            <span class="prompt">></span>
-            <input type="text" id="codeInput" placeholder="S-017" autocomplete="off" autofocus>
-            <span class="cursor">_</span>
-        </div>
-        
-        <p class="terminal-hint">Escribe el código público (ej: S-017, B-023, G-012)</p>
-        
-        <div class="terminal-actions">
-            <a href="#" class="terminal-link" onclick="alert('Galería en construcción (Bloque 3)')">NO TENGO CÓDIGO → Ver galería</a>
+    <!-- ===== LANDING ===== -->
+    <div id="landing" class="landing-wrap">
+        <div class="terminal-container">
+            <div class="terminal-line"></div>
+            <h1 class="terminal-title">DECODED.TXT</h1>
+            <p class="terminal-text">Da igual cómo hayas llegado. Si estás aquí, algo te trajo.</p>
+            <p class="terminal-question">¿Qué mensaje tenía la camiseta? O... ¿quieres descifrar el mensaje oculto?</p>
+            <div class="input-group">
+                <span class="prompt">></span>
+                <input type="text" id="codeInput" placeholder="S-017" autocomplete="off" autofocus>
+                <span class="cursor">_</span>
+            </div>
+            <p class="terminal-hint">Escribe el código público (ej: S-017, B-023, G-012)</p>
+            <div class="terminal-actions">
+                <a class="terminal-link" onclick="showIntermedia()">NO TENGO CÓDIGO → Ver opciones</a>
+            </div>
         </div>
     </div>
 
-    <!-- === DECODE PAGE (S-017) === -->
-    <div id="decodePage" class="decode-container hidden">
-        <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+    <!-- ===== INTERMEDIA ===== -->
+    <div id="intermedia" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            <div class="section-title">> MODO DE ACCESO NO IDENTIFICADO</div>
+            <div class="section-sub">¿Cómo prefieres entrar?</div>
+            
+            <div class="choice-grid">
+                <div class="choice-card" onclick="showVisualGallery()">
+                    <div class="choice-num">[1]</div>
+                    <div class="choice-title">VI UNA CAMISETA</div>
+                    <div class="choice-desc">No recuerdo el código, pero sí el mensaje o el diseño. Quiero identificarla visualmente.</div>
+                </div>
+                <div class="choice-card" onclick="showMarketplace()">
+                    <div class="choice-num">[2]</div>
+                    <div class="choice-title">QUIERO EXPLORAR</div>
+                    <div class="choice-desc">Ver modelos, colecciones, y comprar mi propia camiseta DECODED.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== GALERIA VISUAL ===== -->
+    <div id="visualGallery" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showIntermedia()">< [ VOLVER ]</a>
+            </div>
+            <div class="section-title">IDENTIFICA LA CAMISETA</div>
+            <div class="section-sub">Si reconoces el diseño, haz clic para decodificar. Pasa el ratón para ver la parte trasera.</div>
+            
+            <div class="color-legend" id="legendVisual"></div>
+            <div class="visual-gallery" id="visualGrid"></div>
+        </div>
+    </div>
+
+    <!-- ===== MARKETPLACE ===== -->
+    <div id="marketplace" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showIntermedia()">< [ VOLVER ]</a>
+            </div>
+            <div class="section-title">SELECCIONA MODELO</div>
+            <div class="section-sub">Elige cómo quieres que se comunique tu camiseta. Todos los códigos disponibles en los tres formatos.</div>
+            
+            <div class="model-grid">
+                <div class="model-card" onclick="showModelCodes('broadcast')">
+                    <div class="model-name">BROADCAST</div>
+                    <div class="model-price">35€ + 8€</div>
+                    <div class="model-desc">Para quien quiere que escaneen rápido. QR grande en la espalda. Entrada directa desde el móvil.</div>
+                    <div class="model-features">
+                        <span class="yes">✓ Mensaje frente</span>
+                        <span class="yes">✓ QR espalda (escaneo directo)</span>
+                        <span class="yes">✓ Código privado 6 dígitos</span>
+                        <span class="no">✗ Sin código público visible atrás</span>
+                    </div>
+                </div>
+                
+                <div class="model-card" onclick="showModelCodes('stealth')">
+                    <div class="model-name">STEALTH</div>
+                    <div class="model-price">35€</div>
+                    <div class="model-desc">Para quien quiere que lean. Sin QR. Solo códigos impresos. Más misterio, más ritual.</div>
+                    <div class="model-features">
+                        <span class="yes">✓ Mensaje frente</span>
+                        <span class="yes">✓ Código público S-XXX espalda</span>
+                        <span class="yes">✓ Código privado 6 dígitos</span>
+                        <span class="no">✗ Sin QR</span>
+                    </div>
+                </div>
+                
+                <div class="model-card" onclick="showModelCodes('full')">
+                    <div class="model-name">FULL DECODED</div>
+                    <div class="model-price">35€ + 12€</div>
+                    <div class="model-desc">Todo visible. Todo activo. Máxima información para quien no quiere perder ni una conexión.</div>
+                    <div class="model-features">
+                        <span class="yes">✓ Mensaje frente</span>
+                        <span class="yes">✓ QR espalda</span>
+                        <span class="yes">✓ Código público S-XXX</span>
+                        <span class="yes">✓ Código privado 6 dígitos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODEL CODES (Marketplace -> Codes) ===== -->
+    <div id="modelCodes" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showMarketplace()">< [ MARKETPLACE ]</a>
+            </div>
+            <div id="modelHeader"></div>
+            <div class="code-list" id="modelCodeList"></div>
+        </div>
+    </div>
+
+    <!-- ===== DECODE PAGE ===== -->
+    <div id="decodePage" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" id="decodeBack" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            <div class="decode-container" id="decodeContent"></div>
+        </div>
+    </div>
+
+    <div class="footer-label">DECODED.TXT</div>
+
+<script>
+// ===== DATABASE =====
+const DB = {
+    'S-017': { cat:'SINGLE / DATING', color:'#33FF33', short:'ESTOY SINGLE. SÍ, DE VERDAD.', long:'Disponibilidad no es desesperación. Estoy solo porque elijo estarlo, no porque nadie me quiera. Si entras, entra con intención. No con curiosidad. No con pena. Con ganas de construir algo que no necesite etiquetas para existir.' },
+    'S-002': { cat:'SINGLE / DATING', color:'#33FF33', short:'PÍDEME EL NÚMERO. NO MUERDO.', long:'La directitud es un filtro. Si te asusta que alguien sepa lo que quiere, probablemente no estás listo para lo que ofrezco. El número es el principio. El resto se negocia cara a cara.' },
+    'S-003': { cat:'SINGLE / DATING', color:'#33FF33', short:'NO VENGO CON NADIE. TÚ TAMPOCO.', long:'Miradas que se cruzan, silencios que se entienden. No estoy buscando compañía para llenar un vacío. Estoy buscando alguien que también camine solo y quiera compartir el trayecto.' },
+    'S-004': { cat:'SINGLE / DATING', color:'#33FF33', short:'DISPONIBLE. HASTA QUE ALGUIEN ME AGUANTE.', long:'Ironía como armadura. Si no captas el humor, no captarás nada más. Disponible significa selectivo. Y selectivo significa que tengo estándares, no prisa.' },
+    'S-005': { cat:'SINGLE / DATING', color:'#33FF33', short:'ME DEJARON HACE POCO. SE ACEPTAN ABRAZOS.', long:'Vulnerable de forma estratégica. No busco un rebound. Busco reconstrucción. Si tu plan es aprovechar el hueco, cierra la pestaña. Si tu plan es construir, quédate.' },
+    
+    'B-007': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'TOURIST PASSING BY, OK. TOURIST STAYING, GO HOME.', long:'Airbnb killed my barrio. Your weekend trip costs my landlord\'s greed. Take a photo, leave no trace, or better: leave.' },
+    'B-023': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'MY RENT WENT UP 40%. MY WAGES DIDN\'T.', long:'Speculation is not housing. Every empty flat owned by a fund is a family sleeping in a car. This shirt costs less than your daily coffee. The message costs more than your portfolio.' },
+    'B-041': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'METRO DELAYED AGAIN. LIKE MY FUTURE.', long:'Public transport run by private profit. Broken elevators, broken AC, broken dignity. They want us tired, late, compliant. Fuck that.' },
+    'B-058': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'THIS SCHOOL HAS NO HEAT. BUT PLENTY OF FLAGS.', long:'Education budget cut again. Patriotic symbols budget increased again. They teach obedience, not critical thought. Wear this near a school board.' },
+    'B-076': { cat:'BARRIO / LOCAL', color:'#FFB000', short:'YOUR SECOND HOME IS MY EVICTION NOTICE.', long:'Seasonal residents, empty winters, doubled prices. The \'charming neighborhood\' you discovered was a community before you Airbnb\'d it. Go home. Or stay and fight with us.' },
+    
+    'G-012': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'THE PLANET IS NOT DYING. IT\'S BEING KILLED.', long:'By corporations you buy from. By politicians you voted for. By convenience you chose over consequence. This shirt is polyester. I\'m complicit too. The difference is: I know it, and I\'m screaming.' },
+    'G-029': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'FREE PALESTINE IS NOT A SLOGAN. IT\'S A DEMAND.', long:'75 years of occupation. 75 years of \'complex situation\' rhetoric. There is nothing complex about ethnic cleansing. There is nothing nuanced about apartheid. Stop asking both sides. There is a right side.' },
+    'G-037': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'YOUR SILENCE IS A POLICY CHOICE.', long:'Not neutral. Not apolitical. Not \'avoiding drama.\' Every time you look away, a policy passes. A border closes. A wage freezes. A planet burns. Your silence is the system\'s favorite sound.' },
+    'G-051': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'THEY SAID TECH WOULD FREE US. WE GOT SURVEILLANCE.', long:'Every app is a snitch. Every like is a data point. Every \'free\' service sells your attention to the highest bidder. The revolution will not be streamed. It will be worn, whispered, encrypted.' },
+    'G-068': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short:'BORDERS ARE DRAWN IN BLOOD. YOU CROSS THEM FOR FUN.', long:'Passport privilege is violence made paperwork. While you \'find yourself\' in Bali, others drown in the Mediterranean. Tourism and migration: same movement, different welcome. Ask why.' },
+    
+    'X-013': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'I FUCK ON THE FIRST DATE. PROBLEM?', long:'Consent is my only rule. Slut-shaming is yours. I\'m not \'easy\' — I\'m decisive. I know what I want, when I want it, and I ask for it clearly. The problem is your projection, not my pleasure.' },
+    'X-027': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'PEG ME OR LEAVE ME.', long:'Gender roles are a cage. I top, I bottom, I switch, I decide. Your fragile masculinity is not my sexual emergency. Ask. Listen. Adapt. Or watch me find someone who will.' },
+    'X-044': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'MY ONLY KINK IS COMMUNICATION.', long:'Safe word is \'politics.\' Aftercare is mandatory. I don\'t do \'surprise me\' — I do \'tell me exactly.\' The hottest thing you can say is \'What do you need?\' The second hottest: \'I heard you.\'' },
+    'X-061': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'POLYAMORY IS NOT CHEATING WITH EXTRA STEPS.', long:'Three partners. Zero lies. Infinite calendars. Jealousy? We talk about it. Insecurity? We name it. Monogamy is valid. So is this. The only wrong way is the one that hurts someone silently.' },
+    'X-089': { cat:'XPLICIT / ADULTO', color:'#FF3333', short:'I SWALLOW. CONSENT AND CONVERSATION FIRST.', long:'Oral sex is not a favor. It\'s not a transaction. It\'s not \'expected.\' I do what I want because I want it, not because you earned it. Ask first. Every time. The answer might be yes. The asking is the point.' },
+    
+    'M-019': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'DO NOT DISTURB. UNLESS YOU HAVE DOGS.', long:'Or snacks. Or a solution to the problem I didn\'t ask you to solve. I\'m not \'in a mood\' — I\'m in a process. Respect the boundary. The door opens when I\'m ready, not when you\'re uncomfortable.' },
+    'M-033': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'SOCIALLY BATTERY: 3%. CHARGER NOT FOUND.', long:'Introvert is not shy. It\'s depleted. Every interaction costs. Every smile is a transaction. I\'m not rude — I\'m accounting. Today the balance is negative. Check again tomorrow.' },
+    'M-047': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'ASK ME ANYTHING. I MIGHT ANSWER.', long:'Open book, selective pages. Curiosity is welcome. Entitlement is not. \'Why are you like this?\' is not a question. \'What happened?\' might be. Context matters. So does my right to silence.' },
+    'M-054': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'PROCESSING. PLEASE DO NOT INTERRUPT.', long:'Neurodivergent mode engaged. Stimulating environment. Sensory input maximum. I am not \'zoning out\' — I am compiling. The output will come. The interruption resets the timer. Wait. Or leave.' },
+    'M-071': { cat:'MOOD / ESTADO', color:'#9D00FF', short:'TODAY I AM 90% SARCASM. APPROACH ACCORDINGLY.', long:'Not \'in a bad mood.\' In a precise mood. Irony is my love language. Deadpan is my default. If you need earnest, ask explicitly. I can switch. But I won\'t guess. Clarity is kindness.' },
+    
+    'F-015': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'1V1 ME. LOSER BUYS COFFEE.', long:'LoL / Valorant / Fighting games. Elo is a number. Pride is forever. I don\'t flame — I outplay. If you can\'t handle the L, don\'t queue up. My main is not my personality. Except it kind of is.' },
+    'F-032': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'MY AIM IS BETTER THAN YOUR EXCUSES.', long:'FPS (Valorant, CS2, Apex). 2000 hours. 1000 deaths. 1 headshot that matters. \'Luck\' is preparation plus timing. I\'m always prepared. You\'re always lagging. Coincidence?' },
+    'F-048': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'TANK DIFF. LOOKING AT YOU.', long:'MMO / LoL. I peel for carries who don\'t kite. I engage for teams that don\'t follow. I die so you can run it down mid. And you blame me? Check the damage charts. Then check yourself.' },
+    'F-065': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'SPEEDRUNNING LIFE. ANY% GLITCHLESS.', long:'Speedrunning community. WR pace until real life RNG hits. Frames matter. Consistency matters. The run is never over. Reset, adapt, optimize. My PB is tomorrow.' },
+    'F-082': { cat:'FRIKI / GEEK', color:'#FFFFFF', short:'MY DECK IS META. MY SOUL IS NOT.', long:'TCG (MTG, Yu-Gi-Oh!, Hearthstone). Netdeck to learn. Homebrew to live. I know the tier list. I ignore it. Victory is sweeter when they didn\'t see it coming. \'Jank\' is just innovation they haven\'t copied yet.' },
+    
+    'H-011': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'I HAVE A DARK SENSE OF HUMOR. AND A BRIGHT SENSE OF IRONY.', long:'I joke about capitalism while buying coffee. I mock tech bros on my iPhone. Hypocrisy? No. Complexity. The system is inescapable. Laughter is not surrender — it\'s sabotage with better timing.' },
+    'H-028': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'MY SPIRIT ANIMAL IS A ERROR 404.', long:'Not found. Not lost. Intentionally absent. Your search query does not match my reality. Try different keywords. Or accept that some pages are not meant to be indexed.' },
+    'H-039': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'I\'M NOT LAZY. I\'M ENERGY EFFICIENT.', long:'Newton\'s first law, applied to personality. An object at rest stays at rest unless acted upon by genuine motivation. Your urgency is not my force. My friction coefficient is high. Respect the physics.' },
+    'H-052': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'SARCASM IS MY LOVE LANGUAGE. FLUENCY REQUIRED.', long:'Literal interpretation is a disqualifier. \'That\'s so funny\' is not laughter. I don\'t do translation services. If you need a /s tag, we\'re not compatible. Find someone who speaks basic.' },
+    'H-067': { cat:'HUMOR / SARCASMO', color:'#FF8800', short:'PROFESSIONALLY UNIMPRESSED. PERSONALLY AMUSED.', long:'Your pitch deck is not revolutionary. Your playlist is not obscure. Your trauma is not unique. And yet — I like you anyway. The liking is earned, not the impressing. Keep trying. It\'s cute.' },
+    
+    'P-014': { cat:'PROFESIONAL / NETWORKING', color:'#0066CC', short:'I BUILD THINGS. HIRE ME OR GET OUT OF MY WAY.', long:'Not \'looking for opportunities.\' Creating them. My GitHub is my CV. My side projects are my references. I don\'t network — I collaborate. If you can\'t contribute, you\'re traffic.' },
+    
+    'C-016': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'I MAKE NOISE. SOME OF IT IS MUSIC.', long:'Guitar, synth, found sound, feedback. Genre is a store shelf. I don\'t fit. I don\'t try. The 3AM recording is the honest one. The polished track is the compromise. Come to the show. Hear the difference.' },
+    'C-031': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'MY STUDIO IS A CLOSET. MY AMBITION IS NOT.', long:'No budget. No space. No excuse. I paint on cardboard. I shoot on phone. I edit on pirated software. The work exists despite the system, not because of it. Support the hustle. Or fund the upgrade.' },
+    'C-049': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'WRITER. WILL TRADE WORDS FOR RENT.', long:'Novelist, copywriter, poet, ghost. All of the above. None paid enough. Every sentence is a transaction. Every silence is a rejection. I write what you need. I need what you have. Barter?' },
+    'C-062': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'PHOTOGRAPHER. I SHOOT RAW. AND REAL.', long:'No filters. No staging. No \'content.\' I document what exists before it disappears. Your Instagram is my opposite. My darkroom is my church. The print is the truth. The screen is the lie.' },
+    'C-077': { cat:'CREATIVO / ARTE', color:'#FF00FF', short:'EXHIBITION OPENING. ASK FOR THE ADDRESS.', long:'Not in a gallery. In a warehouse. In a squat. In a borrowed room. Art is where you put it. The institution is not validation. The audience is. Show up. Or don\'t. The work remains.' },
+    
+    'T-009': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'PASSING THROUGH. RECOMMEND SOMETHING REAL.', long:'Not the TripAdvisor top 10. Not the \'hidden gem\' with 5000 reviews. The bar your grandfather drank at. The street food that made you sick. The view that has no hashtag. I travel for texture, not content.' },
+    'T-024': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'DIGITAL NOMAD. WIFI IS MY VISA.', long:'Passport: strong. Borders: arbitrary. Office: anywhere with outlets. Time zones: suggestions. The \'freedom\' is real. The loneliness is too. The trade is worth it. Until it\'s not. Then I move again.' },
+    'T-042': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'SOLO TRAVELER. NOT BECAUSE I\'M BROKEN.', long:'Because I\'m whole alone. Because groups move at the slowest pace. Because \'we should do this\' never happens. I eat alone. I decide alone. I meet people precisely because I don\'t need them.' },
+    'T-063': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'MY SUITCASE WEIGHS MORE THAN MY COMMITMENTS.', long:'Minimalism is a privilege. I carry everything that matters. The rest I left or lost. Every object is a decision. Every weight is a choice. Travel light, they say. I travel honest.' },
+    'T-091': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short:'LOCAL GUIDE WANTED. NOT FROM A BOOKING APP.', long:'I don\'t want your tour. I want your Tuesday. Your laundromat. Your complaint about the mayor. Show me the city you endure, not the one you sell. I\'ll buy the coffee. You bring the honesty.' }
+};
+
+const CATEGORIES = {
+    'S': { name:'SINGLE / DATING', color:'#33FF33', desc:'Disponibilidad romántica' },
+    'B': { name:'BARRIO / LOCAL', color:'#FFB000', desc:'Vecindad, comunidad, antifascismo' },
+    'G': { name:'GLOBAL / ACTIVISMO', color:'#00FFFF', desc:'Environmental, político, social' },
+    'X': { name:'XPLICIT / ADULTO', color:'#FF3333', desc:'Explícito, consentimiento, adulto' },
+    'M': { name:'MOOD / ESTADO', color:'#9D00FF', desc:'Vibe del día, neurodivergencia' },
+    'F': { name:'FRIKI / GEEK', color:'#FFFFFF', desc:'Gaming, anime, tech, cultura' },
+    'H': { name:'HUMOR / SARCASMO', color:'#FF8800', desc:'Ironía sistémica, metahumor' },
+    'P': { name:'PROFESIONAL', color:'#0066CC', desc:'Networking, empleo, colaboración' },
+    'C': { name:'CREATIVO / ARTE', color:'#FF00FF', desc:'Música, arte, escritura' },
+    'T': { name:'TRAVEL / VIAJERO', color:'#00DDAA', desc:'Nómadas, exploración, local' }
+};
+
+const MODELS = {
+    'broadcast': { name:'BROADCAST', price:'43€', extra:'+8€' },
+    'stealth': { name:'STEALTH', price:'35€', extra:'' },
+    'full': { name:'FULL DECODED', price:'47€', extra:'+12€' }
+};
+
+// ===== NAVIGATION =====
+function hideAll() {
+    document.getElementById('landing').classList.add('hidden');
+    document.getElementById('intermedia').classList.add('hidden');
+    document.getElementById('visualGallery').classList.add('hidden');
+    document.getElementById('marketplace').classList.add('hidden');
+    document.getElementById('modelCodes').classList.add('hidden');
+    document.getElementById('decodePage').classList.add('hidden');
+}
+
+function showLanding() {
+    hideAll();
+    document.getElementById('landing').classList.remove('hidden');
+    document.getElementById('codeInput').focus();
+}
+
+function showIntermedia() {
+    hideAll();
+    document.getElementById('intermedia').classList.remove('hidden');
+}
+
+function showVisualGallery() {
+    hideAll();
+    document.getElementById('visualGallery').classList.remove('hidden');
+    renderVisualGallery();
+}
+
+function showMarketplace() {
+    hideAll();
+    document.getElementById('marketplace').classList.remove('hidden');
+}
+
+function showModelCodes(model) {
+    hideAll();
+    document.getElementById('modelCodes').classList.remove('hidden');
+    renderModelCodes(model);
+}
+
+function showDecodeFromCode(code, backTo) {
+    hideAll();
+    document.getElementById('decodePage').classList.remove('hidden');
+    if (backTo) {
+        document.getElementById('decodeBack').onclick = backTo;
+    } else {
+        document.getElementById('decodeBack').onclick = showLanding;
+    }
+    renderDecode(code);
+}
+
+// ===== RENDER VISUAL GALLERY =====
+function renderVisualGallery() {
+    const grid = document.getElementById('visualGrid');
+    const legend = document.getElementById('legendVisual');
+    grid.innerHTML = '';
+    legend.innerHTML = '';
+    
+    // Legend
+    Object.entries(CATEGORIES).forEach(([letter, info]) => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `<div class="legend-dot" style="background:${info.color}"></div> ${info.name}`;
+        legend.appendChild(item);
+    });
+    
+    // Cards (one per code)
+    Object.entries(DB).forEach(([code, data]) => {
+        const card = document.createElement('div');
+        card.className = 'shirt-card';
+        card.style.setProperty('--cat-color', data.color);
+        card.onclick = () => showDecodeFromCode(code, showVisualGallery);
         
+        // Determine back content based on hypothetical model (default to full for visual)
+        const hasQR = true; // Visual gallery shows full version
+        
+        card.innerHTML = `
+            <div class="shirt-front">
+                <div class="shirt-line-top"></div>
+                <div class="shirt-msg">${data.short}</div>
+            </div>
+            <div class="shirt-back">
+                <div class="shirt-code">${code}</div>
+                ${hasQR ? '<div class="shirt-qr">QR</div>' : ''}
+                <div class="shirt-private">847392</div>
+            </div>
+            <div class="shirt-meta">
+                <div class="shirt-code-id">${code}</div>
+                <div class="shirt-cat">${data.cat}</div>
+            </div>
+            <div class="shirt-hint">Pasa el ratón para ver la espalda →</div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// ===== RENDER MODEL CODES =====
+function renderModelCodes(model) {
+    const info = MODELS[model];
+    const header = document.getElementById('modelHeader');
+    const list = document.getElementById('modelCodeList');
+    
+    header.innerHTML = `
+        <div class="section-title" style="color:#33FF33">${info.name}</div>
+        <div class="section-sub">Precio base: ${info.price} ${info.extra} — Todos los códigos disponibles en este formato</div>
+        <div style="width:100%;height:2px;background:#33FF33;margin-bottom:2rem;"></div>
+    `;
+    
+    list.innerHTML = '';
+    Object.entries(DB).forEach(([code, data]) => {
+        const item = document.createElement('div');
+        item.className = 'code-item';
+        item.style.setProperty('--cat-color', data.color);
+        item.innerHTML = `
+            <div class="code-info">
+                <div class="code-id">${code}</div>
+                <div class="code-msg">${data.short}</div>
+            </div>
+            <button class="btn" onclick="alert('Compra ${code} en formato ${info.name}\\n\\nEsto conectará con Stripe en el Bloque 6.')">COMPRAR ${info.price}</button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+// ===== RENDER DECODE =====
+function renderDecode(code) {
+    const data = DB[code];
+    if (!data) {
+        alert('Código no encontrado');
+        showLanding();
+        return;
+    }
+    
+    const container = document.getElementById('decodeContent');
+    
+    container.innerHTML = `
         <div class="decode-header">
-            <span class="decode-category">SINGLE / DATING</span>
-            <span class="decode-code">S-017 — Verde Terminal</span>
+            <span class="decode-category" style="border-color:${data.color};color:${data.color}">${data.cat}</span>
+            <span class="decode-code">${code} — ${data.color}</span>
         </div>
-        
-        <div class="decode-line"></div>
-        
-        <div class="decode-short">"ESTOY SINGLE. SÍ, DE VERDAD."</div>
-        
-        <div class="decode-long">
-            Disponibilidad no es desesperación. Estoy solo porque elijo estarlo, 
-            no porque nadie me quiera. Si entras, entra con intención. No con curiosidad. 
-            No con pena. Con ganas de construir algo que no necesite etiquetas para existir.
-        </div>
+        <div class="decode-line" style="background:${data.color}"></div>
+        <div class="decode-short">"${data.short}"</div>
+        <div class="decode-long" style="border-color:${data.color}">${data.long}</div>
         
         <div class="decode-divider"></div>
         
-        <div id="messageSection">
+        <div id="msgSection">
             <div class="decode-question">¿Has visto el código de 6 dígitos en la parte inferior de la espalda?</div>
             <div class="decode-sub">Es un número de 6 dígitos. Si lo has visto, introdúcelo aquí y podrás enviarle un mensaje directamente a quien lleva esta camiseta.</div>
-            
             <div class="private-input-group">
-                <span class="prompt">></span>
-                <input type="text" id="privateCodeInput" placeholder="000000" maxlength="6" autocomplete="off">
+                <span class="prompt" style="color:${data.color}">></span>
+                <input type="text" id="privateCodeInput" placeholder="000000" maxlength="6" autocomplete="off" style="border-color:${data.color}">
             </div>
-            
-            <button class="btn" onclick="checkPrivateCode()">ENVIAR MENSAJE</button>
-            
-            <div style="margin-top: 1.5rem;">
-                <a href="#" class="terminal-link" style="color: #8C8C8C; font-size: 0.8rem;" onclick="showNoCode()">No lo he visto</a>
+            <button class="btn" style="--cat-color:${data.color}" onclick="checkPrivate('${code}','${data.color}')">ENVIAR MENSAJE</button>
+            <div style="margin-top:1.5rem">
+                <a class="back-link" onclick="showNoCode('${code}','${data.color}')">No lo he visto</a>
             </div>
         </div>
         
         <div id="composeSection" class="hidden">
             <div class="decode-question">Canal abierto.</div>
             <div class="decode-sub">Escribe tu mensaje. Puedes ser anónimo o dejar un contacto.</div>
-            
             <textarea class="message-textarea" placeholder="Escribe aquí..."></textarea>
-            
             <div class="checkbox-group">
-                <input type="checkbox" id="anonymous" checked>
-                <label for="anonymous">Enviar anónimamente</label>
+                <input type="checkbox" id="anon" checked>
+                <label for="anon">Enviar anónimamente</label>
             </div>
-            
-            <button class="btn" onclick="alert('Mensaje enviado (demo). En el Bloque 5 esto llegará al área privada.')">ENVIAR</button>
+            <button class="btn" style="--cat-color:${data.color}" onclick="alert('Mensaje enviado (demo)')">ENVIAR</button>
         </div>
         
         <div id="closedSection" class="hidden">
-            <div class="status-closed">⚪ Este canal ha sido cerrado.</div>
-            <div class="status-closed-text" id="closedMessage">El portador ya ha encontrado lo que buscaba.</div>
+            <div class="status-closed" style="color:${data.color}">⚪ Este canal ha sido cerrado.</div>
+            <div class="status-closed-text">El portador ya ha encontrado lo que buscaba.</div>
         </div>
         
         <div id="noCodeSection" class="hidden">
-            <div class="decode-question" style="color: #8C8C8C;">Oh, no lo has visto.</div>
+            <div class="decode-question" style="color:#8C8C8C">Oh, no lo has visto.</div>
             <div class="decode-sub">
                 La próxima vez, si ves un número de 6 dígitos en la parte inferior de la espalda, 
                 vuelves aquí. Ese número es la clave para hablar con esa persona sin decirle 
@@ -422,86 +1026,68 @@
         </div>
         
         <div class="footer-actions">
-            <a href="#" class="footer-link" onclick="alert('Tienda en construcción (Bloque 3)')">[ Comprar S-017 ]</a>
-            <a href="#" class="footer-link" onclick="alert('Colección en construcción (Bloque 3)')">[ Ver colección Single ]</a>
+            <a class="footer-link" style="--cat-color:${data.color}" onclick="alert('Tienda en construcción')">[ Comprar ${code} ]</a>
+            <a class="footer-link" style="--cat-color:${data.color}" onclick="showIntermedia()">[ Ver galería ]</a>
         </div>
-    </div>
+    `;
+}
 
-    <div class="footer-label">DECODED.TXT</div>
+function checkPrivate(code, color) {
+    const input = document.getElementById('privateCodeInput');
+    const val = input.value.trim();
+    if (val.length !== 6 || !/^\d{6}$/.test(val)) {
+        alert('Introduce un código de 6 dígitos numéricos.');
+        return;
+    }
+    if (val === '847392') {
+        document.getElementById('msgSection').classList.add('hidden');
+        document.getElementById('composeSection').classList.remove('hidden');
+    } else {
+        document.getElementById('msgSection').classList.add('hidden');
+        document.getElementById('closedSection').classList.remove('hidden');
+    }
+}
 
-    <script>
-        // === LANDING LOGIC ===
-        const codeInput = document.getElementById('codeInput');
-        const landing = document.getElementById('landing');
-        const decodePage = document.getElementById('decodePage');
-        
-        codeInput.focus();
-        
-        document.addEventListener('click', function(e) {
-            if (e.target !== codeInput && !e.target.closest('#decodePage')) {
-                codeInput.focus();
-            }
-        });
-        
-        codeInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const value = this.value.trim().toUpperCase();
-                if (value === 'S-017' || value === 'S017' || value === '017') {
-                    showDecode();
-                } else if (value) {
-                    alert('Código no encontrado en la base de datos.\n\nPrueba con: S-017\n\nEn el futuro esto buscará en todas las categorías.');
-                    this.value = '';
-                }
-            }
-        });
-        
-        codeInput.addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-        });
-        
-        // === NAVIGATION ===
-        function showLanding() {
-            decodePage.classList.add('hidden');
-            landing.classList.remove('hidden');
-            codeInput.value = '';
-            codeInput.focus();
-            
-            // Reset sub-sections
-            document.getElementById('messageSection').classList.remove('hidden');
-            document.getElementById('composeSection').classList.add('hidden');
-            document.getElementById('closedSection').classList.add('hidden');
-            document.getElementById('noCodeSection').classList.add('hidden');
-        }
-        
-        function showDecode() {
-            landing.classList.add('hidden');
-            decodePage.classList.remove('hidden');
-        }
-        
-        // === PRIVATE CODE LOGIC ===
-        function checkPrivateCode() {
-            const input = document.getElementById('privateCodeInput');
-            const val = input.value.trim();
-            
-            if (val.length !== 6 || !/^\d{6}$/.test(val)) {
-                alert('Introduce un código de 6 dígitos numéricos.');
-                return;
-            }
-            
-            // Demo: 847392 = abierto, cualquier otro = cerrado
-            if (val === '847392') {
-                document.getElementById('messageSection').classList.add('hidden');
-                document.getElementById('composeSection').classList.remove('hidden');
+function showNoCode(code, color) {
+    document.getElementById('msgSection').classList.add('hidden');
+    document.getElementById('noCodeSection').classList.remove('hidden');
+}
+
+// ===== LANDING INPUT =====
+const codeInput = document.getElementById('codeInput');
+
+codeInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const val = this.value.trim().toUpperCase();
+        if (DB[val]) {
+            showDecodeFromCode(val);
+        } else if (val) {
+            const clean = val.replace(/[^A-Z0-9]/g,'');
+            const found = Object.keys(DB).find(k => k.replace('-','') === clean);
+            if (found) {
+                showDecodeFromCode(found);
             } else {
-                document.getElementById('messageSection').classList.add('hidden');
-                document.getElementById('closedSection').classList.remove('hidden');
+                alert('Código no encontrado. Prueba con S-017 o ve a la galería.');
             }
         }
-        
-        function showNoCode() {
-            document.getElementById('messageSection').classList.add('hidden');
-            document.getElementById('noCodeSection').classList.remove('hidden');
+        this.value = '';
+    }
+});
+
+codeInput.addEventListener('input', function() {
+    this.value = this.value.toUpperCase();
+});
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#decodePage') && !e.target.closest('#intermedia') && !e.target.closest('#visualGallery') && !e.target.closest('#marketplace') && !e.target.closest('#modelCodes')) {
+        if (!document.getElementById('landing').classList.contains('hidden')) {
+            codeInput.focus();
         }
-    </script>
+    }
+});
+
+// Init
+codeInput.focus();
+</script>
 </body>
 </html>

@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DECODED.TXT</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #0A0A0A;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .hidden { display: none !important; }
+        .page-container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #222;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo { font-size: 1.2rem; color: #8C8C8C; letter-spacing: 3px; }
+        .logo span { color: #33FF33; }
+        .back-link {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #33FF33; }
+        .section-title { font-size: 1.8rem; margin-bottom: 0.5rem; color: #F0F0F0; }
+        .section-sub { color: #555; font-size: 0.9rem; margin-bottom: 3rem; }
+        .footer-label {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            color: #333;
+            border: 1px solid #333;
+            padding: 0.3rem 0.6rem;
+            z-index: 100;
+        }
+        .landing-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .terminal-container {
+            width: 90%;
+            max-width: 700px;
+            text-align: left;
+            padding: 2rem;
+            position: relative;
+        }
+        .terminal-line {
+            width: 100%;
+            height: 2px;
+            background-color: #33FF33;
+            margin-bottom: 3rem;
+        }
+        .terminal-title {
+            font-size: 0.9rem;
+            color: #8C8C8C;
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+        }
+        .terminal-text {
+            font-size: 1.5rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        .terminal-question {
+            font-size: 1.2rem;
+            color: #8C8C8C;
+            margin-bottom: 2.5rem;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .prompt {
+            color: #33FF33;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        #codeInput {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #33FF33;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5rem;
+            padding: 0.2rem 0.5rem;
+            width: 250px;
+            outline: none;
+            text-transform: uppercase;
+        }
+        #codeInput::placeholder { color: #333; }
+        .cursor {
+            color: #33FF33;
+            font-size: 1.5rem;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .terminal-hint {
+            font-size: 0.8rem;
+            color: #555;
+            margin-top: 1rem;
+        }
+        .terminal-actions {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .terminal-link {
+            color: #33FF33;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .terminal-link:hover { text-decoration: underline; opacity: 0.8; }
+        .terminal-link-alt {
+            color: #33FF33;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            text-align: right;
+        }
+        .terminal-link-alt:hover { text-decoration: underline; opacity: 0.8; }
+        .auth-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 0.75rem;
+            color: #555;
+            z-index: 200;
+            text-align: right;
+            line-height: 1.6;
+        }
+        .auth-status a, .auth-status span {
+            color: #33FF33;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .choice-card {
+            border: 1px solid #333;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .choice-card:hover {
+            border-color: #33FF33;
+            background: rgba(51, 255, 51, 0.03);
+            transform: translateY(-3px);
+        }
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #33FF33;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .choice-card:hover::before { opacity: 1; }
+        .choice-num {
+            font-size: 3rem;
+            color: #33FF33;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .choice-title {
+            font-size: 1.2rem;
+            color: #F0F0F0;
+            margin-bottom: 0.5rem;
+        }
+        .choice-desc {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        .about-content { max-width: 700px; }
+        .about-block {
+            margin-bottom: 2.5rem;
+            border-left: 2px solid #33FF33;
+            padding-left: 1.5rem;
+        }
+        .about-block h3 {
+            color: #33FF33;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            letter-spacing: 1px;
+        }
+        .about-block p {
+            color: #AAA;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+        .about-cta {
+            margin-top: 3rem;
+            padding: 2rem;
+            border: 1px solid #33FF33;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .about-cta:hover { background: rgba(51, 255, 51, 0.05); }
+        .about-cta-title {
+            font-size: 1.3rem;
+            color: #33FF33;
+            margin-bottom: 0.5rem;
+        }
+        .about-cta-sub { font-size: 0.9rem; color: #888; }
+        .limited-badge {
+            display: inline-block;
+            border: 1px solid #FFB000;
+            color: #FFB000;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            margin-left: 0.5rem;
+            letter-spacing: 1px;
+        }
+        .visual-gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .shirt-card {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 1px solid #222;
+        }
+        .shirt-card:hover { transform: scale(1.03); }
+        .shirt-front, .shirt-back {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            position: relative;
+            overflow: hidden;
+        }
+        .shirt-front {
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .shirt-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.4s;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 1rem;
+        }
+        .shirt-card:hover .shirt-back { opacity: 1; }
+        .shirt-line-top {
+            width: 60%;
+            height: 2px;
+            background: var(--cat-color);
+            margin-bottom: 1rem;
+        }
+        .shirt-msg {
+            font-size: 0.85rem;
+            text-align: center;
+            color: #F0F0F0;
+            line-height: 1.3;
+        }
+        .shirt-code {
+            position: absolute;
+            bottom: 18%;
+            font-size: 1.2rem;
+            color: #F0F0F0;
+            letter-spacing: 2px;
+        }
+        .shirt-private {
+            position: absolute;
+            bottom: 8%;
+            font-size: 1rem;
+            color: #AAA;
+            letter-spacing: 2px;
+        }
+        .shirt-qr {
+            width: 50px;
+            height: 50px;
+            background: #FFF;
+            position: absolute;
+            bottom: 25%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            color: #000;
+        }
+        .shirt-meta {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-top: 1px solid #222;
+        }
+        .shirt-code-id {
+            font-size: 0.9rem;
+            color: var(--cat-color);
+            font-weight: bold;
+        }
+        .shirt-cat {
+            font-size: 0.65rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+        .shirt-stock {
+            font-size: 0.65rem;
+            color: #FFB000;
+            margin-top: 0.3rem;
+        }
+        .shirt-lang {
+            font-size: 0.65rem;
+            color: #33FF33;
+            margin-top: 0.2rem;
+        }
+        .color-legend {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0 1.5rem;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            color: #666;
+            cursor: pointer;
+            padding: 0.3rem 0.5rem;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+        .legend-item:hover, .legend-item.active {
+            border-color: var(--legend-color);
+            color: var(--legend-color);
+            background: rgba(255,255,255,0.03);
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--legend-color);
+        }
+        .gallery-hint {
+            font-size: 0.8rem;
+            color: #444;
+            margin-bottom: 1rem;
+            border-left: 2px solid #333;
+            padding-left: 0.8rem;
+        }
+        .store-intro {
+            border: 1px solid #222;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            background: rgba(255,255,255,0.01);
+        }
+        .store-intro h3 {
+            color: #33FF33;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+        .store-intro p {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+        }
+        .model-grid {
+            display: flex;
+            flex-direction: row;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .model-card {
+            flex: 1;
+            min-width: 280px;
+            max-width: 340px;
+            border: 1px solid #333;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .model-card:hover {
+            border-color: #33FF33;
+            background: rgba(51, 255, 51, 0.03);
+        }
+        .model-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #33FF33;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .model-card:hover::before { opacity: 1; }
+        .model-name {
+            font-size: 1.5rem;
+            color: #F0F0F0;
+            margin-bottom: 0.5rem;
+        }
+        .model-price {
+            font-size: 1.2rem;
+            color: #33FF33;
+            margin-bottom: 1rem;
+        }
+        .model-desc {
+            font-size: 0.9rem;
+            color: #888;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        .model-features {
+            font-size: 0.8rem;
+            color: #555;
+            line-height: 1.6;
+        }
+        .model-features span { display: block; margin-bottom: 0.3rem; }
+        .model-features .yes { color: #33FF33; }
+        .model-features .no { color: #555; }
+        .code-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .code-item {
+            border: 1px solid #222;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .code-item:hover {
+            border-color: var(--cat-color);
+            background: rgba(255,255,255,0.02);
+        }
+        .code-info { flex: 1; min-width: 200px; }
+        .code-id {
+            font-size: 1.2rem;
+            color: var(--cat-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .code-msg {
+            font-size: 1rem;
+            color: #CCC;
+            margin-bottom: 0.3rem;
+        }
+        .code-stock {
+            font-size: 0.75rem;
+            color: #FFB000;
+            margin-top: 0.3rem;
+        }
+        .lang-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .lang-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #666;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lang-btn.active {
+            border-color: #33FF33;
+            color: #33FF33;
+        }
+        .btn {
+            background: transparent;
+            border: 1px solid var(--cat-color);
+            color: var(--cat-color);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn:hover {
+            background: var(--cat-color);
+            color: #0A0A0A;
+        }
+        .btn:disabled {
+            border-color: #333;
+            color: #333;
+            cursor: not-allowed;
+        }
+        .btn:disabled:hover {
+            background: transparent;
+            color: #333;
+        }
+        .decode-container { animation: fadeIn 0.5s ease; }
+        .decode-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .decode-category {
+            font-size: 0.8rem;
+            border: 1px solid;
+            padding: 0.2rem 0.5rem;
+        }
+        .decode-code {
+            color: #8C8C8C;
+            font-size: 0.8rem;
+        }
+        .decode-line {
+            width: 100%;
+            height: 2px;
+            margin-bottom: 2rem;
+        }
+        .decode-short {
+            font-size: 2rem;
+            line-height: 1.3;
+            margin-bottom: 2rem;
+            color: #F0F0F0;
+        }
+        .decode-long {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #AAA;
+            margin-bottom: 3rem;
+            border-left: 2px solid;
+            padding-left: 1rem;
+        }
+        .decode-divider {
+            width: 100%;
+            height: 1px;
+            background-color: #333;
+            margin: 2rem 0;
+        }
+        .decode-question { font-size: 1.1rem; color: #F0F0F0; margin-bottom: 1rem; }
+        .decode-sub { font-size: 0.9rem; color: #8C8C8C; margin-bottom: 1.5rem; }
+        .lang-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .lang-toggle button {
+            background: transparent;
+            border: 1px solid #444;
+            color: #666;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lang-toggle button.active {
+            border-color: #33FF33;
+            color: #33FF33;
+        }
+        .private-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        #privateCodeInput {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5rem;
+            padding: 0.2rem 0.5rem;
+            width: 200px;
+            outline: none;
+            letter-spacing: 0.3rem;
+        }
+        .message-textarea {
+            width: 100%;
+            background: #141414;
+            border: 1px solid #333;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .message-textarea:focus { outline: none; }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #8C8C8C;
+        }
+        .status-closed { font-size: 1.1rem; margin: 2rem 0; }
+        .status-closed-text { color: #AAA; font-size: 0.9rem; margin-bottom: 2rem; }
+        .footer-actions {
+            margin-top: 3rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .footer-link {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        .footer-link:hover { color: var(--cat-color); }
+        .auth-box {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+            border: 1px solid #333;
+        }
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #222;
+            padding-bottom: 1rem;
+        }
+        .auth-tab {
+            color: #666;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid transparent;
+        }
+        .auth-tab.active {
+            color: #33FF33;
+            border-bottom-color: #33FF33;
+        }
+        .auth-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            padding: 0.5rem;
+            margin-bottom: 1.5rem;
+            outline: none;
+        }
+        .auth-input:focus { border-bottom-color: #33FF33; }
+        .auth-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #33FF33;
+            color: #33FF33;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            padding: 0.8rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        .auth-btn:hover { background: #33FF33; color: #0A0A0A; }
+        .oauth-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .oauth-btn {
+            flex: 1;
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+            padding: 0.6rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .oauth-btn:hover { border-color: #33FF33; color: #33FF33; }
+        .phone-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .muro-pinned {
+            border: 1px solid var(--cat-color);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            background: rgba(255,255,255,0.02);
+        }
+        .muro-pinned-label {
+            font-size: 0.7rem;
+            color: var(--cat-color);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+        .muro-message {
+            border: 1px solid #222;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        .muro-message:hover { border-color: #333; }
+        .muro-author {
+            font-size: 0.8rem;
+            color: #33FF33;
+            margin-bottom: 0.5rem;
+        }
+        .muro-content {
+            font-size: 1rem;
+            color: #CCC;
+            line-height: 1.5;
+        }
+        .muro-date {
+            font-size: 0.7rem;
+            color: #555;
+            margin-top: 0.5rem;
+        }
+        .muro-form {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #222;
+        }
+        .muro-locked {
+            text-align: center;
+            padding: 3rem;
+            color: #555;
+            border: 1px solid #222;
+        }
+        .dash-shirt {
+            border: 1px solid #222;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .dash-shirt h4 {
+            color: var(--cat-color);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .status-select {
+            background: #111;
+            border: 1px solid #333;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+        .status-select:focus { border-color: #33FF33; }
+        .close-msg-select {
+            background: #111;
+            border: 1px solid #333;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 0.5rem;
+            width: 100%;
+            margin-bottom: 0.5rem;
+            outline: none;
+        }
+        .monthly-box {
+            border-left: 2px solid #FFB000;
+            padding-left: 1rem;
+            margin: 1rem 0;
+        }
+        .monthly-count {
+            font-size: 0.8rem;
+            color: #FFB000;
+            margin-bottom: 0.5rem;
+        }
+        .admin-msg {
+            border: 1px solid #222;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .admin-msg.pending { border-left: 3px solid #FFB000; }
+        .admin-msg.approved { border-left: 3px solid #33FF33; }
+        .admin-msg.rejected { border-left: 3px solid #FF3333; }
+        .claim-box {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        .claim-serial {
+            font-size: 2rem;
+            letter-spacing: 0.5rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        @media (max-width: 900px) {
+            .visual-gallery { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 700px) {
+            .choice-grid { grid-template-columns: 1fr; }
+            .terminal-actions { flex-direction: column; gap: 1rem; }
+            .terminal-link-alt { text-align: left; }
+            .model-grid { flex-direction: column; align-items: center; }
+            .model-card { max-width: 100%; width: 100%; }
+        }
+        @media (max-width: 600px) {
+            .terminal-text, .decode-short { font-size: 1.2rem; }
+            #codeInput, #privateCodeInput { width: 180px; font-size: 1.2rem; }
+            .code-item { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 500px) {
+            .visual-gallery { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-status" id="authStatus">
+        <a onclick="showAuth()">[ ACCEDER / REGISTRARSE ]</a>
+    </div>
+
+    <div id="landing" class="landing-wrap">
+        <div class="terminal-container">
+            <div class="terminal-line"></div>
+            <h1 class="terminal-title">DECODED.TXT</h1>
+            <p class="terminal-text">Da igual cómo hayas llegado. Si estás aquí, algo te trajo.</p>
+            <p class="terminal-question">¿Qué mensaje tenía la camiseta? O... ¿quieres descifrar el mensaje oculto?</p>
+            <div class="input-group">
+                <span class="prompt">></span>
+                <input type="text" id="codeInput" placeholder="S-017" autocomplete="off" autofocus>
+                <span class="cursor">_</span>
+            </div>
+            <p class="terminal-hint">Escribe el código público (ej: S-017, B-023, G-012)</p>
+            <div class="terminal-actions">
+                <a class="terminal-link" onclick="showIntermedia()">NO TENGO CÓDIGO → Ver opciones</a>
+                <a class="terminal-link-alt" onclick="showAbout()">¿Qué es DECODED.TXT? →</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="about" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            <div class="section-title">> PROTOCOLO DECODED.TXT</div>
+            <div class="section-sub">Una nueva forma de comunicar sin hablar.</div>
+            <div class="about-content">
+                <div class="about-block">
+                    <h3>> EL CONCEPTO</h3>
+                    <p>DECODED.TXT nace como una marca de ropa con una sola premisa: <strong>que la gente se comunique sin necesidad de romper el hielo.</strong></p>
+                    <p>Cada camiseta porta un mensaje en código. Quien la lleva está diciendo algo sin abrir la boca. Quien la lee, puede responder sin revelar su identidad. Es un puente silencioso entre desconocidos.</p>
+                    <p>Imagina ver siempre a la misma persona en el metro, en el parque, en la escalera. Le quieres decir algo, pero no sabes cómo empezar. Si lleva una DECODED.TXT, solo necesitas leer su código.</p>
+                </div>
+                <div class="about-block">
+                    <h3>> CÓMO FUNCIONA</h3>
+                    <p><span style="color:#33FF33">Código público (S-017):</span> visible en la camiseta. Entras a la web, lo tecleas, y descubres el mensaje completo.</p>
+                    <p><span style="color:#33FF33">Código privado (6 dígitos):</span> impreso en la espalda. Solo quien esté físicamente cerca puede verlo. Con él, puedes enviar un mensaje directo al portador. Anónimo o con contacto. Él decide si responder.</p>
+                    <p>El portador controla su canal: puede activarlo, pausarlo o cerrarlo cuando quiera.</p>
+                </div>
+                <div class="about-block">
+                    <h3>> BILINGÜE POR DISEÑO</h3>
+                    <p>Cada mensaje existe en español e inglés, pero <strong>no son traducciones literales.</strong> Son adaptaciones culturales. El humor británico no es el humor latino. La ironía española no funciona igual en California.</p>
+                    <p>Cuando compras, eliges idioma. Esa unidad será irrepetible en ese idioma. Si se agota el stock de S-017 en inglés, solo quedará en español (o viceversa).</p>
+                </div>
+                <div class="about-block">
+                    <h3>> PRODUCCIÓN LIMITADA <span class="limited-badge">5 UNIDADES</span></h3>
+                    <p>Cada mensaje se fabrica en <strong>5 camisetas exclusivas por idioma</strong>. Punto. No hay reimpresiones. No hay réplicas.</p>
+                    <p>Si compras una S-017 en inglés, serás uno de cinco humanos en el mundo con esa unidad exacta. Cuando se agoten, ese mensaje pasa a ser historia.</p>
+                </div>
+                <div class="about-block">
+                    <h3>> COMMUNITY BASE</h3>
+                    <p>Los siguientes mensajes no los elegimos nosotros. Los elige la comunidad.</p>
+                    <p>Cualquiera puede proponer un código. La comunidad vota. Los más votados entran a la siguiente tanda de 5 unidades. Cada tanda es única. Cada mensaje es irrepetible.</p>
+                </div>
+                <div class="about-cta" onclick="showStore()">
+                    <div class="about-cta-title">[ ENTRAR A LA TIENDA ]</div>
+                    <div class="about-cta-sub">5 unidades por idioma. Cuando se agoten, no vuelven.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="intermedia" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            <div class="section-title">> MODO DE ACCESO NO IDENTIFICADO</div>
+            <div class="section-sub">¿Cómo prefieres entrar?</div>
+            <div class="choice-grid">
+                <div class="choice-card" onclick="showVisualGallery()">
+                    <div class="choice-num">[1]</div>
+                    <div class="choice-title">VI UNA CAMISETA EN LA CALLE</div>
+                    <div class="choice-desc">No recuerdo el código, pero sí el mensaje o el diseño. Quiero identificarla visualmente.</div>
+                </div>
+                <div class="choice-card" onclick="showStore()">
+                    <div class="choice-num">[2]</div>
+                    <div class="choice-title">QUIERO EXPLORAR</div>
+                    <div class="choice-desc">Ver modelos, colecciones, y comprar mi propia camiseta DECODED.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="visualGallery" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showIntermedia()">< [ VOLVER ]</a>
+            </div>
+            <div class="section-title">IDENTIFICA LA CAMISETA</div>
+            <div class="section-sub">Si reconoces el diseño, haz clic para decodificar. Pasa el ratón para ver la parte trasera.</div>
+            <div class="gallery-hint">
+                > Si no viste el código de 6 dígitos en la espalda, no hay problema. Cuando lo veas, vuelve aquí e introdúcelo para enviar un mensaje directo al portador.
+            </div>
+            <div class="color-legend" id="legendVisual"></div>
+            <div class="visual-gallery" id="visualGrid"></div>
+        </div>
+    </div>
+
+    <div id="store" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showIntermedia()">< [ VOLVER ]</a>
+            </div>
+            <div class="section-title">TIENDA</div>
+            <div class="section-sub">Elige modelo, código e idioma. Edición limitada: 5 unidades por mensaje y por idioma.</div>
+            <div class="store-intro">
+                <h3>> SISTEMA DE EDICIÓN LIMITADA POR IDIOMA</h3>
+                <p>Cada mensaje se imprime en máximo 5 unidades por idioma. Es decir: 5 camisetas en español + 5 camisetas en inglés del mismo código. Nunca más.</p>
+                <p>El idioma no es una traducción al pie de la letra. Es una adaptación cultural. El mismo mensaje, contado de forma que funcione en Madrid y en Londres. En Barcelona y en Berlín.</p>
+                <p>Si un código se agota en inglés, seguirá disponible en español hasta que también se agote. No hay reimpresiones. No hay segundas partes.</p>
+                <p style="color:#33FF33;margin-top:1rem;">> Selecciona un modelo para ver los códigos disponibles y sus unidades restantes.</p>
+            </div>
+            <div class="model-grid">
+                <div class="model-card" onclick="showModelCodes('broadcast')">
+                    <div class="model-name">BROADCAST</div>
+                    <div class="model-price">35€ + 8€</div>
+                    <div class="model-desc">Para quien quiere que escaneen rápido. QR grande en la espalda. Entrada directa desde el móvil.</div>
+                    <div class="model-features">
+                        <span class="yes">✓ Mensaje frente</span>
+                        <span class="yes">✓ QR espalda (escaneo directo)</span>
+                        <span class="yes">✓ Código privado 6 dígitos</span>
+                        <span class="no">✗ Sin código público visible atrás</span>
+                    </div>
+                </div>
+                <div class="model-card" onclick="showModelCodes('stealth')">
+                    <div class="model-name">STEALTH</div>
+                    <div class="model-price">35€</div>
+                    <div class="model-desc">Para quien quiere que lean. Sin QR. Solo códigos impresos. Más misterio, más ritual.</div>
+                    <div class="model-features">
+                        <span class="yes">✓ Mensaje frente</span>
+                        <span class="yes">✓ Código público S-XXX espalda</span>
+                        <span class="yes">✓ Código privado 6 dígitos</span>
+                        <span class="no">✗ Sin QR</span>
+                    </div>
+                </div>
+                <div class="model-card" onclick="showModelCodes('full')">
+                    <div class="model-name">FULL DECODED</div>
+                    <div class="model-price">35€ + 12€</div>
+                    <div class="model-desc">Todo visible. Todo activo. Máxima información para quien no quiere perder ni una conexión.</div>
+                    <div class="model-features">
+                        <span class="yes">✓ Mensaje frente</span>
+                        <span class="yes">✓ QR espalda</span>
+                        <span class="yes">✓ Código público S-XXX</span>
+                        <span class="yes">✓ Código privado 6 dígitos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modelCodes" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showStore()">< [ TIENDA ]</a>
+            </div>
+            <div id="modelHeader"></div>
+            <div class="code-list" id="modelCodeList"></div>
+        </div>
+    </div>
+
+    <div id="decodePage" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" id="decodeBack" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            <div class="decode-container" id="decodeContent"></div>
+        </div>
+    </div>
+
+    <div id="muroforo" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            <div id="muroContent"></div>
+        </div>
+    </div>
+
+    <div id="authSection" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            <div class="auth-box">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" onclick="switchAuth('login')" id="tabLogin">ACCEDER</div>
+                    <div class="auth-tab" onclick="switchAuth('register')" id="tabRegister">REGISTRARSE</div>
+                </div>
+                <div id="authLogin">
+                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email">
+                    <input type="password" id="loginPass" class="auth-input" placeholder="Contraseña">
+                    <button class="auth-btn" onclick="doLogin()">[ ENTRAR ]</button>
+                    <div class="oauth-row">
+                        <button class="oauth-btn" onclick="doOAuth('google')">GOOGLE</button>
+                        <button class="oauth-btn" onclick="doOAuth('github')">GITHUB</button>
+                    </div>
+                    <div style="margin-top:1.5rem; border-top:1px solid #222; padding-top:1rem;">
+                        <div style="font-size:0.8rem; color:#666; margin-bottom:0.5rem;">O con teléfono (OTP):</div>
+                        <div class="phone-row">
+                            <input type="tel" id="phoneNum" class="auth-input" placeholder="+34600000000" style="flex:1;margin-bottom:0;">
+                            <button class="btn" style="--cat-color:#33FF33" onclick="sendOTP()">ENVIAR CÓDIGO</button>
+                        </div>
+                        <input type="text" id="phoneCode" class="auth-input" placeholder="Código OTP">
+                        <button class="auth-btn" onclick="verifyOTP()">VERIFICAR</button>
+                    </div>
+                </div>
+                <div id="authRegister" class="hidden">
+                    <input type="text" id="regUser" class="auth-input" placeholder="Nombre de usuario (opcional)">
+                    <input type="email" id="regEmail" class="auth-input" placeholder="Email">
+                    <input type="password" id="regPass" class="auth-input" placeholder="Contraseña">
+                    <button class="auth-btn" onclick="doRegister()">[ CREAR CUENTA ]</button>
+                    <p style="color:#555; font-size:0.8rem; margin-top:1rem;">No se te pedirá género, sexo, edad ni ningún dato demográfico. Somos inclusivos por diseño.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <div style="display:flex;gap:1rem;">
+                    <a class="back-link" onclick="showAdmin()" id="adminLink" style="display:none">[ ADMIN ]</a>
+                    <a class="back-link" onclick="showLanding()">< [ SALIR ]</a>
+                </div>
+            </div>
+            <div class="section-title">> ÁREA PRIVADA</div>
+            <div class="section-sub">Gestiona tus camisetas, mensajes y canales.</div>
+            <div id="dashContent"></div>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showDashboard()">< [ DASHBOARD ]</a>
+            </div>
+            <div class="section-title">> PANEL DE CONTROL</div>
+            <div class="section-sub">Moderación de muroforos y gestión de mensajes.</div>
+            <div id="adminContent"></div>
+        </div>
+    </div>
+
+    <div id="claimShirt" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODED.<span>TXT</span></div>
+                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+            </div>
+            <div class="claim-box">
+                <div class="section-title">> VINCULAR CAMISETA</div>
+                <div class="section-sub">Escaneaste un QR por primera vez. Introduce el número de serie de la etiqueta para verificar autenticidad.</div>
+                <input type="text" id="claimSerial" class="auth-input claim-serial" placeholder="XXXX-XXXX" maxlength="20">
+                <button class="auth-btn" onclick="doClaim()">[ VINCULAR A MI CUENTA ]</button>
+                <p style="color:#555; font-size:0.8rem; margin-top:1rem;">Debes haber iniciado sesión primero. Si no tienes cuenta, <a onclick="showAuth()" style="color:#33FF33;cursor:pointer;">regístrate aquí</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-label">DECODED.TXT</div>
+
+<script>
+// ==========================================
+// CONFIGURACIÓN SUPABASE
+// ==========================================
+const SUPABASE_URL = 'https://kcjoukztlrmvqiyyszir.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtjam91a3p0bHJtdnFpeXlzemlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3OTM3ODIsImV4cCI6MjA5MjM2OTc4Mn0.Ob-QUbeXwGdlYzU7dqVy252M2XzCvqorjd6Qv9Mv0uI';
+
+let supabase = null;
+try {
+    if (window.supabase && window.supabase.createClient) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    }
+} catch (e) {
+    console.warn('Supabase no disponible:', e);
+}
+
+// ==========================================
+// DATABASE ESTÁTICA
+// ==========================================
+const DB = {
+    'S-017': { cat:'SINGLE / DATING', color:'#33FF33', short_es:'ESTOY SINGLE. SÍ, DE VERDAD.', long_es:'Disponibilidad no es desesperación. Estoy solo porque elijo estarlo, no porque nadie me quiera. Si entras, entra con intención. No con curiosidad. No con pena. Con ganas de construir algo que no necesite etiquetas para existir.', short_en:'SINGLE. YES, ACTUALLY.', long_en:'Availability is not desperation. I am alone by choice, not because nobody wants me. If you come in, come with intention. Not with curiosity. Not with pity. With a desire to build something that does not need labels to exist.', stock:{es:3, en:2} },
+    'S-002': { cat:'SINGLE / DATING', color:'#33FF33', short_es:'PÍDEME EL NÚMERO. NO MUERDO.', long_es:'La directitud es un filtro. Si te asusta que alguien sepa lo que quiere, probablemente no estás listo para lo que ofrezco. El número es el principio. El resto se negocia cara a cara.', short_en:'ASK FOR MY NUMBER. I DON\'T BITE.', long_en:'Directness is a filter. If it scares you that someone knows what they want, you are probably not ready for what I offer. The number is the beginning. The rest is negotiated face to face.', stock:{es:5, en:5} },
+    'S-003': { cat:'SINGLE / DATING', color:'#33FF33', short_es:'NO VENGO CON NADIE. TÚ TAMPOCO.', long_es:'Miradas que se cruzan, silencios que se entienden. No estoy buscando compañía para llenar un vacío. Estoy buscando alguien que también camine solo y quiera compartir el trayecto.', short_en:'HERE ALONE. YOU TOO, I HOPE.', long_en:'Glances that cross, silences that are understood. I am not looking for company to fill a void. I am looking for someone who also walks alone and wants to share the journey.', stock:{es:1, en:4} },
+    'S-004': { cat:'SINGLE / DATING', color:'#33FF33', short_es:'DISPONIBLE. HASTA QUE ALGUIEN ME AGUANTE.', long_es:'Ironía como armadura. Si no captas el humor, no captarás nada más. Disponible significa selectivo. Y selectivo significa que tengo estándares, no prisa.', short_en:'AVAILABLE. UNTIL SOMEONE CAN HANDLE ME.', long_en:'Irony as armor. If you do not get the humor, you will not get anything else. Available means selective. And selective means I have standards, not urgency.', stock:{es:4, en:2} },
+    'S-005': { cat:'SINGLE / DATING', color:'#33FF33', short_es:'ME DEJARON HACE POCO. SE ACEPTAN ABRAZOS.', long_es:'Vulnerable de forma estratégica. No busco un rebound. Busco reconstrucción. Si tu plan es aprovechar el hueco, cierra la pestaña. Si tu plan es construir, quédate.', short_en:'RECENTLY SINGLE. HUGS ACCEPTED.', long_en:'Strategically vulnerable. I am not looking for a rebound. I seek reconstruction. If your plan is to take advantage of the gap, close the tab. If your plan is to build, stay.', stock:{es:2, en:3} },
+    'B-007': { cat:'BARRIO / LOCAL', color:'#FFB000', short_es:'TURISTA DE PASO, OK. TURISTA QUE SE QUEDA, A LA CALLE.', long_es:'Airbnb mató mi barrio. Tu escapada de fin de semana cuesta la codicia de mi casero. Haz la foto, no dejes rastro. O mejor: vete.', short_en:'TOURIST PASSING BY, OK. TOURIST STAYING, GO HOME.', long_en:'Airbnb killed my neighborhood. Your weekend trip costs my landlord\'s greed. Take the photo, leave no trace. Or better: leave.', stock:{es:5, en:5} },
+    'B-023': { cat:'BARRIO / LOCAL', color:'#FFB000', short_es:'MI ALQUILER SUBIÓ UN 40%. MI SUELDO, NO.', long_es:'La especulación no es vivienda. Cada piso vacío en manos de un fondo es una familia durmiendo en el coche. Esta camiseta cuesta menos que tu café diario. El mensaje cuesta más que tu portfolio.', short_en:'MY RENT WENT UP 40%. MY WAGES DIDN\'T.', long_en:'Speculation is not housing. Every empty flat owned by a fund is a family sleeping in a car. This shirt costs less than your daily coffee. The message costs more than your portfolio.', stock:{es:3, en:3} },
+    'B-041': { cat:'BARRIO / LOCAL', color:'#FFB000', short_es:'METRO CON RETRASO. COMO MI FUTURO.', long_es:'Transporte público gestionado por beneficio privado. Ascensores rotos, aire acondicionado roto, dignidad rota. Nos quieren cansados, tardíos, dóciles. Que les den.', short_en:'METRO DELAYED AGAIN. LIKE MY FUTURE.', long_en:'Public transport run by private profit. Broken elevators, broken AC, broken dignity. They want us tired, late, compliant. Fuck that.', stock:{es:4, en:2} },
+    'B-058': { cat:'BARRIO / LOCAL', color:'#FFB000', short_es:'EL COLE SIN CALEFACCIÓN. PERO BANDERAS, DE SOBRA.', long_es:'Recortes en educación otra vez. Aumento en símbolos patrios, otra vez. Enseñan obediencia, no pensamiento crítico. Lleva esto cerca de un consejo escolar.', short_en:'THIS SCHOOL HAS NO HEAT. BUT PLENTY OF FLAGS.', long_en:'Education budget cut again. Patriotic symbols budget increased again. They teach obedience, not critical thought. Wear this near a school board.', stock:{es:2, en:1} },
+    'B-076': { cat:'BARRIO / LOCAL', color:'#FFB000', short_es:'TU SEGUNDA RESIDENCIA ES MI DESAHUCIO.', long_es:'Residentes temporadales, inviernos vacíos, precios duplicados. El "barrio con encanto" que descubriste era una comunidad antes de que tú lo Airbnb-izaras. A casa. O quédate y lucha con nosotros.', short_en:'YOUR SECOND HOME IS MY EVICTION NOTICE.', long_en:'Seasonal residents, empty winters, doubled prices. The "charming neighborhood" you discovered was a community before you Airbnb\'d it. Go home. Or stay and fight with us.', stock:{es:1, en:2} },
+    'G-012': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short_es:'EL PLANETA NO SE ESTÁ MURIENDO. LO ESTÁN MATANDO.', long_es:'Por corporaciones de las que compras. Por políticos a los que votaste. Por la comodidad que elegiste sobre las consecuencias. Esta camiseta es poliéster. Yo también soy cómplice. La diferencia: yo lo sé, y grito.', short_en:'THE PLANET IS NOT DYING. IT\'S BEING KILLED.', long_en:'By corporations you buy from. By politicians you voted for. By convenience you chose over consequence. This shirt is polyester. I am complicit too. The difference is: I know it, and I am screaming.', stock:{es:5, en:5} },
+    'G-029': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short_es:'FREE PALESTINE NO ES UN ESLOGAN. ES UNA EXIGENCIA.', long_es:'75 años de ocupación. 75 años de retórica de "situación compleja". No hay nada complejo en la limpieza étnica. No hay nada matizado en el apartheid. Deja de pedir "ambas partes". Hay un lado correcto.', short_en:'FREE PALESTINE IS NOT A SLOGAN. IT\'S A DEMAND.', long_en:'75 years of occupation. 75 years of "complex situation" rhetoric. There is nothing complex about ethnic cleansing. There is nothing nuanced about apartheid. Stop asking both sides. There is a right side.', stock:{es:3, en:3} },
+    'G-037': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short_es:'TU SILENCIO ES UNA DECISIÓN POLÍTICA.', long_es:'No es neutral. No es apolítico. No es "evitar drama". Cada vez que miras para otro lado, pasa una ley. Cierra una frontera. Congela un salario. Quema un planeta. Tu silencio es el sonido favorito del sistema.', short_en:'YOUR SILENCE IS A POLICY CHOICE.', long_en:'Not neutral. Not apolitical. Not "avoiding drama." Every time you look away, a policy passes. A border closes. A wage freezes. A planet burns. Your silence is the system\'s favorite sound.', stock:{es:4, en:2} },
+    'G-051': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short_es:'DIJERON QUE LA TECNOLOGÍA NOS LIBERARÍA. NOS DIO VIGILANCIA.', long_es:'Cada app es una soplona. Cada like es un dato. Cada servicio "gratuito" vende tu atención al mejor postor. La revolución no se streameará. Se vestirá, se susurrará, se encriptará.', short_en:'THEY SAID TECH WOULD FREE US. WE GOT SURVEILLANCE.', long_en:'Every app is a snitch. Every like is a data point. Every "free" service sells your attention to the highest bidder. The revolution will not be streamed. It will be worn, whispered, encrypted.', stock:{es:2, en:1} },
+    'G-068': { cat:'GLOBAL / ACTIVISMO', color:'#00FFFF', short_es:'LAS FRONTERAS SE DIBUJAN EN SANGRE. TÚ LAS CRUZAS DE VACACIONES.', long_es:'El privilegio del pasaporte es violencia hecha papeleo. Mientras tú "te encuentras a ti mismo" en Bali, otros se ahogan en el Mediterráneo. Turismo y migración: mismo movimiento, diferente bienvenida. Pregúntate por qué.', short_en:'BORDERS ARE DRAWN IN BLOOD. YOU CROSS THEM FOR FUN.', long_en:'Passport privilege is violence made paperwork. While you "find yourself" in Bali, others drown in the Mediterranean. Tourism and migration: same movement, different welcome. Ask why.', stock:{es:1, en:2} },
+    'X-013': { cat:'XPLICIT / ADULTO', color:'#FF3333', short_es:'ME ACUESTO EN LA PRIMERA CITA. ¿PROBLEMA?', long_es:'El consentimiento es mi única regla. El slut-shaming es el tuyo. No soy "fácil" — soy decisiva. Sé lo que quiero, cuándo lo quiero, y lo pido claro. El problema es tu proyección, no mi placer.', short_en:'I FUCK ON THE FIRST DATE. PROBLEM?', long_en:'Consent is my only rule. Slut-shaming is yours. I am not "easy" — I am decisive. I know what I want, when I want it, and I ask for it clearly. The problem is your projection, not my pleasure.', stock:{es:5, en:5} },
+    'X-027': { cat:'XPLICIT / ADULTO', color:'#FF3333', short_es:'PÉGAME O LÁRGATE.', long_es:'Los roles de género son una jaula. Yo domino, yo someto, yo alterno, yo decido. Tu masculinidad frágil no es mi emergencia sexual. Pregunta. Escucha. Adáptate. O mira cómo encuentro a alguien que sí.', short_en:'PEG ME OR LEAVE ME.', long_en:'Gender roles are a cage. I top, I bottom, I switch, I decide. Your fragile masculinity is not my sexual emergency. Ask. Listen. Adapt. Or watch me find someone who will.', stock:{es:3, en:3} },
+    'X-044': { cat:'XPLICIT / ADULTO', color:'#FF3333', short_es:'MI ÚNICO KINK ES LA COMUNICACIÓN.', long_es:'La palabra segura es "política". El aftercare es obligatorio. No hago "sorpréndeme" — hago "dime exactamente". Lo más sexy que puedes decir es "¿qué necesitas?". Lo segundo: "te escuché".', short_en:'MY ONLY KINK IS COMMUNICATION.', long_en:'Safe word is "politics." Aftercare is mandatory. I do not do "surprise me" — I do "tell me exactly." The hottest thing you can say is "What do you need?" The second hottest: "I heard you."', stock:{es:4, en:2} },
+    'X-061': { cat:'XPLICIT / ADULTO', color:'#FF3333', short_es:'LA POLIAMORIA NO ES ENGAÑAR CON PASOS EXTRA.', long_es:'Tres parejas. Cero mentiras. Calendarios infinitos. ¿Celos? Hablamos de ello. ¿Inseguridad? La nombramos. La monogamia es válida. Esto también. La única forma incorrecta es la que hiere en silencio.', short_en:'POLYAMORY IS NOT CHEATING WITH EXTRA STEPS.', long_en:'Three partners. Zero lies. Infinite calendars. Jealousy? We talk about it. Insecurity? We name it. Monogamy is valid. So is this. The only wrong way is the one that hurts someone silently.', stock:{es:2, en:1} },
+    'X-089': { cat:'XPLICIT / ADULTO', color:'#FF3333', short_es:'TRAGO. PERO PRIMERO CONSENTIMIENTO Y CONVERSACIÓN.', long_es:'El sexo oral no es un favor. No es una transacción. No es "lo que se espera". Hago lo que quiero porque quiero, no porque tú te lo hayas ganado. Pregunta primero. Siempre. La respuesta puede ser sí. La pregunta es el punto.', short_en:'I SWALLOW. CONSENT AND CONVERSATION FIRST.', long_en:'Oral sex is not a favor. It is not a transaction. It is not "expected." I do what I want because I want it, not because you earned it. Ask first. Every time. The answer might be yes. The asking is the point.', stock:{es:1, en:2} },
+    'M-019': { cat:'MOOD / ESTADO', color:'#9D00FF', short_es:'NO MOLESTAR. A MENOS QUE TENGAS PERROS.', long_es:'O chuches. O una solución al problema que no te pedí que resolvieras. No estoy "de mal humor" — estoy en proceso. Respeta el límite. La puerta se abre cuando yo esté lista, no cuando tú estés incómodo.', short_en:'DO NOT DISTURB. UNLESS YOU HAVE DOGS.', long_en:'Or snacks. Or a solution to the problem I did not ask you to solve. I am not "in a mood" — I am in a process. Respect the boundary. The door opens when I am ready, not when you are uncomfortable.', stock:{es:5, en:5} },
+    'M-033': { cat:'MOOD / ESTADO', color:'#9D00FF', short_es:'BATERÍA SOCIAL: 3%. CARGADOR NO ENCONTRADO.', long_es:'Introvertido no es tímido. Es agotado. Cada interacción cuesta. Cada sonrisa es una transacción. No soy borde — soy contable. Hoy el balance es negativo. Vuelve a preguntar mañana.', short_en:'SOCIALLY BATTERY: 3%. CHARGER NOT FOUND.', long_en:'Introvert is not shy. It is depleted. Every interaction costs. Every smile is a transaction. I am not rude — I am accounting. Today the balance is negative. Check again tomorrow.', stock:{es:3, en:3} },
+    'M-047': { cat:'MOOD / ESTADO', color:'#9D00FF', short_es:'PREGÚNTAME LO QUE SEA. IGUAL RESPONDO.', long_es:'Libro abierto, páginas selectivas. La curiosidad es bienvenida. La entitleidad, no. "¿Por qué eres así?" no es una pregunta. "¿Qué pasó?" puede serlo. El contexto importa. Mi derecho al silencio también.', short_en:'ASK ME ANYTHING. I MIGHT ANSWER.', long_en:'Open book, selective pages. Curiosity is welcome. Entitlement is not. "Why are you like this?" is not a question. "What happened?" might be. Context matters. So does my right to silence.', stock:{es:4, en:2} },
+    'M-054': { cat:'MOOD / ESTADO', color:'#9D00FF', short_es:'PROCESANDO. POR FAVOR NO INTERRUMPIR.', long_es:'Modo neurodivergente activado. Entorno estimulante. Input sensorial al máximo. No estoy "en la luna" — estoy compilando. La salida llegará. La interrupción resetea el temporizador. Espera. O vete.', short_en:'PROCESSING. PLEASE DO NOT INTERRUPT.', long_en:'Neurodivergent mode engaged. Stimulating environment. Sensory input maximum. I am not "zoning out" — I am compiling. The output will come. The interruption resets the timer. Wait. Or leave.', stock:{es:2, en:1} },
+    'M-071': { cat:'MOOD / ESTADO', color:'#9D00FF', short_es:'HOY SOY 90% SARCASMO. ACÉRCATE EN CONSECUENCIA.', long_es:'No estoy "de mal humor". Estoy de humor preciso. La ironía es mi lengua de amor. El deadpan es mi default. Si necesitas seriedad, pídela explícitamente. Puedo cambiar. Pero no adivinaré. La claridad es amabilidad.', short_en:'TODAY I AM 90% SARCASM. APPROACH ACCORDINGLY.', long_en:'Not "in a bad mood." In a precise mood. Irony is my love language. Deadpan is my default. If you need earnest, ask explicitly. I can switch. But I will not guess. Clarity is kindness.', stock:{es:1, en:2} },
+    'F-015': { cat:'FRIKI / GEEK', color:'#FFFFFF', short_es:'1V1. EL QUE PIERDE INVITA AL CAFÉ.', long_es:'LoL / Valorant / Fighting games. El Elo es un número. El orgullo es para siempre. No flameo — outplayeo. Si no aguantas la L, no hagas queue. Mi main no es mi personalidad. Aunque un poco sí.', short_en:'1V1 ME. LOSER BUYS COFFEE.', long_en:'LoL / Valorant / Fighting games. Elo is a number. Pride is forever. I do not flame — I outplay. If you cannot handle the L, do not queue up. My main is not my personality. Except it kind of is.', stock:{es:5, en:5} },
+    'F-032': { cat:'FRIKI / GEEK', color:'#FFFFFF', short_es:'MI PUNTERÍA ES MEJOR QUE TUS EXCUSAS.', long_es:'FPS (Valorant, CS2, Apex). 2000 horas. 1000 muertes. 1 headshot que importa. "Suerte" es preparación más timing. Yo siempre estoy preparado. Tú siempre tienes lag. ¿Casualidad?', short_en:'MY AIM IS BETTER THAN YOUR EXCUSES.', long_en:'FPS (Valorant, CS2, Apex). 2000 hours. 1000 deaths. 1 headshot that matters. "Luck" is preparation plus timing. I am always prepared. You are always lagging. Coincidence?', stock:{es:3, en:3} },
+    'F-048': { cat:'FRIKI / GEEK', color:'#FFFFFF', short_es:'TANK DIFF. TE ESTOY MIRANDO A TI.', long_es:'MMO / LoL. Yo protejo a carries que no kitean. Yo inicio para equipos que no siguen. Yo muero para que tú puedas feedear. ¿Y me culpas a mí? Revisa las tablas de daño. Luego revísate tú.', short_en:'TANK DIFF. LOOKING AT YOU.', long_en:'MMO / LoL. I peel for carries who do not kite. I engage for teams that do not follow. I die so you can run it down mid. And you blame me? Check the damage charts. Then check yourself.', stock:{es:4, en:2} },
+    'F-065': { cat:'FRIKI / GEEK', color:'#FFFFFF', short_es:'SPEEDRUNNEANDO LA VIDA. ANY% SIN GLITCHES.', long_es:'Comunidad speedrun. Ritmo WR hasta que el RNG de la vida real golpee. Los frames importan. La consistencia importa. La run nunca termina. Resetea, adapta, optimiza. Mi PB es mañana.', short_en:'SPEEDRUNNING LIFE. ANY% GLITCHLESS.', long_en:'Speedrunning community. WR pace until real life RNG hits. Frames matter. Consistency matters. The run is never over. Reset, adapt, optimize. My PB is tomorrow.', stock:{es:2, en:1} },
+    'F-082': { cat:'FRIKI / GEEK', color:'#FFFFFF', short_es:'MI MAZO ES META. MI ALMA, NO.', long_es:'TCG (MTG, Yu-Gi-Oh!, Hearthstone). Netdecker para aprender. Homebrew para vivir. Conozco la tier list. La ignoro. La victoria es más dulce cuando no la vieron venir. "Jank" es solo innovación que aún no han copiado.', short_en:'MY DECK IS META. MY SOUL IS NOT.', long_en:'TCG (MTG, Yu-Gi-Oh!, Hearthstone). Netdeck to learn. Homebrew to live. I know the tier list. I ignore it. Victory is sweeter when they did not see it coming. "Jank" is just innovation they have not copied yet.', stock:{es:1, en:2} },
+    'H-011': { cat:'HUMOR / SARCASMO', color:'#FF8800', short_es:'TENGO HUMOR NEGRO. Y UN SENTIDO DEL IRONÍA MUY CLARO.', long_es:'Me río del capitalismo mientras compro café. Me burlo de los tech bros con mi iPhone. ¿Hipocresía? No. Complejidad. El sistema es ineludible. La risa no es rendición — es sabotaje con mejor timing.', short_en:'I HAVE A DARK SENSE OF HUMOR. AND A BRIGHT SENSE OF IRONY.', long_en:'I joke about capitalism while buying coffee. I mock tech bros on my iPhone. Hypocrisy? No. Complexity. The system is inescapable. Laughter is not surrender — it is sabotage with better timing.', stock:{es:5, en:5} },
+    'H-028': { cat:'HUMOR / SARCASMO', color:'#FF8800', short_es:'MI ANIMAL DE PODER ES UN ERROR 404.', long_es:'No encontrado. No perdido. Intencionalmente ausente. Tu búsqueda no coincide con mi realidad. Prueba otras palabras clave. O acepta que algunas páginas no están hechas para ser indexadas.', short_en:'MY SPIRIT ANIMAL IS A ERROR 404.', long_en:'Not found. Not lost. Intentionally absent. Your search query does not match my reality. Try different keywords. Or accept that some pages are not meant to be indexed.', stock:{es:3, en:3} },
+    'H-039': { cat:'HUMOR / SARCASMO', color:'#FF8800', short_es:'NO SOY VAGO. SOY EFICIENTE ENERGÉTICAMENTE.', long_es:'Primera ley de Newton, aplicada a la personalidad. Un objeto en reposo permanece en reposo a menos que actúe sobre él una motivación genuina. Tu urgencia no es mi fuerza. Mi coeficiente de fricción es alto. Respeta la física.', short_en:'I\'M NOT LAZY. I\'M ENERGY EFFICIENT.', long_en:'Newton\'s first law, applied to personality. An object at rest stays at rest unless acted upon by genuine motivation. Your urgency is not my force. My friction coefficient is high. Respect the physics.', stock:{es:4, en:2} },
+    'H-052': { cat:'HUMOR / SARCASMO', color:'#FF8800', short_es:'EL SARCASMO ES MI LENGUAJE DE AMOR. SE REQUIERE FLUIDEZ.', long_es:'La interpretación literal es descalificatoria. "Qué gracioso" no es risa. No doy servicios de traducción. Si necesitas etiqueta /s, no somos compatibles. Busca a alguien que hable básico.', short_en:'SARCASM IS MY LOVE LANGUAGE. FLUENCY REQUIRED.', long_en:'Literal interpretation is a disqualifier. "That is so funny" is not laughter. I do not do translation services. If you need a /s tag, we are not compatible. Find someone who speaks basic.', stock:{es:2, en:1} },
+    'H-067': { cat:'HUMOR / SARCASMO', color:'#FF8800', short_es:'PROFESIONALMENTE IMPRESIONABLE. PERSONALMENTE, DIVERTIDO.', long_es:'Tu pitch deck no es revolucionario. Tu playlist no es underground. Tu trauma no es único. Y aun así — me caes bien. El cariño se gana, no se impresiona. Sigue intentándolo. Es tierno.', short_en:'PROFESSIONALLY UNIMPRESSED. PERSONALLY AMUSED.', long_en:'Your pitch deck is not revolutionary. Your playlist is not obscure. Your trauma is not unique. And yet — I like you anyway. The liking is earned, not the impressing. Keep trying. It is cute.', stock:{es:1, en:2} },
+    'P-014': { cat:'PROFESIONAL', color:'#0066CC', short_es:'CONSTRUYO COSAS. CONTRÁTAME O QUÍTATE DE EN MEDIO.', long_es:'No estoy "buscando oportunidades". Las creo. Mi GitHub es mi CV. Mis side projects son mis referencias. No hago networking — colaboro. Si no puedes aportar, eres tráfico.', short_en:'I BUILD THINGS. HIRE ME OR GET OUT OF MY WAY.', long_en:'Not "looking for opportunities." Creating them. My GitHub is my CV. My side projects are my references. I do not network — I collaborate. If you cannot contribute, you are traffic.', stock:{es:5, en:5} },
+    'C-016': { cat:'CREATIVO / ARTE', color:'#FF00FF', short_es:'HAGO RUIDO. ALGO DE ESO ES MÚSICA.', long_es:'Guitarra, sinte, found sound, feedback. El género es una estantería de tienda. No encajo. No lo intento. La grabación de las 3AM es la honesta. La pista pulida es el compromiso. Ven al show. Escucha la diferencia.', short_en:'I MAKE NOISE. SOME OF IT IS MUSIC.', long_en:'Guitar, synth, found sound, feedback. Genre is a store shelf. I do not fit. I do not try. The 3AM recording is the honest one. The polished track is the compromise. Come to the show. Hear the difference.', stock:{es:5, en:5} },
+    'C-031': { cat:'CREATIVO / ARTE', color:'#FF00FF', short_es:'MI ESTUDIO ES UN ARMARIO. MI AMBICIÓN, NO.', long_es:'Sin presupuesto. Sin espacio. Sin excusas. Pinto en cartón. Disparo con el móvil. Edito en software pirata. La obra existe a pesar del sistema, no gracias a él. Apoya el hustle. O financia la mejora.', short_en:'MY STUDIO IS A CLOSET. MY AMBITION IS NOT.', long_en:'No budget. No space. No excuse. I paint on cardboard. I shoot on phone. I edit on pirated software. The work exists despite the system, not because of it. Support the hustle. Or fund the upgrade.', stock:{es:3, en:3} },
+    'C-049': { cat:'CREATIVO / ARTE', color:'#FF00FF', short_es:'ESCRITOR. CAMBIO PALABRAS POR ALQUILER.', long_es:'Novelista, copywriter, poeta, ghost. Todo lo anterior. Ninguno paga lo suficiente. Cada frase es una transacción. Cada silencio es un rechazo. Escribo lo que necesitas. Necesito lo que tienes. ¿Trueque?', short_en:'WRITER. WILL TRADE WORDS FOR RENT.', long_en:'Novelist, copywriter, poet, ghost. All of the above. None paid enough. Every sentence is a transaction. Every silence is a rejection. I write what you need. I need what you have. Barter?', stock:{es:4, en:2} },
+    'C-062': { cat:'CREATIVO / ARTE', color:'#FF00FF', short_es:'FOTÓGRAFO. DISPARO EN RAW. Y REAL.', long_es:'Sin filtros. Sin staging. Sin "contenido". Documento lo que existe antes de que desaparezca. Tu Instagram es mi opuesto. Mi cuarto oscuro es mi iglesia. La copia es la verdad. La pantalla es la mentira.', short_en:'PHOTOGRAPHER. I SHOOT RAW. AND REAL.', long_en:'No filters. No staging. No "content." I document what exists before it disappears. Your Instagram is my opposite. My darkroom is my church. The print is the truth. The screen is the lie.', stock:{es:2, en:1} },
+    'C-077': { cat:'CREATIVO / ARTE', color:'#FF00FF', short_es:'INAUGURACIÓN DE EXPOSICIÓN. PREGUNTA LA DIRECCIÓN.', long_es:'No en una galería. En un almacén. En un squat. En una habitación prestada. El arte está donde lo pongas. La institución no es validación. La audiencia sí. Aparece. O no. La obra permanece.', short_en:'EXHIBITION OPENING. ASK FOR THE ADDRESS.', long_en:'Not in a gallery. In a warehouse. In a squat. In a borrowed room. Art is where you put it. The institution is not validation. The audience is. Show up. Or do not. The work remains.', stock:{es:1, en:2} },
+    'T-009': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short_es:'DE PASO. RECOMIÉNDAME ALGO REAL.', long_es:'No el top 10 de TripAdvisor. No la "joya oculta" con 5000 reseñas. El bar donde bebía tu abuelo. La comida callejera que te hizo daño. La vista que no tiene hashtag. Viajo por textura, no por contenido.', short_en:'PASSING THROUGH. RECOMMEND SOMETHING REAL.', long_en:'Not the TripAdvisor top 10. Not the "hidden gem" with 5000 reviews. The bar your grandfather drank at. The street food that made you sick. The view that has no hashtag. I travel for texture, not content.', stock:{es:5, en:5} },
+    'T-024': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short_es:'NÓMADA DIGITAL. EL WIFI ES MI VISA.', long_es:'Pasaporte: fuerte. Fronteras: arbitrarias. Oficina: donde haya enchufes. Husos horarios: sugerencias. La "libertad" es real. La soledad también. El trato vale la pena. Hasta que no. Entonces me muevo otra vez.', short_en:'DIGITAL NOMAD. WIFI IS MY VISA.', long_en:'Passport: strong. Borders: arbitrary. Office: anywhere with outlets. Time zones: suggestions. The "freedom" is real. The loneliness is too. The trade is worth it. Until it is not. Then I move again.', stock:{es:3, en:3} },
+    'T-042': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short_es:'VIAJERO EN SOLITARIO. NO PORQUE ESTÉ ROTO.', long_es:'Porque estoy completo solo. Porque los grupos avanzan al ritmo del más lento. Porque "deberíamos hacer esto" nunca pasa. Como solo. Decido solo. Conozco gente precisamente porque no los necesito.', short_en:'SOLO TRAVELER. NOT BECAUSE I\'M BROKEN.', long_en:'Because I am whole alone. Because groups move at the slowest pace. Because "we should do this" never happens. I eat alone. I decide alone. I meet people precisely because I do not need them.', stock:{es:4, en:2} },
+    'T-063': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short_es:'MI MALETA PESA MÁS QUE MIS COMPROMISOS.', long_es:'El minimalismo es un privilegio. Cargo con todo lo que importa. El resto lo dejé o lo perdí. Cada objeto es una decisión. Cada peso es una elección. Viaja ligero, dicen. Yo viajo honesto.', short_en:'MY SUITCASE WEIGHS MORE THAN MY COMMITMENTS.', long_en:'Minimalism is a privilege. I carry everything that matters. The rest I left or lost. Every object is a decision. Every weight is a choice. Travel light, they say. I travel honest.', stock:{es:2, en:1} },
+    'T-091': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short_es:'SE BUSCA GUÍA LOCAL. NO DE APP DE RESERVAS.', long_es:'No quiero tu tour. Quiero tu martes. Tu lavandería. Tu queja del alcalde. Muéstrame la ciudad que aguantas, no la que vendes. Yo invito al café. Tú traes la honestidad.', short_en:'LOCAL GUIDE WANTED. NOT FROM A BOOKING APP.', long_en:'I do not want your tour. I want your Tuesday. Your laundromat. Your complaint about the mayor. Show me the city you endure, not the one you sell. I will buy the coffee. You bring the honesty.', stock:{es:1, en:2} }
+};
+
+const CATEGORIES = {
+    'S': { name:'SINGLE / DATING', color:'#33FF33', desc:'Disponibilidad romántica' },
+    'B': { name:'BARRIO / LOCAL', color:'#FFB000', desc:'Vecindad, comunidad' },
+    'G': { name:'GLOBAL / ACTIVISMO', color:'#00FFFF', desc:'Environmental, político, social' },
+    'X': { name:'XPLICIT / ADULTO', color:'#FF3333', desc:'Explícito, consentimiento, adulto' },
+    'M': { name:'MOOD / ESTADO', color:'#9D00FF', desc:'Vibe del día, neurodivergencia' },
+    'F': { name:'FRIKI / GEEK', color:'#FFFFFF', desc:'Gaming, anime, tech, cultura' },
+    'H': { name:'HUMOR / SARCASMO', color:'#FF8800', desc:'Ironía sistémica, metahumor' },
+    'P': { name:'PROFESIONAL', color:'#0066CC', desc:'Networking, empleo, colaboración' },
+    'C': { name:'CREATIVO / ARTE', color:'#FF00FF', desc:'Música, arte, escritura' },
+    'T': { name:'TRAVEL / VIAJERO', color:'#00DDAA', desc:'Nómadas, exploración, local' }
+};
+
+const MODELS = {
+    'broadcast': { name:'BROADCAST', price:'43€', extra:'+8€' },
+    'stealth': { name:'STEALTH', price:'35€', extra:'' },
+    'full': { name:'FULL DECODED', price:'47€', extra:'+12€' }
+};
+
+const CLOSE_PRESETS = [
+    'El portador ha cerrado este canal temporalmente.',
+    'Este canal ha sido cerrado. El portador ya ha encontrado lo que buscaba.',
+    'No se aceptan más mensajes en este momento. Vuelve a intentarlo más adelante.',
+    'El portador ha pausado su muroforo. No es personal. Es necesario.'
+];
+
+let currentFilter = 'ALL';
+let currentLang = 'es';
+let storeLang = 'es';
+let currentUser = null;
+let currentProfile = null;
+let realtimeChannel = null;
+
+// ==========================================
+// NAVIGATION (SIEMPRE DISPONIBLE)
+// ==========================================
+function hideAll() {
+    const ids = ['landing','about','intermedia','visualGallery','store','modelCodes','decodePage','muroforo','authSection','dashboard','adminPanel','claimShirt'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+}
+
+function showLanding() {
+    hideAll();
+    const el = document.getElementById('landing');
+    if (el) el.classList.remove('hidden');
+    const inp = document.getElementById('codeInput');
+    if (inp) setTimeout(() => inp.focus(), 50);
+}
+
+function showAbout() {
+    hideAll();
+    const el = document.getElementById('about');
+    if (el) el.classList.remove('hidden');
+}
+
+function showIntermedia() {
+    hideAll();
+    const el = document.getElementById('intermedia');
+    if (el) el.classList.remove('hidden');
+}
+
+function showVisualGallery() {
+    hideAll();
+    const el = document.getElementById('visualGallery');
+    if (el) el.classList.remove('hidden');
+    renderVisualGallery();
+}
+
+function showStore() {
+    hideAll();
+    const el = document.getElementById('store');
+    if (el) el.classList.remove('hidden');
+}
+
+function showModelCodes(model) {
+    hideAll();
+    const el = document.getElementById('modelCodes');
+    if (el) el.classList.remove('hidden');
+    renderModelCodes(model);
+}
+
+function showDecodeFromCode(code, backTo) {
+    hideAll();
+    const el = document.getElementById('decodePage');
+    if (el) el.classList.remove('hidden');
+    const back = document.getElementById('decodeBack');
+    if (back) back.onclick = backTo || showLanding;
+    currentLang = 'es';
+    renderDecode(code);
+}
+
+function showMuroforo(accessToken) {
+    hideAll();
+    const el = document.getElementById('muroforo');
+    if (el) el.classList.remove('hidden');
+    if (supabase) {
+        renderMuroforo(accessToken);
+    } else {
+        const container = document.getElementById('muroContent');
+        if (container) container.innerHTML = '<div class="section-sub">Muroforo en modo offline. Conecta Supabase para activar.</div>';
+    }
+}
+
+function showAuth() {
+    hideAll();
+    const el = document.getElementById('authSection');
+    if (el) el.classList.remove('hidden');
+}
+
+function showDashboard() {
+    if (!currentUser) { showAuth(); return; }
+    hideAll();
+    const el = document.getElementById('dashboard');
+    if (el) el.classList.remove('hidden');
+    if (supabase) renderDashboard();
+    else {
+        const container = document.getElementById('dashContent');
+        if (container) container.innerHTML = '<div class="section-sub">Dashboard requiere conexión a Supabase.</div>';
+    }
+}
+
+function showAdmin() {
+    if (!currentProfile?.is_admin) return;
+    hideAll();
+    const el = document.getElementById('adminPanel');
+    if (el) el.classList.remove('hidden');
+    if (supabase) renderAdmin();
+}
+
+function showClaim() {
+    hideAll();
+    const el = document.getElementById('claimShirt');
+    if (el) el.classList.remove('hidden');
+}
+
+// ==========================================
+// AUTH
+// ==========================================
+function switchAuth(mode) {
+    const tLogin = document.getElementById('tabLogin');
+    const tReg = document.getElementById('tabRegister');
+    const dLogin = document.getElementById('authLogin');
+    const dReg = document.getElementById('authRegister');
+    if (tLogin) tLogin.classList.toggle('active', mode === 'login');
+    if (tReg) tReg.classList.toggle('active', mode === 'register');
+    if (dLogin) dLogin.classList.toggle('hidden', mode !== 'login');
+    if (dReg) dReg.classList.toggle('hidden', mode !== 'register');
+}
+
+async function doLogin() {
+    if (!supabase) { alert('Supabase no conectado'); return; }
+    const email = document.getElementById('loginEmail').value;
+    const pass = document.getElementById('loginPass').value;
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if (error) alert(error.message);
+    else { await loadSession(); showDashboard(); }
+}
+
+async function doRegister() {
+    if (!supabase) { alert('Supabase no conectado'); return; }
+    const email = document.getElementById('regEmail').value;
+    const pass = document.getElementById('regPass').value;
+    const username = document.getElementById('regUser').value;
+    const { error } = await supabase.auth.signUp({
+        email, password: pass,
+        options: { data: { username } }
+    });
+    if (error) alert(error.message);
+    else alert('Revisa tu email para confirmar la cuenta.');
+}
+
+async function doOAuth(provider) {
+    if (!supabase) { alert('Supabase no conectado'); return; }
+    const { error } = await supabase.auth.signInWithOAuth({ provider });
+    if (error) alert(error.message);
+}
+
+async function sendOTP() {
+    if (!supabase) { alert('Supabase no conectado'); return; }
+    const phone = document.getElementById('phoneNum').value;
+    const { error } = await supabase.auth.signInWithOtp({ phone });
+    if (error) alert(error.message);
+    else alert('Código SMS enviado.');
+}
+
+async function verifyOTP() {
+    if (!supabase) { alert('Supabase no conectado'); return; }
+    const phone = document.getElementById('phoneNum').value;
+    const token = document.getElementById('phoneCode').value;
+    const { error } = await supabase.auth.verifyOtp({ phone, token, type: 'sms' });
+    if (error) alert(error.message);
+    else { await loadSession(); showDashboard(); }
+}
+
+async function doLogout() {
+    if (supabase) await supabase.auth.signOut();
+    currentUser = null;
+    currentProfile = null;
+    updateAuthBar();
+    showLanding();
+}
+
+async function loadSession() {
+    if (!supabase) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    currentUser = session?.user || null;
+    if (currentUser) {
+        const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+        currentProfile = data || null;
+    } else {
+        currentProfile = null;
+    }
+    updateAuthBar();
+}
+
+function updateAuthBar() {
+    const bar = document.getElementById('authStatus');
+    if (!bar) return;
+    if (currentUser) {
+        bar.innerHTML = `<span>${currentProfile?.username || currentUser.email || 'User'}</span><br>
+        <a onclick="showDashboard()">[ ÁREA PRIVADA ]</a> <a onclick="doLogout()">[ SALIR ]</a>`;
+        const adminLink = document.getElementById('adminLink');
+        if (adminLink) adminLink.style.display = currentProfile?.is_admin ? 'inline' : 'none';
+    } else {
+        bar.innerHTML = `<a onclick="showAuth()">[ ACCEDER / REGISTRARSE ]</a>`;
+        const adminLink = document.getElementById('adminLink');
+        if (adminLink) adminLink.style.display = 'none';
+    }
+}
+
+// ==========================================
+// RENDER VISUAL GALLERY
+// ==========================================
+function renderVisualGallery() {
+    const grid = document.getElementById('visualGrid');
+    const legend = document.getElementById('legendVisual');
+    if (!grid || !legend) return;
+    grid.innerHTML = '';
+    legend.innerHTML = '';
+    
+    const allBtn = document.createElement('div');
+    allBtn.className = 'legend-item' + (currentFilter === 'ALL' ? ' active' : '');
+    allBtn.style.setProperty('--legend-color', '#888');
+    allBtn.innerHTML = `<div class="legend-dot" style="background:#888"></div> TODAS`;
+    allBtn.onclick = () => { currentFilter = 'ALL'; renderVisualGallery(); };
+    legend.appendChild(allBtn);
+    
+    Object.entries(CATEGORIES).forEach(([letter, info]) => {
+        const item = document.createElement('div');
+        item.className = 'legend-item' + (currentFilter === letter ? ' active' : '');
+        item.style.setProperty('--legend-color', info.color);
+        item.innerHTML = `<div class="legend-dot" style="background:${info.color}"></div> ${info.name}`;
+        item.onclick = () => { currentFilter = letter; renderVisualGallery(); };
+        legend.appendChild(item);
+    });
+    
+    let entries = Object.entries(DB);
+    if (currentFilter !== 'ALL') entries = entries.filter(([k,v]) => k.startsWith(currentFilter));
+    
+    entries.forEach(([code, data]) => {
+        const card = document.createElement('div');
+        card.className = 'shirt-card';
+        card.style.setProperty('--cat-color', data.color);
+        card.onclick = () => showDecodeFromCode(code, showVisualGallery);
+        
+        const hasES = data.stock.es > 0;
+        const hasEN = data.stock.en > 0;
+        let langText = hasES && hasEN ? 'ES / EN' : hasES ? 'ES' : hasEN ? 'EN' : 'AGOTADO';
+        
+        card.innerHTML = `
+            <div class="shirt-front">
+                <div class="shirt-line-top"></div>
+                <div class="shirt-msg">${data.short_es}</div>
+            </div>
+            <div class="shirt-back">
+                <div class="shirt-code">${code}</div>
+                <div class="shirt-qr">QR</div>
+                <div class="shirt-private">847392</div>
+            </div>
+            <div class="shirt-meta">
+                <div class="shirt-code-id">${code}</div>
+                <div class="shirt-cat">${data.cat}</div>
+            </div>
+            <div class="shirt-lang">${langText}</div>
+            <div class="shirt-stock">${data.stock.es + data.stock.en} unidades totales</div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// ==========================================
+// RENDER MODEL CODES
+// ==========================================
+function renderModelCodes(model) {
+    const info = MODELS[model];
+    const header = document.getElementById('modelHeader');
+    const list = document.getElementById('modelCodeList');
+    if (!header || !list) return;
+    
+    header.innerHTML = `
+        <div class="section-title" style="color:#33FF33">${info.name}</div>
+        <div class="section-sub">Precio base: ${info.price} ${info.extra} — 5 unidades máximo por idioma. No se reponen.</div>
+        <div style="width:100%;height:2px;background:#33FF33;margin-bottom:2rem;"></div>
+    `;
+    
+    list.innerHTML = '';
+    Object.entries(DB).forEach(([code, data]) => {
+        const item = document.createElement('div');
+        item.className = 'code-item';
+        item.style.setProperty('--cat-color', data.color);
+        
+        const shortText = storeLang === 'es' ? data.short_es : data.short_en;
+        const stockNum = storeLang === 'es' ? data.stock.es : data.stock.en;
+        const soldOut = stockNum === 0;
+        
+        item.innerHTML = `
+            <div class="code-info">
+                <div class="lang-selector">
+                    <button class="lang-btn ${storeLang==='es'?'active':''}" onclick="event.stopPropagation();storeLang='es';renderModelCodes('${model}')">ES</button>
+                    <button class="lang-btn ${storeLang==='en'?'active':''}" onclick="event.stopPropagation();storeLang='en';renderModelCodes('${model}')">EN</button>
+                </div>
+                <div class="code-id">${code}${soldOut ? ' <span style="color:#FF3333;font-size:0.7rem;">[AGOTADO EN ' + storeLang.toUpperCase() + ']</span>' : ''}</div>
+                <div class="code-msg">${shortText}</div>
+                <div class="code-stock">${soldOut ? '0 de 5 — No se repondrá' : stockNum + ' de 5 unidades restantes (' + storeLang.toUpperCase() + ')'}</div>
+            </div>
+            <button class="btn" ${soldOut ? 'disabled' : ''} onclick="alert('Compra demo: ${code} en ${info.name} [${storeLang.toUpperCase()}]')">${soldOut ? 'AGOTADO' : 'COMPRAR ' + info.price}</button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+// ==========================================
+// RENDER DECODE
+// ==========================================
+function renderDecode(code) {
+    const data = DB[code];
+    if (!data) { alert('Código no encontrado'); showLanding(); return; }
+    
+    const container = document.getElementById('decodeContent');
+    if (!container) return;
+    const short = currentLang === 'es' ? data.short_es : data.short_en;
+    const long = currentLang === 'es' ? data.long_es : data.long_en;
+    
+    container.innerHTML = `
+        <div class="decode-header">
+            <span class="decode-category" style="border-color:${data.color};color:${data.color}">${data.cat}</span>
+            <span class="decode-code">${code} — ${data.color}</span>
+        </div>
+        <div class="lang-toggle">
+            <button class="${currentLang==='es'?'active':''}" onclick="currentLang='es';renderDecode('${code}')">ESPAÑOL</button>
+            <button class="${currentLang==='en'?'active':''}" onclick="currentLang='en';renderDecode('${code}')">ENGLISH</button>
+        </div>
+        <div class="decode-line" style="background:${data.color}"></div>
+        <div class="decode-short">"${short}"</div>
+        <div class="decode-long" style="border-color:${data.color}">${long}</div>
+        <div class="decode-divider"></div>
+        
+        <div id="msgSection">
+            <div class="decode-question">¿Has visto el código de 6 dígitos en la parte inferior de la espalda?</div>
+            <div class="decode-sub">Es un número de 6 dígitos. Si lo has visto, introdúcelo aquí y podrás acceder al muroforo de esta camiseta.</div>
+            <div class="private-input-group">
+                <span class="prompt" style="color:${data.color}">></span>
+                <input type="text" id="privateCodeInput" placeholder="000000" maxlength="6" autocomplete="off" style="border-color:${data.color}">
+            </div>
+            <button class="btn" style="--cat-color:${data.color}" onclick="checkPrivate('${code}','${data.color}')">ACCEDER AL MUROFORO</button>
+            <div style="margin-top:1.5rem">
+                <a class="back-link" onclick="showNoCode('${code}','${data.color}')">No lo he visto / No recuerdo los 6 dígitos</a>
+            </div>
+        </div>
+        
+        <div id="composeSection" class="hidden">
+            <div class="decode-question">Canal abierto.</div>
+            <div class="decode-sub">Redirigiendo al muroforo...</div>
+        </div>
+        
+        <div id="closedSection" class="hidden">
+            <div class="status-closed" style="color:${data.color}">⚪ Este canal ha sido cerrado.</div>
+            <div class="status-closed-text">El portador ya ha encontrado lo que buscaba.</div>
+        </div>
+        
+        <div id="noCodeSection" class="hidden">
+            <div class="decode-question" style="color:#8C8C8C">Oh, no lo has visto.</div>
+            <div class="decode-sub">
+                La próxima vez, si ves un número de 6 dígitos en la parte inferior de la espalda, 
+                vuelves aquí. Ese número es la clave para acceder al muroforo de esa persona.
+                <br><br>
+                <span style="color:#555">Solo quien esté físicamente cerca puede verlo. Ese es el filtro.</span>
+            </div>
+        </div>
+        
+        <div class="footer-actions">
+            <a class="footer-link" style="--cat-color:${data.color}" onclick="alert('Tienda en construcción')">[ Comprar ${code} ]</a>
+            <a class="footer-link" style="--cat-color:${data.color}" onclick="showIntermedia()">[ Ver galería ]</a>
+        </div>
+    `;
+}
+
+async function checkPrivate(code, color) {
+    const input = document.getElementById('privateCodeInput');
+    if (!input) return;
+    const val = input.value.trim();
+    if (val.length !== 6 || !/^\d{6}$/.test(val)) {
+        alert('Introduce un código de 6 dígitos numéricos.');
+        return;
+    }
+    
+    if (!supabase) {
+        alert('Supabase no conectado. Modo demo: cualquier código de 6 dígitos abre el muroforo demo.');
+        showMuroforo('demo');
+        return;
+    }
+    
+    const { data: shirt } = await supabase.from('shirts').select('*').eq('private_code', val).single();
+    
+    if (!shirt) {
+        alert('Código privado no válido.');
+        return;
+    }
+    
+    if (shirt.status === 'closed') {
+        const msgSec = document.getElementById('msgSection');
+        const closedSec = document.getElementById('closedSection');
+        if (msgSec) msgSec.classList.add('hidden');
+        if (closedSec) closedSec.classList.remove('hidden');
+        return;
+    }
+    
+    showMuroforo(shirt.private_code);
+}
+
+function showNoCode(code, color) {
+    const msgSec = document.getElementById('msgSection');
+    const noCodeSec = document.getElementById('noCodeSection');
+    if (msgSec) msgSec.classList.add('hidden');
+    if (noCodeSec) noCodeSec.classList.remove('hidden');
+}
+
+// ==========================================
+// MUROFORO
+// ==========================================
+async function renderMuroforo(accessToken) {
+    const container = document.getElementById('muroContent');
+    if (!container) return;
+    
+    if (!supabase) {
+        container.innerHTML = '<div class="section-sub">Muroforo offline. Conecta Supabase para activar mensajes reales.</div>';
+        return;
+    }
+    
+    let { data: shirt } = await supabase.from('shirts').select('*, profiles(username)').eq('private_code', accessToken).single();
+    if (!shirt) {
+        const { data: shirtByQr } = await supabase.from('shirts').select('*, profiles(username)').eq('qr_secret', accessToken).single();
+        shirt = shirtByQr;
+    }
+    
+    if (!shirt) {
+        container.innerHTML = '<div class="section-sub">Token no válido.</div>';
+        return;
+    }
+    
+    const dbData = DB[shirt.code];
+    const color = dbData?.color || '#33FF33';
+    const cat = dbData?.cat || shirt.code;
+    
+    let html = `
+        <div class="decode-header">
+            <span class="decode-category" style="border-color:${color};color:${color}">${cat}</span>
+            <span class="decode-code">${shirt.code} — MUROFORO</span>
+        </div>
+        <div style="width:100%;height:2px;background:${color};margin-bottom:2rem;"></div>
+    `;
+    
+    if (shirt.status === 'closed') {
+        html += `
+            <div class="muro-locked">
+                <div style="font-size:1.5rem; color:${color}; margin-bottom:1rem;">⚪ CANAL CERRADO</div>
+                <div style="color:#888; max-width:500px; margin:0 auto;">
+                    ${shirt.custom_close_message || 'El portador ha cerrado este canal temporalmente.'}
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
+        return;
+    }
+    
+    if (shirt.status === 'paused') {
+        html += `
+            <div class="muro-locked">
+                <div style="font-size:1.5rem; color:#FFB000; margin-bottom:1rem;">⏸️ CANAL PAUSADO</div>
+                <div style="color:#888;">El portador ha pausado temporalmente la recepción de mensajes.</div>
+            </div>
+        `;
+    }
+    
+    const { data: messages } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('shirt_id', shirt.id)
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false });
+    
+    html += `<div id="muroMessages">`;
+    if (messages && messages.length > 0) {
+        messages.forEach(msg => {
+            const name = msg.is_anonymous ? 'Anónimo' : (msg.author_name || 'Usuario');
+            html += `
+                <div class="muro-message">
+                    <div class="muro-author">${name}</div>
+                    <div class="muro-content">${escapeHtml(msg.content)}</div>
+                    <div class="muro-date">${new Date(msg.created_at).toLocaleString()}</div>
+                </div>
+            `;
+        });
+    } else {
+        html += `<div style="color:#555; padding:2rem 0;">Este muroforo está en silencio. Sé el primero en dejar una huella.</div>`;
+    }
+    html += `</div>`;
+    
+    if (shirt.status === 'active') {
+        if (currentUser) {
+            html += `
+                <div class="muro-form">
+                    <div class="decode-question">Deja tu mensaje</div>
+                    <div class="decode-sub">Anónimo o con nombre. Mínimo 10 caracteres. Máxima honestidad.</div>
+                    <textarea id="muroText" class="message-textarea" placeholder="Escribe aquí..." minlength="10"></textarea>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="muroAnon" checked>
+                        <label for="muroAnon">Enviar anónimamente</label>
+                    </div>
+                    <button class="btn" style="--cat-color:${color}; margin-top:1rem;" onclick="postMuroMessage('${shirt.id}', '${color}')">PUBLICAR</button>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="muro-form" style="text-align:center; color:#555;">
+                    <p>Para escribir en este muroforo necesitas <a onclick="showAuth()" style="color:#33FF33; cursor:pointer;">iniciar sesión</a>.</p>
+                    <p style="font-size:0.8rem; margin-top:0.5rem;">No pedimos género, edad ni datos innecesarios.</p>
+                </div>
+            `;
+        }
+    }
+    
+    container.innerHTML = html;
+    
+    if (realtimeChannel && supabase) supabase.removeChannel(realtimeChannel);
+    realtimeChannel = supabase
+        .channel('muroforo-' + shirt.id)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'shirt_id=eq.' + shirt.id }, payload => {
+            if (payload.new.status === 'approved') appendMuroMessage(payload.new, color);
+        })
+        .subscribe();
+}
+
+function appendMuroMessage(msg, color) {
+    const container = document.getElementById('muroMessages');
+    if (!container) return;
+    const name = msg.is_anonymous ? 'Anónimo' : (msg.author_name || 'Usuario');
+    const div = document.createElement('div');
+    div.className = 'muro-message';
+    div.innerHTML = `
+        <div class="muro-author">${name}</div>
+        <div class="muro-content">${escapeHtml(msg.content)}</div>
+        <div class="muro-date">${new Date(msg.created_at).toLocaleString()}</div>
+    `;
+    container.insertBefore(div, container.firstChild);
+}
+
+async function postMuroMessage(shirtId, color) {
+    if (!supabase) return;
+    const content = document.getElementById('muroText').value.trim();
+    const isAnon = document.getElementById('muroAnon').checked;
+    
+    if (content.length < 10) {
+        alert('Mínimo 10 caracteres para asegurar coherencia.');
+        return;
+    }
+    
+    const { error } = await supabase.from('messages').insert({
+        shirt_id: shirtId,
+        content,
+        author_id: currentUser.id,
+        author_name: currentProfile?.username || 'Usuario',
+        is_anonymous: isAnon,
+        status: 'pending'
+    });
+    
+    if (error) alert(error.message);
+    else {
+        document.getElementById('muroText').value = '';
+        alert('Mensaje enviado. Aparecerá tras revisión.');
+    }
+}
+
+// ==========================================
+// DASHBOARD
+// ==========================================
+async function renderDashboard() {
+    const container = document.getElementById('dashContent');
+    if (!container || !supabase) return;
+    
+    const { data: shirts } = await supabase
+        .from('shirts')
+        .select('*')
+        .eq('owner_id', currentUser.id)
+        .order('created_at', { ascending: false });
+    
+    if (!shirts || shirts.length === 0) {
+        container.innerHTML = `
+            <div style="color:#555; padding:2rem; border:1px solid #222;">
+                No tienes camisetas vinculadas todavía.<br><br>
+                <a onclick="showStore()" style="color:#33FF33; cursor:pointer;">Ir a la tienda</a> o 
+                <a onclick="showClaim()" style="color:#33FF33; cursor:pointer;">vincular una camiseta ya comprada</a>.
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    shirts.forEach(shirt => {
+        const dbData = DB[shirt.code];
+        const color = dbData?.color || '#33FF33';
+        const cat = dbData?.cat || '';
+        
+        html += `
+            <div class="dash-shirt" style="--cat-color:${color}">
+                <h4>${shirt.code} — ${cat} [${shirt.model.toUpperCase()} / ${shirt.lang.toUpperCase()}]</h4>
+                <div style="margin-bottom:1rem; font-size:0.85rem; color:#888;">
+                    Estado actual: <span style="color:${shirt.status === 'active' ? '#33FF33' : shirt.status === 'paused' ? '#FFB000' : '#FF3333'}">${shirt.status.toUpperCase()}</span>
+                </div>
+                
+                <label style="color:#666; font-size:0.8rem;">Cambiar estado:</label><br>
+                <select class="status-select" onchange="updateShirtStatus('${shirt.id}', this.value)">
+                    <option value="active" ${shirt.status==='active'?'selected':''}>ACTIVO (recibir mensajes)</option>
+                    <option value="paused" ${shirt.status==='paused'?'selected':''}>PAUSADO (solo lectura)</option>
+                    <option value="closed" ${shirt.status==='closed'?'selected':''}>CERRADO (canal finalizado)</option>
+                </select>
+                
+                <div style="margin:1rem 0;">
+                    <label style="color:#666; font-size:0.8rem;">Mensaje de cierre (solo si cerrado):</label>
+                    <select class="close-msg-select" id="closePreset-${shirt.id}" onchange="if(this.value==='custom') document.getElementById('closeCustom-${shirt.id}').classList.remove('hidden'); else document.getElementById('closeCustom-${shirt.id}').classList.add('hidden');">
+                        <option value="">Seleccionar mensaje...</option>
+                        ${CLOSE_PRESETS.map((p,i) => `<option value="${i}" ${shirt.custom_close_message===p?'selected':''}>${p.substring(0,60)}...</option>`).join('')}
+                        <option value="custom">Escribir mensaje personalizado (min. 30 caract.)</option>
+                    </select>
+                    <textarea id="closeCustom-${shirt.id}" class="message-textarea hidden" placeholder="Mensaje personalizado de cierre..." style="min-height:60px;">${shirt.custom_close_message && !CLOSE_PRESETS.includes(shirt.custom_close_message) ? shirt.custom_close_message : ''}</textarea>
+                    <button class="btn" style="--cat-color:${color}; margin-top:0.5rem;" onclick="saveCloseMessage('${shirt.id}')">GUARDAR MENSAJE DE CIERRE</button>
+                </div>
+                
+                <div class="monthly-box">
+                    <div class="monthly-count">Mensajes mensuales disponibles: ${shirt.monthly_message_count || 0}</div>
+                    <div style="font-size:0.8rem; color:#888; margin-bottom:0.5rem;">Puedes publicar 1 mensaje fijado por mes. Se acumulan si no los usas.</div>
+                    <textarea id="monthly-${shirt.id}" class="message-textarea" placeholder="Escribe tu mensaje fijado aquí..." style="min-height:60px;"></textarea>
+                    <button class="btn" style="--cat-color:#FFB000; margin-top:0.5rem;" onclick="postMonthly('${shirt.id}')">PUBLICAR MENSAJE FIJADO</button>
+                </div>
+                
+                <div style="margin-top:1rem; font-size:0.8rem; color:#555;">
+                    Código privado: <span style="color:#F0F0F0; letter-spacing:0.2rem;">${shirt.private_code}</span> | 
+                    QR Token: <span style="color:#888;">${shirt.qr_secret ? shirt.qr_secret.substring(0,8) : 'N/A'}...</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+async function updateShirtStatus(shirtId, status) {
+    if (!supabase) return;
+    const { error } = await supabase.from('shirts').update({ status }).eq('id', shirtId);
+    if (error) alert(error.message);
+    else renderDashboard();
+}
+
+async function saveCloseMessage(shirtId) {
+    if (!supabase) return;
+    const preset = document.getElementById(`closePreset-${shirtId}`).value;
+    let msg = '';
+    
+    if (preset === 'custom') {
+        msg = document.getElementById(`closeCustom-${shirtId}`).value.trim();
+        if (msg.length < 30) {
+            alert('El mensaje personalizado debe tener al menos 30 caracteres para ser coherente.');
+            return;
+        }
+    } else if (preset !== '') {
+        msg = CLOSE_PRESETS[parseInt(preset)];
+    }
+    
+    const { error } = await supabase.from('shirts').update({ custom_close_message: msg }).eq('id', shirtId);
+    if (error) alert(error.message);
+    else { alert('Mensaje de cierre guardado.'); renderDashboard(); }
+}
+
+async function postMonthly(shirtId) {
+    if (!supabase) return;
+    const content = document.getElementById(`monthly-${shirtId}`).value.trim();
+    if (!content) return;
+    
+    const { data: shirt } = await supabase.from('shirts').select('monthly_message_count').eq('id', shirtId).single();
+    if (!shirt || (shirt.monthly_message_count || 0) < 1) {
+        alert('No tienes mensajes mensuales disponibles.');
+        return;
+    }
+    
+    const { error } = await supabase.from('messages').insert({
+        shirt_id: shirtId,
+        content: '[FIJADO] ' + content,
+        author_id: currentUser.id,
+        author_name: currentProfile?.username || 'Owner',
+        is_anonymous: false,
+        status: 'approved'
+    });
+    
+    if (error) { alert(error.message); return; }
+    
+    await supabase.from('shirts').update({ 
+        monthly_message_count: (shirt.monthly_message_count || 1) - 1,
+        monthly_message_used_at: new Date().toISOString()
+    }).eq('id', shirtId);
+    
+    alert('Mensaje fijado publicado.');
+    renderDashboard();
+}
+
+// ==========================================
+// CLAIM SHIRT
+// ==========================================
+async function doClaim() {
+    if (!supabase) { alert('Supabase no conectado'); return; }
+    const serial = document.getElementById('claimSerial').value.trim().toUpperCase();
+    if (!serial) { alert('Introduce el número de serie.'); return; }
+    if (!currentUser) { alert('Debes iniciar sesión primero.'); showAuth(); return; }
+    
+    const { data: shirt, error } = await supabase
+        .from('shirts')
+        .select('*')
+        .eq('serial_number', serial)
+        .is('owner_id', null)
+        .single();
+    
+    if (error || !shirt) {
+        alert('Número de serie no válido o camiseta ya vinculada.');
+        return;
+    }
+    
+    const { error: updError } = await supabase
+        .from('shirts')
+        .update({ owner_id: currentUser.id })
+        .eq('id', shirt.id);
+    
+    if (updError) alert(updError.message);
+    else {
+        alert(`Camiseta ${shirt.code} vinculada correctamente.`);
+        showDashboard();
+    }
+}
+
+// ==========================================
+// ADMIN
+// ==========================================
+async function renderAdmin() {
+    const container = document.getElementById('adminContent');
+    if (!container || !supabase) return;
+    
+    const { data: messages } = await supabase
+        .from('messages')
+        .select('*, shirts(code, private_code)')
+        .order('created_at', { ascending: false })
+        .limit(100);
+    
+    if (!messages || messages.length === 0) {
+        container.innerHTML = '<div style="color:#555;">No hay mensajes pendientes.</div>';
+        return;
+    }
+    
+    let html = '<div style="margin-bottom:1rem; color:#888;">Revisar mensajes. Aprobar para que aparezcan en el muroforo. Rechazar para eliminar.</div>';
+    
+    messages.forEach(msg => {
+        const statusClass = msg.status;
+        html += `
+            <div class="admin-msg ${statusClass}">
+                <div style="flex:1; min-width:250px;">
+                    <div style="font-size:0.8rem; color:#33FF33; margin-bottom:0.3rem;">
+                        ${msg.shirts?.code || '???'} — ${msg.is_anonymous ? 'Anónimo' : msg.author_name}
+                    </div>
+                    <div style="color:#CCC; font-size:0.95rem; margin-bottom:0.5rem;">${escapeHtml(msg.content)}</div>
+                    <div style="font-size:0.7rem; color:#555;">${new Date(msg.created_at).toLocaleString()} | Estado: ${msg.status.toUpperCase()}</div>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                    ${msg.status !== 'approved' ? `<button class="btn" style="--cat-color:#33FF33" onclick="moderateMsg('${msg.id}', 'approved')">APROBAR</button>` : ''}
+                    ${msg.status !== 'rejected' ? `<button class="btn" style="--cat-color:#FF3333" onclick="moderateMsg('${msg.id}', 'rejected')">RECHAZAR</button>` : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+async function moderateMsg(msgId, status) {
+    if (!supabase) return;
+    const { error } = await supabase.from('messages').update({ status }).eq('id', msgId);
+    if (error) alert(error.message);
+    else renderAdmin();
+}
+
+// ==========================================
+// UTILS
+// ==========================================
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ==========================================
+// INIT
+// ==========================================
+async function initApp() {
+    if (supabase) await loadSession();
+    
+    const params = new URLSearchParams(window.location.search);
+    const claimToken = params.get('claim');
+    const muroToken = params.get('muro');
+    const code = params.get('code');
+    
+    if (claimToken) {
+        window.claimToken = claimToken;
+        showClaim();
+        return;
+    }
+    
+    if (muroToken) {
+        showMuroforo(muroToken);
+        return;
+    }
+    
+    if (code && DB[code.toUpperCase()]) {
+        showDecodeFromCode(code.toUpperCase());
+        return;
+    }
+    
+    showLanding();
+}
+
+// Auth listener
+if (supabase) {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            await loadSession();
+            const authSec = document.getElementById('authSection');
+            if (authSec && !authSec.classList.contains('hidden')) {
+                showDashboard();
+            }
+        }
+        if (event === 'SIGNED_OUT') {
+            currentUser = null;
+            currentProfile = null;
+            updateAuthBar();
+        }
+    });
+}
+
+// Landing input
+document.addEventListener('DOMContentLoaded', function() {
+    const codeInput = document.getElementById('codeInput');
+    if (codeInput) {
+        codeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const val = this.value.trim().toUpperCase();
+                if (DB[val]) {
+                    showDecodeFromCode(val);
+                } else if (val) {
+                    const clean = val.replace(/[^A-Z0-9]/g,'');
+                    const found = Object.keys(DB).find(k => k.replace('-','') === clean);
+                    if (found) showDecodeFromCode(found);
+                    else alert('Código no encontrado. Prueba con S-017 o ve a la galería.');
+                }
+                this.value = '';
+            }
+        });
+        codeInput.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+        setTimeout(() => codeInput.focus(), 100);
+    }
+    
+    document.addEventListener('click', function(e) {
+        const target = e.target;
+        if (target.closest('#decodePage') || target.closest('#about') || target.closest('#intermedia') || target.closest('#visualGallery') || target.closest('#store') || target.closest('#modelCodes') || target.closest('#muroforo') || target.closest('#authSection') || target.closest('#dashboard') || target.closest('#adminPanel') || target.closest('#claimShirt')) {
+            return;
+        }
+        const landing = document.getElementById('landing');
+        const inp = document.getElementById('codeInput');
+        if (landing && !landing.classList.contains('hidden') && inp) {
+            inp.focus();
+        }
+    });
+    
+    initApp();
+});
+</script>
+</body>
+</html>

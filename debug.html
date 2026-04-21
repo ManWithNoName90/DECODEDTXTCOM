@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>DEBUG - DECODED.TXT</title>
+    <style>
+        body { background: #0A0A0A; color: #33FF33; font-family: 'Courier New', monospace; padding: 2rem; line-height: 1.8; }
+        .ok { color: #33FF33; }
+        .err { color: #FF3333; }
+        .warn { color: #FFB000; }
+        .box { border: 1px solid #333; padding: 1rem; margin: 1rem 0; }
+    </style>
+</head>
+<body>
+    <h1>> DIAGNÓSTICO SUPABASE</h1>
+    <div id="out"></div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+const out = document.getElementById('out');
+function log(msg, type='info') {
+    const cls = type === 'ok' ? 'ok' : type === 'err' ? 'err' : type === 'warn' ? 'warn' : '';
+    out.innerHTML += `<div class="${cls}">${msg}</div>`;
+}
+
+const URL = 'https://kcjoukztlrmvqiyyszir.supabase.co';
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtjam91a3p0bHJtdnFpeXlzemlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3OTM3ODIsImV4cCI6MjA5MjM2OTc4Mn0.Ob-QUbeXwGdlYzU7dqVy252M2XzCvqorjd6Qv9Mv0uI';
+
+log('1. Script de Supabase cargado...', 'info');
+
+// Esperar un poco por si el script tarda
+setTimeout(async () => {
+    log('2. window.supabase existe: ' + (typeof window.supabase !== 'undefined'), typeof window.supabase !== 'undefined' ? 'ok' : 'err');
+    log('3. createClient existe: ' + (typeof window.supabase?.createClient === 'function'), typeof window.supabase?.createClient === 'function' ? 'ok' : 'err');
+    
+    if (!window.supabase?.createClient) {
+        log('ERROR: No se pudo cargar el cliente de Supabase. El CDN puede estar bloqueado.', 'err');
+        return;
+    }
+    
+    try {
+        const sb = window.supabase.createClient(URL, ANON);
+        log('4. Cliente Supabase creado ✅', 'ok');
+        
+        // Test tabla profiles
+        const { data: prof, error: e1 } = await sb.from('profiles').select('*').limit(3);
+        if (e1) log('5. profiles: ❌ ' + e1.message, 'err');
+        else log('5. profiles: ✅ ' + (prof?.length || 0) + ' filas encontradas', 'ok');
+        
+        // Test tabla shirts
+        const { data: sh, error: e2 } = await sb.from('shirts').select('*').limit(3);
+        if (e2) log('6. shirts: ❌ ' + e2.message, 'err');
+        else log('6. shirts: ✅ ' + (sh?.length || 0) + ' filas encontradas', 'ok');
+        
+        // Test tabla messages
+        const { data: msg, error: e3 } = await sb.from('messages').select('*').limit(3);
+        if (e3) log('7. messages: ❌ ' + e3.message, 'err');
+        else log('7. messages: ✅ ' + (msg?.length || 0) + ' filas encontradas', 'ok');
+        
+        // Test auth session
+        const { data: sess, error: e4 } = await sb.auth.getSession();
+        if (e4) log('8. auth session: ❌ ' + e4.message, 'err');
+        else log('8. auth session: ✅ Usuario actual: ' + (sess.session?.user?.email || 'ninguno'), 'ok');
+        
+        // Test login con tus credenciales (sin guardar sesión, solo verificar)
+        log('9. Probando login con joel.caribaux3@gmail.com...', 'info');
+        const { data: loginData, error: e5 } = await sb.auth.signInWithPassword({
+            email: 'joel.caribaux3@gmail.com',
+            password: 'Trianita33.'
+        });
+        if (e5) log('10. Login: ❌ ' + e5.message, 'err');
+        else log('10. Login: ✅ ÉXITO - Bienvenido ' + loginData.user.email, 'ok');
+        
+    } catch (e) {
+        log('ERROR CRÍTICO: ' + e.message, 'err');
+    }
+}, 2000);
+</script>
+</body>
+</html>

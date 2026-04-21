@@ -19,7 +19,7 @@
 
         .page-container {
             width: 90%;
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 3rem 1rem;
             animation: fadeIn 0.4s ease;
@@ -66,7 +66,7 @@
         .section-sub {
             color: #555;
             font-size: 0.9rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .footer-label {
@@ -239,27 +239,24 @@
 
         /* === GALERIA VISUAL === */
         .visual-gallery {
-            display: flex;
-            flex-direction: column;
-            gap: 3rem;
-            align-items: center;
-            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
 
         .shirt-card {
-            width: 100%;
-            max-width: 500px;
             position: relative;
             cursor: pointer;
             transition: transform 0.3s;
+            border: 1px solid #222;
         }
 
-        .shirt-card:hover { transform: scale(1.02); }
+        .shirt-card:hover { transform: scale(1.03); }
 
         .shirt-front, .shirt-back {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border: 1px solid #333;
             position: relative;
             overflow: hidden;
         }
@@ -270,7 +267,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1rem;
         }
 
         .shirt-back {
@@ -284,7 +281,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-end;
-            padding: 2rem;
+            padding: 1rem;
         }
 
         .shirt-card:hover .shirt-back { opacity: 1; }
@@ -293,11 +290,11 @@
             width: 60%;
             height: 2px;
             background: var(--cat-color);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .shirt-msg {
-            font-size: 1.3rem;
+            font-size: 0.9rem;
             text-align: center;
             color: #F0F0F0;
             line-height: 1.3;
@@ -305,8 +302,8 @@
 
         .shirt-code {
             position: absolute;
-            bottom: 15%;
-            font-size: 1.5rem;
+            bottom: 18%;
+            font-size: 1.2rem;
             color: #F0F0F0;
             letter-spacing: 2px;
         }
@@ -314,62 +311,107 @@
         .shirt-private {
             position: absolute;
             bottom: 8%;
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: #AAA;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
         }
 
         .shirt-qr {
-            width: 80px;
-            height: 80px;
+            width: 50px;
+            height: 50px;
             background: #FFF;
             position: absolute;
-            bottom: 20%;
+            bottom: 25%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             color: #000;
         }
 
         .shirt-meta {
-            margin-top: 1rem;
+            margin-top: 0.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0.5rem;
+            border-top: 1px solid #222;
         }
 
         .shirt-code-id {
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             color: var(--cat-color);
             font-weight: bold;
         }
 
         .shirt-cat {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: #666;
             text-transform: uppercase;
         }
 
-        .shirt-hint {
-            text-align: center;
-            color: #444;
+        .color-legend {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            color: #666;
+            cursor: pointer;
+            padding: 0.3rem 0.5rem;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .legend-item:hover, .legend-item.active {
+            border-color: var(--legend-color);
+            color: var(--legend-color);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--legend-color);
+        }
+
+        .gallery-hint {
             font-size: 0.8rem;
-            margin-top: 0.5rem;
+            color: #444;
+            margin-bottom: 1rem;
+            border-left: 2px solid #333;
+            padding-left: 0.8rem;
+        }
+
+        @media (max-width: 900px) {
+            .visual-gallery { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 500px) {
+            .visual-gallery { grid-template-columns: 1fr; }
         }
 
         /* === MARKETPLACE === */
         .model-grid {
             display: flex;
-            flex-direction: column;
-            gap: 3rem;
-            align-items: center;
+            flex-direction: row;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
             margin-top: 2rem;
         }
 
         .model-card {
-            width: 100%;
-            max-width: 500px;
+            flex: 1;
+            min-width: 280px;
+            max-width: 340px;
             border: 1px solid #333;
             padding: 2rem;
             cursor: pointer;
@@ -421,15 +463,16 @@
             line-height: 1.6;
         }
 
-        .model-features span {
-            display: block;
-            margin-bottom: 0.3rem;
-        }
-
+        .model-features span { display: block; margin-bottom: 0.3rem; }
         .model-features .yes { color: #33FF33; }
         .model-features .no { color: #555; }
 
-        /* === CATEGORY LIST === */
+        @media (max-width: 700px) {
+            .model-grid { flex-direction: column; align-items: center; }
+            .model-card { max-width: 100%; width: 100%; }
+        }
+
+        /* === MODEL CODES === */
         .code-list {
             display: flex;
             flex-direction: column;
@@ -599,32 +642,10 @@
 
         .footer-link:hover { color: var(--cat-color); }
 
-        .color-legend {
-            display: flex;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: #666;
-        }
-
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
         @media (max-width: 600px) {
             .terminal-text, .decode-short { font-size: 1.2rem; }
             #codeInput, #privateCodeInput { width: 180px; font-size: 1.2rem; }
             .choice-grid { grid-template-columns: 1fr; }
-            .shirt-card, .model-card { max-width: 100%; }
         }
     </style>
 </head>
@@ -684,6 +705,10 @@
             <div class="section-title">IDENTIFICA LA CAMISETA</div>
             <div class="section-sub">Si reconoces el diseño, haz clic para decodificar. Pasa el ratón para ver la parte trasera.</div>
             
+            <div class="gallery-hint">
+                > Si no viste el código de 6 dígitos en la espalda, no hay problema. Cuando lo veas, vuelve aquí e introdúcelo para enviar un mensaje directo al portador.
+            </div>
+            
             <div class="color-legend" id="legendVisual"></div>
             <div class="visual-gallery" id="visualGrid"></div>
         </div>
@@ -739,7 +764,7 @@
         </div>
     </div>
 
-    <!-- ===== MODEL CODES (Marketplace -> Codes) ===== -->
+    <!-- ===== MODEL CODES ===== -->
     <div id="modelCodes" class="hidden">
         <div class="page-container">
             <div class="top-bar">
@@ -843,6 +868,8 @@ const MODELS = {
     'full': { name:'FULL DECODED', price:'47€', extra:'+12€' }
 };
 
+let currentFilter = 'ALL';
+
 // ===== NAVIGATION =====
 function hideAll() {
     document.getElementById('landing').classList.add('hidden');
@@ -899,23 +926,35 @@ function renderVisualGallery() {
     grid.innerHTML = '';
     legend.innerHTML = '';
     
-    // Legend
+    // "All" button
+    const allBtn = document.createElement('div');
+    allBtn.className = 'legend-item' + (currentFilter === 'ALL' ? ' active' : '');
+    allBtn.style.setProperty('--legend-color', '#888');
+    allBtn.innerHTML = `<div class="legend-dot" style="background:#888"></div> TODAS`;
+    allBtn.onclick = () => { currentFilter = 'ALL'; renderVisualGallery(); };
+    legend.appendChild(allBtn);
+    
+    // Category buttons
     Object.entries(CATEGORIES).forEach(([letter, info]) => {
         const item = document.createElement('div');
-        item.className = 'legend-item';
+        item.className = 'legend-item' + (currentFilter === letter ? ' active' : '');
+        item.style.setProperty('--legend-color', info.color);
         item.innerHTML = `<div class="legend-dot" style="background:${info.color}"></div> ${info.name}`;
+        item.onclick = () => { currentFilter = letter; renderVisualGallery(); };
         legend.appendChild(item);
     });
     
-    // Cards (one per code)
-    Object.entries(DB).forEach(([code, data]) => {
+    // Filtered cards
+    let entries = Object.entries(DB);
+    if (currentFilter !== 'ALL') {
+        entries = entries.filter(([k,v]) => k.startsWith(currentFilter));
+    }
+    
+    entries.forEach(([code, data]) => {
         const card = document.createElement('div');
         card.className = 'shirt-card';
         card.style.setProperty('--cat-color', data.color);
         card.onclick = () => showDecodeFromCode(code, showVisualGallery);
-        
-        // Determine back content based on hypothetical model (default to full for visual)
-        const hasQR = true; // Visual gallery shows full version
         
         card.innerHTML = `
             <div class="shirt-front">
@@ -924,14 +963,13 @@ function renderVisualGallery() {
             </div>
             <div class="shirt-back">
                 <div class="shirt-code">${code}</div>
-                ${hasQR ? '<div class="shirt-qr">QR</div>' : ''}
+                <div class="shirt-qr">QR</div>
                 <div class="shirt-private">847392</div>
             </div>
             <div class="shirt-meta">
                 <div class="shirt-code-id">${code}</div>
                 <div class="shirt-cat">${data.cat}</div>
             </div>
-            <div class="shirt-hint">Pasa el ratón para ver la espalda →</div>
         `;
         grid.appendChild(card);
     });

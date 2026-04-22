@@ -979,8 +979,19 @@
     </style>
 </head>
 <body>
-    <div id="bootSequence" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0A0A0A; z-index:99999; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:3rem; font-family:'Courier New', Courier, monospace; color:#33FF33; cursor:pointer;">
-        <div class="boot-line">> DECODE_IT [v1.0-stable]</div>
+    <div id="bootSequence" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0A0A0A; z-index:99999; display:flex; flex-direction:column; justify-content:center; align-items:center; font-family:'Courier New', Courier, monospace; color:#33FF33; cursor:pointer;">
+        <div style="width:90%; max-width:700px; text-align:left;">
+            <div class="boot-line">> DECODE_IT [v1.0-stable]</div>
+            <div class="boot-line">> [SYSTEM BOOT SEQUENCE INITIATED]</div>
+            <div class="boot-line"></div>
+            <div class="boot-line">> MENSAJES HUMANOS EN CÓDIGO DE MÁQUINA</div>
+            <div class="boot-line">> 40 CÓDIGOS ACTIVOS. 5 IDIOMAS. 0 CENSURA.</div>
+            <div class="boot-line">> COMUNIDAD VOTANDO PRÓXIMA TANDA...</div>
+            <div class="boot-line"></div>
+            <div class="boot-line" style="color:#555;">> _</div>
+            <div class="boot-line boot-cta">[ HAZ CLICK O PULSA ENTER PARA DECODIFICAR ]</div>
+        </div>
+    </div>        <div class="boot-line">> DECODE_IT [v1.0-stable]</div>
         <div class="boot-line">> INITIALIZING PROTOCOLS...</div>
         <div class="boot-line">> LOADING MESSAGES...</div>
         <div class="boot-line">> READY.</div>
@@ -1364,14 +1375,13 @@
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-// Boot sequence dismiss
+// Boot sequence dismiss (solo por interacción, nunca auto)
 function dismissBoot() {
     const boot = document.getElementById('bootSequence');
     if (!boot || boot.classList.contains('fade-out')) return;
     boot.classList.add('fade-out');
     setTimeout(() => { if (boot && boot.parentNode) boot.parentNode.removeChild(boot); }, 600);
 }
-setTimeout(dismissBoot, 2500);
 document.addEventListener('click', dismissBoot, { once: true });
 document.addEventListener('keydown', dismissBoot, { once: true });
         (function(){

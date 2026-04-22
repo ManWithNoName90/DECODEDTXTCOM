@@ -1004,7 +1004,7 @@
             <div class="section-title">IDENTIFICA LA CAMISETA</div>
             <div class="section-sub">Si reconoces el diseño, haz clic para decodificar. Pasa el ratón para ver la parte trasera.</div>
             <div class="gallery-hint">
-                > Si no viste el código de 6 dígitos en la espalda, no hay problema. Cuando lo veas, vuelve aquí e introdúcelo para enviar un mensaje directo al portador.
+                > Si no viste el código de 6 dígitos en la espalda, no hay problema. Cuando lo veas, vuelves aquí e introdúcelo para enviar un mensaje directo al portador.
             </div>
             <div class="color-legend" id="legendVisual"></div>
             <div class="visual-gallery" id="visualGrid"></div>
@@ -1177,6 +1177,11 @@
                     <a class="back-link" onclick="showDashboard()">< [ DASHBOARD ]</a>
                 </div>
             </div>
+            <div class="section-title">> PANEL DE ADMINISTRACIÓN</div>
+            <div class="section-sub">Moderación de mensajes pendientes.</div>
+            <div id="adminContent"></div>
+        </div>
+    </div>
 
     <div id="claimShirt" class="hidden">
         <div class="page-container">
@@ -1202,7 +1207,7 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
 (function(){
-// ==========================================
+    // ==========================================
 // CONFIGURACIÓN SUPABASE
 // ==========================================
 const SUPABASE_URL = 'https://kcjoukztlrmvqiyyszir.supabase.co';
@@ -1317,11 +1322,19 @@ const DEMO_MESSAGES = [
 
 const DEMO_RATE_LIMIT = {}; // { 'userId_shirtId': timestamp }
 
-const DEMO_RATE_LIMIT = {}; // <-- FUERA del array, justo debajo
+// ==========================================
+// UTILS
+// ==========================================
+function escapeHtml(text) {
+    if (!text) return '';
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-// ==========================================
-// UTILS DE FECHA
-// ==========================================
 function timeAgo(dateString) {
     const date = new Date(dateString);
     const now = new Date();
@@ -1342,15 +1355,16 @@ function getInitials(name) {
     return name.charAt(0).toUpperCase();
 }
 
-let currentFilter = 'ALL';
+// Idioma global (accesible desde onclick)
 window.currentLang = window.currentLang || 'es';
 window.storeLang = window.storeLang || 'es';
+
+let currentFilter = 'ALL';
 let currentUser = null;
 let currentProfile = null;
 let realtimeChannel = null;
-
-// ==========================================
-// NAVIGATION (SIEMPRE DISPONIBLE)
+    // ==========================================
+// NAVIGATION
 // ==========================================
 function hideAll() {
     const ids = ['landing','about','intermedia','visualGallery','store','modelCodes','decodePage','muroforo','authSection','dashboard','adminPanel','claimShirt'];
@@ -1406,7 +1420,7 @@ function showDecodeFromCode(code, backTo) {
     if (el) el.classList.remove('hidden');
     const back = document.getElementById('decodeBack');
     if (back) back.onclick = backTo || showLanding;
-    currentLang = 'es';
+    window.currentLang = 'es';
     renderDecode(code);
 }
 
@@ -1416,7 +1430,39 @@ function showMuroforo(accessToken) {
     if (el) el.classList.remove('hidden');
     renderMuroforo(accessToken);
 }
-        
+
+function showAuth() {
+    hideAll();
+    const el = document.getElementById('authSection');
+    if (el) el.classList.remove('hidden');
+}
+
+function showDashboard() {
+    if (!currentUser) { showAuth(); return; }
+    hideAll();
+    const el = document.getElementById('dashboard');
+    if (el) el.classList.remove('hidden');
+    if (supabase) renderDashboard();
+    else {
+        const container = document.getElementById('dashContent');
+        if (container) container.innerHTML = '<div class="section-sub">Dashboard requiere conexión a Supabase.</div>';
+    }
+}
+
+function showAdmin() {
+    if (!currentProfile?.is_admin) return;
+    hideAll();
+    const el = document.getElementById('adminPanel');
+    if (el) el.classList.remove('hidden');
+    if (supabase) renderAdmin();
+}
+
+function showClaim() {
+    hideAll();
+    const el = document.getElementById('claimShirt');
+    if (el) el.classList.remove('hidden');
+}
+
 // ==========================================
 // AUTH
 // ==========================================
@@ -1627,6 +1673,7 @@ function renderModelCodes(model) {
         list.innerHTML = '<div style="color:#555; padding:2rem;">No hay códigos disponibles en ' + window.storeLang.toUpperCase() + ' para este modelo en esta tanda.</div>';
     }
 }
+
 // ==========================================
 // RENDER DECODE
 // ==========================================
@@ -1693,6 +1740,13 @@ function renderDecode(code) {
     `;
 }
 
+function showNoCode(code, color) {
+    const msgSec = document.getElementById('msgSection');
+    const noCodeSec = document.getElementById('noCodeSection');
+    if (msgSec) msgSec.classList.add('hidden');
+    if (noCodeSec) noCodeSec.classList.remove('hidden');
+}
+
 async function checkPrivate(code, color) {
     const input = document.getElementById('privateCodeInput');
     if (!input) return;
@@ -1702,13 +1756,11 @@ async function checkPrivate(code, color) {
         return;
     }
     
-    // MODO DEMO: verificar códigos de prueba
     if (DEMO_SHIRTS[val]) {
         showMuroforo(val);
         return;
     }
     
-    // MODO REAL: Supabase
     if (!supabase) {
         alert('Código privado no válido. Códigos de prueba: 123456, 987654, 555555');
         return;
@@ -1731,246 +1783,7 @@ async function checkPrivate(code, color) {
     
     showMuroforo(shirt.private_code);
 }
-// ==========================================
-// MUROFORO
-// ==========================================
-
-const DEMO_RATE_LIMIT = {}; // { 'userId_shirtId': timestamp }
-
-function escapeHtml(text) {
-    if (!text) return '';
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-async function renderMuroforo(accessToken) {
-    const container = document.getElementById('muroContent');
-    if (!container) return;
-    
-    let shirt = null;
-    let messages = [];
-    let isDemo = false;
-    
-    if (DEMO_SHIRTS[accessToken]) {
-        shirt = DEMO_SHIRTS[accessToken];
-        messages = DEMO_MESSAGES.filter(m => m.shirt_id === shirt.id);
-        isDemo = true;
-    } else if (supabase) {
-        let { data: shirtData } = await supabase.from('shirts').select('*, profiles(username)').eq('private_code', accessToken).single();
-        if (!shirtData) {
-            const { data: shirtByQr } = await supabase.from('shirts').select('*, profiles(username)').eq('qr_secret', accessToken).single();
-            shirtData = shirtByQr;
-        }
-        shirt = shirtData;
-        if (shirt) {
-            const { data: msgs } = await supabase.from('messages').select('*').eq('shirt_id', shirt.id).eq('status', 'approved').order('created_at', { ascending: false });
-            messages = msgs || [];
-        }
-    }
-    
-    if (!shirt) {
-        container.innerHTML = '<div class="muro-locked"><div style="font-size:1.5rem; color:#FF3333; margin-bottom:1rem;">⚠ CÓDIGO NO VÁLIDO</div><div style="color:#888;">Este código no corresponde a ninguna camiseta activa.<br><br><span style="color:#555">Códigos de prueba: 123456, 987654, 555555</span></div></div>';
-        return;
-    }
-    
-    const dbData = DB[shirt.code];
-    const color = dbData?.color || '#33FF33';
-    const cat = dbData?.cat || shirt.code;
-    const shortText = dbData ? (dbData.short_es || dbData.short_en) : '';
-    
-    let html = '<div class="decode-header"><span class="decode-category" style="border-color:'+color+';color:'+color+'">'+cat+'</span><span class="decode-code">'+shirt.code+' — MUROFORO</span></div><div style="width:100%;height:2px;background:'+color+';margin-bottom:1.5rem;"></div>';
-    
-    html += '<div style="font-size:0.75rem; color:#FF3333; margin-bottom:1.5rem; border-left:2px solid #FF3333; padding-left:0.8rem; line-height:1.4;">⚠️ <strong>ADVERTENCIA:</strong> Los mensajes publicados no se pueden borrar. Nadie puede. Ni tú. Ni el portador. Ni nosotros. Una vez enviados, permanecen.</div>';
-    
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;"><div style="font-size:0.8rem;color:#666;">'+messages.length+' mensaje'+(messages.length!==1?'s':'')+' · '+(shirt.status==='active'?'<span style="color:#33FF33;">● ABIERTO</span>':shirt.status==='paused'?'<span style="color:#FFB000;">⏸️ PAUSADO</span>':'<span style="color:#FF3333;">⚪ CERRADO</span>')+(isDemo?' <span style="color:#555;">[DEMO]</span>':'')+'</div><div style="font-size:0.75rem;color:#444;border-left:2px solid '+color+';padding-left:0.8rem;">"'+shortText+'"</div></div>';
-    
-    if (shirt.status === 'closed') {
-        html += '<div class="muro-locked"><div style="font-size:1.5rem; color:'+color+'; margin-bottom:1rem;">⚪ CANAL CERRADO</div><div style="color:#888;">'+(shirt.custom_close_message||'El portador ha cerrado este canal.')+'</div></div>';
-        container.innerHTML = html;
-        return;
-    }
-    
-    const pinnedMsg = messages.find(m => m.content.startsWith('[FIJADO]'));
-    if (pinnedMsg) {
-        html += '<div class="muro-pinned" style="--cat-color:'+color+'"><div class="muro-pinned-label">📌 MENSAJE DEL PORTADOR</div><div style="color:#CCC; font-size:1rem; line-height:1.5;">'+escapeHtml(pinnedMsg.content.replace('[FIJADO] ',''))+'</div><div style="font-size:0.7rem; color:#555; margin-top:0.5rem;">'+timeAgo(pinnedMsg.created_at)+'</div></div>';
-    }
-    
-    if (shirt.status === 'paused') {
-        html += '<div class="muro-locked" style="border:1px solid #333; margin-bottom:1.5rem;"><div style="font-size:1.2rem; color:#FFB000; margin-bottom:0.5rem;">⏸️ CANAL PAUSADO</div><div style="color:#888; font-size:0.9rem;">Puedes leer, pero no enviar mensajes por ahora.</div></div>';
-    }
-    
-    html += '<div id="muroMessages">';
-    const normalMessages = messages.filter(m => !m.content.startsWith('[FIJADO]'));
-    if (normalMessages.length > 0) {
-        normalMessages.forEach(msg => {
-            const name = msg.is_anonymous ? 'Anónimo' : (msg.author_name || 'Usuario');
-            const initials = getInitials(name);
-            const avatarColor = msg.is_anonymous ? '#555' : color;
-            html += '<div class="muro-message" style="position:relative;"><div style="display:flex; gap:1rem; align-items:flex-start;"><div style="width:36px; height:36px; border-radius:50%; background:'+avatarColor+'; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#0A0A0A; font-weight:bold; flex-shrink:0;">'+initials+'</div><div style="flex:1; min-width:0;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem; flex-wrap:wrap; gap:0.5rem;"><div class="muro-author" style="margin-bottom:0;">'+name+(!msg.is_anonymous?' <span style="color:#555; font-size:0.65rem;">● verificado</span>':'')+'</div><div style="font-size:0.7rem; color:#444;">'+timeAgo(msg.created_at)+'</div></div><div class="muro-content" style="margin-bottom:0.8rem;">'+escapeHtml(msg.content)+'</div><div style="display:flex; gap:1.5rem; font-size:0.75rem; color:#555;"><span style="cursor:pointer;" onclick="requestPrivateContact(\''+shirt.id+'\', \''+(msg.author_id||msg.author_name||'anon')+'\', \''+color+'\', '+(isDemo===true)+')" onmouseover="this.style.color=\''+color+'\'" onmouseout="this.style.color=\'#555\'">📩 Solicitar contacto</span><span style="cursor:pointer;" onmouseover="this.style.color=\''+color+'\'" onmouseout="this.style.color=\'#555\'">💬 Responder</span></div></div></div></div>';
-        });
-    } else {
-        html += '<div style="color:#555; padding:2rem 0; text-align:center; border:1px dashed #222;"><div style="font-size:1.2rem; margin-bottom:0.5rem;">🕯️</div><div>Este muroforo está en silencio.</div><div style="font-size:0.8rem; color:#444; margin-top:0.5rem;">Sé el primero en dejar una huella.</div></div>';
-    }
-    html += '</div>';
-    
-    if (shirt.status === 'active') {
-        if (currentUser) {
-            html += '<div class="muro-form"><div class="decode-question" style="margin-bottom:0.3rem;">Deja tu mensaje</div><div class="decode-sub" style="margin-bottom:1rem;">Anónimo o con nombre. Mínimo 10 caracteres.</div><textarea id="muroText" class="message-textarea" placeholder="Escribe aquí lo que quieras decirle al portador..." minlength="10" style="min-height:80px;"></textarea><div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem; flex-wrap:wrap; gap:1rem;"><div class="checkbox-group" style="margin-top:0;"><input type="checkbox" id="muroAnon" checked style="width:16px;height:16px;accent-color:'+color+';cursor:pointer;"><label for="muroAnon" style="color:'+color+';cursor:pointer;">Enviar anónimamente</label></div><div style="font-size:0.75rem; color:#444;" id="charCount">0 caracteres</div></div><button class="btn" style="--cat-color:'+color+'; margin-top:1rem;" onclick="postMuroMessage(\''+shirt.id+'\', \''+color+'\', '+(isDemo===true)+')">PUBLICAR</button></div>';
-        } else {
-            html += '<div class="muro-form" style="text-align:center; color:#555;"><div style="font-size:1.5rem; margin-bottom:1rem;">🔒</div><p>Para escribir necesitas <a onclick="showAuth()" style="color:#33FF33; cursor:pointer;">iniciar sesión</a>.</p><p style="font-size:0.8rem; margin-top:0.5rem;">No pedimos género, edad ni datos innecesarios.</p></div>';
-        }
-    }
-    
-    container.innerHTML = html;
-    
-    const textarea = document.getElementById('muroText');
-    const charCount = document.getElementById('charCount');
-    if (textarea && charCount) {
-        textarea.addEventListener('input', function() {
-            const len = this.value.length;
-            charCount.textContent = len + ' caracter' + (len !== 1 ? 'es' : '');
-            charCount.style.color = len < 10 ? '#FF3333' : len < 50 ? '#FFB000' : '#33FF33';
-        });
-    }
-    
-    if (!isDemo && supabase) {
-        if (realtimeChannel) supabase.removeChannel(realtimeChannel);
-        realtimeChannel = supabase.channel('muroforo-'+shirt.id).on('postgres_changes', { event:'INSERT', schema:'public', table:'messages', filter:'shirt_id=eq.'+shirt.id }, payload => {
-            if (payload.new.status === 'approved') appendMuroMessage(payload.new, color, shirt.id, false);
-        }).subscribe();
-    }
-}
-
-function requestPrivateContact(shirtId, recipientId, color, isDemo) {
-    if (!currentUser) {
-        alert('Necesitas iniciar sesión para solicitar contacto privado.');
-        showAuth();
-        return;
-    }
-    const confirmMsg = '⚠️ ADVERTENCIA DECODE-IT\n\nSolo puedes enviar 1 solicitud de contacto privado por mes.\nUna vez enviada, no se puede editar ni borrar.\nEl destinatario debe aceptar para abrir el canal privado.\n\n¿Estás seguro?';
-    if (!confirm(confirmMsg)) return;
-    if (isDemo) {
-        alert('📩 Solicitud enviada en modo demo.\nLímite real: 1 solicitud por mes.');
-        return;
-    }
-    alert('Función en desarrollo para producción.');
-}
-
-function appendMuroMessage(msg, color, shirtId, isDemo) {
-    const container = document.getElementById('muroMessages');
-    if (!container) return;
-    const name = msg.is_anonymous ? 'Anónimo' : (msg.author_name || 'Usuario');
-    const initials = getInitials(name);
-    const avatarColor = msg.is_anonymous ? '#555' : color;
-    const div = document.createElement('div');
-    div.className = 'muro-message';
-    div.style.position = 'relative';
-    div.style.opacity = '0';
-    div.style.transform = 'translateY(-10px)';
-    div.style.transition = 'all 0.4s ease';
-    div.innerHTML = '<div style="display:flex; gap:1rem; align-items:flex-start;"><div style="width:36px; height:36px; border-radius:50%; background:'+avatarColor+'; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#0A0A0A; font-weight:bold; flex-shrink:0;">'+initials+'</div><div style="flex:1; min-width:0;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem; flex-wrap:wrap; gap:0.5rem;"><div class="muro-author" style="margin-bottom:0;">'+name+(!msg.is_anonymous?' <span style="color:#555; font-size:0.65rem;">● verificado</span>':'')+'</div><div style="font-size:0.7rem; color:#444;">'+timeAgo(msg.created_at)+'</div></div><div class="muro-content" style="margin-bottom:0.8rem;">'+escapeHtml(msg.content)+'</div><div style="display:flex; gap:1.5rem; font-size:0.75rem; color:#555;"><span style="cursor:pointer;" onclick="requestPrivateContact(\''+(shirtId||'demo')+'\', \''+(msg.author_id||msg.author_name||'anon')+'\', \''+color+'\', '+(isDemo===true)+')" onmouseover="this.style.color=\''+color+'\'" onmouseout="this.style.color=\'#555\'">📩 Solicitar contacto</span><span style="cursor:pointer;" onmouseover="this.style.color=\''+color+'\'" onmouseout="this.style.color=\'#555\'">💬 Responder</span></div></div></div></div>';
-    container.insertBefore(div, container.firstChild);
-    setTimeout(() => { div.style.opacity = '1'; div.style.transform = 'translateY(0)'; }, 50);
-}
-
-async function postMuroMessage(shirtId, color, isDemo = false) {
-    if (!currentUser) {
-        alert('Necesitas iniciar sesión para publicar.');
-        showAuth();
-        return;
-    }
-    
-    const content = document.getElementById('muroText').value.trim();
-    const isAnon = document.getElementById('muroAnon').checked;
-    
-    if (content.length < 10) {
-        alert('Mínimo 10 caracteres para asegurar coherencia.');
-        return;
-    }
-    
-    const userId = currentUser.id || currentUser.email || 'anon';
-    const rateKey = userId + '_' + shirtId;
-    const now = Date.now();
-    const oneMonth = 30 * 24 * 60 * 60 * 1000;
-    
-    if (isDemo) {
-        if (DEMO_RATE_LIMIT[rateKey] && (now - DEMO_RATE_LIMIT[rateKey]) < oneMonth) {
-            const diasRestantes = Math.ceil((oneMonth - (now - DEMO_RATE_LIMIT[rateKey])) / (24 * 60 * 60 * 1000));
-            alert('⏳ Ya enviaste un mensaje a este muroforo recientemente.\n\nDebes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' para volver a escribir aquí.\n\nLímite: 1 mensaje por mes por código.');
-            return;
-        }
-    } else if (supabase) {
-        const thirtyDaysAgo = new Date(now - oneMonth).toISOString();
-        const { data: recentMsgs, error: countError } = await supabase
-            .from('messages')
-            .select('id, created_at')
-            .eq('shirt_id', shirtId)
-            .eq('author_id', currentUser.id)
-            .gte('created_at', thirtyDaysAgo);
-        
-        if (countError) { alert('Error de verificación: ' + countError.message); return; }
-        if (recentMsgs && recentMsgs.length > 0) {
-            const ultimo = new Date(recentMsgs[0].created_at);
-            const diasPasados = Math.floor((now - ultimo) / (24 * 60 * 60 * 1000));
-            const diasRestantes = 30 - diasPasados;
-            alert('⏳ Ya enviaste un mensaje a este muroforo hace ' + diasPasados + ' días.\n\nDebes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' más.\n\nLímite: 1 mensaje por mes por código.');
-            return;
-        }
-    }
-    
-    const confirmSend = confirm(
-        '⚠️ ÚLTIMA ADVERTENCIA\n\n' +
-        'Este mensaje se publicará de forma irreversible.\n' +
-        'No podrás editarlo ni borrarlo.\n' +
-        'Solo podrás escribir 1 vez por mes en este muroforo.\n\n' +
-        '¿Estás seguro de que quieres enviarlo?'
-    );
-    if (!confirmSend) return;
-    
-    if (isDemo) {
-        DEMO_RATE_LIMIT[rateKey] = now;
-        const demoMsg = {
-            id: 'demo-new-' + now,
-            shirt_id: shirtId,
-            content: content,
-            author_name: isAnon ? 'Anónimo' : (currentProfile?.username || 'Usuario Demo'),
-            author_id: userId,
-            is_anonymous: isAnon,
-            status: 'approved',
-            created_at: new Date(now).toISOString()
-        };
-        appendMuroMessage(demoMsg, color, shirtId, true);
-        document.getElementById('muroText').value = '';
-        alert('✅ Mensaje publicado irreversiblemente.\n\nPróximo mensaje disponible en 30 días.');
-        return;
-    }
-    
-    if (!supabase) { alert('Supabase no conectado.'); return; }
-    
-    const { error } = await supabase.from('messages').insert({
-        shirt_id: shirtId,
-        content,
-        author_id: currentUser.id,
-        author_name: currentProfile?.username || 'Usuario',
-        is_anonymous: isAnon,
-        status: 'pending'
-    });
-    
-    if (error) alert(error.message);
-    else {
-        document.getElementById('muroText').value = '';
-        alert('✅ Mensaje enviado irreversiblemente.\n\nAparecerá tras revisión del portador.\nPróximo mensaje disponible en 30 días.');
-    }
-}
-
-window.requestPrivateContact = requestPrivateContact;
-window.appendMuroMessage = appendMuroMessage;
-window.postMuroMessage = postMuroMessage;
-// ==========================================
+    // ==========================================
 // DASHBOARD
 // ==========================================
 async function renderDashboard() {
@@ -2184,15 +1997,6 @@ async function moderateMsg(msgId, status) {
 }
 
 // ==========================================
-// UTILS
-// ==========================================
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// ==========================================
 // INIT
 // ==========================================
 async function initApp() {
@@ -2245,13 +2049,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const codeInput = document.getElementById('codeInput');
     if (codeInput) {
         codeInput.addEventListener('keydown', function(e) {
-            // Auto-guion: si escribe una letra y no hay guion, lo añade
             if (e.key.length === 1 && /[a-zA-Z]/.test(e.key) && !this.value.includes('-')) {
                 this.value = e.key.toUpperCase() + '-';
                 e.preventDefault();
                 return;
             }
-            // Enter para buscar
             if (e.key === 'Enter') {
                 const val = this.value.trim().toUpperCase();
                 if (DB[val]) {
@@ -2264,14 +2066,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 this.value = '';
             }
-            // Backspace borra todo si solo queda S-
             if (e.key === 'Backspace' && /^[A-Z]-?$/.test(this.value)) {
                 this.value = '';
                 e.preventDefault();
             }
         });
         codeInput.addEventListener('input', function() {
-            // Forzar mayúsculas y limitar a formato X-NNN
             let val = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             if (val.length > 0) {
                 const letter = val[0];
@@ -2296,12 +2096,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     conectarSupabase();
 });
-    
-// Exponer funciones al scope global para onclick
+
+// ==========================================
+// WINDOW EXPORTS (todas las funciones para onclick)
+// ==========================================
 window.showLanding = showLanding;
 window.showAbout = showAbout;
-window.storeLang = storeLang;
-window.currentLang = currentLang;
 window.showIntermedia = showIntermedia;
 window.showVisualGallery = showVisualGallery;
 window.showStore = showStore;
@@ -2328,8 +2128,18 @@ window.postMonthly = postMonthly;
 window.doClaim = doClaim;
 window.moderateMsg = moderateMsg;
 window.requestPrivateContact = requestPrivateContact;
-window.currentLang = currentLang;
-window.storeLang = storeLang;
+window.renderVisualGallery = renderVisualGallery;
+window.renderModelCodes = renderModelCodes;
+window.renderDecode = renderDecode;
+window.renderMuroforo = renderMuroforo;
+window.renderDashboard = renderDashboard;
+window.renderAdmin = renderAdmin;
+window.appendMuroMessage = appendMuroMessage;
+window.escapeHtml = escapeHtml;
+window.timeAgo = timeAgo;
+window.getInitials = getInitials;
+window.currentLang = window.currentLang || 'es';
+window.storeLang = window.storeLang || 'es';
 
 })();
 </script>

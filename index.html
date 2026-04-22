@@ -1617,7 +1617,8 @@ function renderVisualGallery() {
         
         const displayText = window.galleryLang === 'en' ? data.short_en : data.short_es;
         const catLabel = window.galleryLang === 'en' ? (CATEGORIES[code[0]]?.name_en || data.cat) : data.cat;
-                const totalUnits = 5;
+        
+        const totalUnits = 5;
         const esColor = data.stock.es > 0 ? '#33FF33' : '#555';
         const enColor = data.stock.en > 0 ? '#33FF33' : '#555';
         
@@ -1650,7 +1651,9 @@ function renderVisualGallery() {
                 ${stockDisplay}
             </div>
         `;
-
+        grid.appendChild(card);
+    });
+}
 // ==========================================
 // RENDER MODEL CODES
 // ==========================================

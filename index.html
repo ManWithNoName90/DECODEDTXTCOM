@@ -886,33 +886,32 @@
 
     <div id="landing" class="landing-wrap">
         <div class="terminal-container">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-                <div class="logo">DECODE-<span>IT</span></div>
-                <div class="auth-status"></div>
-            </div>
-            
-            <div class="terminal-line"></div>
-            
-            <div class="input-group">
-                <span class="prompt">></span>
-                <input type="text" id="codeInput" placeholder="S-017" autocomplete="off" autofocus maxlength="5">
-                <span class="cursor">_</span>
-            </div>
-            <p class="terminal-hint">Formato: S-017 (letra, guion, 3 números)</p>
-            
-            <p class="terminal-text"> > Alguien lleva puesto lo que no se atreve, o prefiere decir de otra manera. 
-                
-                >> Para descifrarlo, tú solo necesitas el código. 
-                
-                >>> Búscalo.</p>
-            <p class="terminal-question">¿Viste una camiseta en la calle? Hay un mensaje esperando. ¿No viste nada? También hay algo para ti.</p>
-            
-            <div class="terminal-actions">
-                <a class="terminal-link" onclick="showIntermedia()">NO HE VISTO EL CÓDIGO → Ver opciones</a>
-                <a class="terminal-link-alt" onclick="showAbout()">¿Qué es DECODE IT? →</a>
-            </div>
-        </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <div class="logo">DECODE-<span>IT</span></div>
+        <div class="auth-status"></div>
     </div>
+    
+    <div class="input-group">
+        <span class="prompt">></span>
+        <input type="text" id="codeInput" placeholder="S-017" autocomplete="off" autofocus maxlength="5">
+        <span class="cursor">_</span>
+    </div>
+    <p class="terminal-hint">Formato: S-017 (letra, guion, 3 números)</p>
+    
+    <div class="terminal-line"></div>
+    
+    <p class="terminal-text"> > Alguien lleva puesto lo que no se atreve, o prefiere decir de otra manera. 
+        
+        >> Para descifrarlo, tú solo necesitas el código. 
+        
+        >>> Búscalo.</p>
+    <p class="terminal-question">¿Viste una camiseta en la calle? Hay un mensaje esperando. ¿No viste nada? También hay algo para ti.</p>
+    
+    <div class="terminal-actions">
+        <a class="terminal-link" onclick="showIntermedia()">NO HE VISTO EL CÓDIGO → Ver opciones</a>
+        <a class="terminal-link-alt" onclick="showAbout()">¿Qué es DECODE IT? →</a>
+    </div>
+</div>
 
     <div id="about" class="hidden">
         <div class="page-container">
@@ -1484,7 +1483,7 @@ async function doLogin() {
     const pass = document.getElementById('loginPass').value;
     const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
     if (error) alert(error.message);
-    else { await loadSession(); showDashboard(); }
+    else { await loadSession(); showLanding(); }
 }
 
 async function doRegister() {
@@ -1520,7 +1519,7 @@ async function verifyOTP() {
     const token = document.getElementById('phoneCode').value;
     const { error } = await supabase.auth.verifyOtp({ phone, token, type: 'sms' });
     if (error) alert(error.message);
-    else { await loadSession(); showDashboard(); }
+    else { await loadSession(); showLanding(); }
 }
 
 async function doLogout() {

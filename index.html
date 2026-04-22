@@ -1285,16 +1285,16 @@ const DB = {
     'T-091': { cat:'TRAVEL / VIAJERO', color:'#00DDAA', short_es:'SE BUSCA GUÍA LOCAL. NO DE APP DE RESERVAS.', long_es:'No quiero tu tour. Quiero tu martes. Tu lavandería. Tu queja del alcalde. Muéstrame la ciudad que aguantas, no la que vendes. Yo invito al café. Tú traes la honestidad.', short_en:'LOCAL GUIDE WANTED. NOT FROM A BOOKING APP.', long_en:'I do not want your tour. I want your Tuesday. Your laundromat. Your complaint about the mayor. Show me the city you endure, not the one you sell. I will buy the coffee. You bring the honesty.', stock:{es:5, en:5} }
 };
 const CATEGORIES = {
-    'S': { name:'SINGLE / DATING', color:'#33FF33', desc:'Disponibilidad romántica' },
-    'B': { name:'BARRIO / LOCAL', color:'#FFB000', desc:'Vecindad, comunidad' },
-    'G': { name:'GLOBAL / ACTIVISMO', color:'#00FFFF', desc:'Environmental, político, social' },
-    'X': { name:'XPLICIT / ADULTO', color:'#FF3333', desc:'Explícito, consentimiento, adulto' },
-    'M': { name:'MOOD / ESTADO', color:'#9D00FF', desc:'Vibe del día, neurodivergencia' },
-    'F': { name:'FRIKI / GEEK', color:'#FFFFFF', desc:'Gaming, anime, tech, cultura' },
-    'H': { name:'HUMOR / SARCASMO', color:'#FF8800', desc:'Ironía sistémica, metahumor' },
-    'P': { name:'PROFESIONAL', color:'#0066CC', desc:'Networking, empleo, colaboración' },
-    'C': { name:'CREATIVO / ARTE', color:'#FF00FF', desc:'Música, arte, escritura' },
-    'T': { name:'TRAVEL / VIAJERO', color:'#00DDAA', desc:'Nómadas, exploración, local' }
+    'S': { name:'SINGLE / DATING', name_en:'SINGLE / DATING', color:'#33FF33', desc:'Disponibilidad romántica', desc_en:'Romantic availability' },
+    'B': { name:'BARRIO / LOCAL', name_en:'NEIGHBORHOOD / LOCAL', color:'#FFB000', desc:'Vecindad, comunidad', desc_en:'Neighborhood, community' },
+    'G': { name:'GLOBAL / ACTIVISMO', name_en:'GLOBAL / ACTIVISM', color:'#00FFFF', desc:'Environmental, político, social', desc_en:'Environmental, political, social' },
+    'X': { name:'XPLICIT / ADULTO', name_en:'EXPLICIT / ADULT', color:'#FF3333', desc:'Explícito, consentimiento, adulto', desc_en:'Explicit, consent, adult' },
+    'M': { name:'MOOD / ESTADO', name_en:'MOOD / STATE', color:'#9D00FF', desc:'Vibe del día, neurodivergencia', desc_en:'Vibe of the day, neurodivergence' },
+    'F': { name:'FRIKI / GEEK', name_en:'GEEK / NERD', color:'#FFFFFF', desc:'Gaming, anime, tech, cultura', desc_en:'Gaming, anime, tech, culture' },
+    'H': { name:'HUMOR / SARCASMO', name_en:'HUMOR / SARCASM', color:'#FF8800', desc:'Ironía sistémica, metahumor', desc_en:'Systemic irony, metahumor' },
+    'P': { name:'PROFESIONAL', name_en:'PROFESSIONAL', color:'#0066CC', desc:'Networking, empleo, colaboración', desc_en:'Networking, employment, collaboration' },
+    'C': { name:'CREATIVO / ARTE', name_en:'CREATIVE / ART', color:'#FF00FF', desc:'Música, arte, escritura', desc_en:'Music, art, writing' },
+    'T': { name:'TRAVEL / VIAJERO', name_en:'TRAVEL / TRAVELER', color:'#00DDAA', desc:'Nómadas, exploración, local', desc_en:'Nomads, exploration, local' }
 };
 
 const MODELS = {
@@ -1425,10 +1425,10 @@ function showDecodeFromCode(code, backTo) {
     if (el) el.classList.remove('hidden');
     const back = document.getElementById('decodeBack');
     if (back) back.onclick = backTo || showLanding;
-    window.currentLang = 'es';
+    window.currentLang = window.galleryLang || 'es';
     renderDecode(code);
 }
-
+    
 function showMuroforo(accessToken) {
     hideAll();
     const el = document.getElementById('muroforo');
@@ -1573,10 +1573,23 @@ function renderVisualGallery() {
     grid.innerHTML = '';
     legend.innerHTML = '';
     
+    window.galleryLang = window.galleryLang || 'es';
+    
+    // Toggle de idioma (ocupa toda la fila, los items saltan debajo)
+    const langToggle = document.createElement('div');
+    langToggle.style.cssText = 'width:100%; margin-bottom:0.5rem;';
+    langToggle.innerHTML = `
+        <div class="lang-toggle" style="display:flex; gap:0.5rem;">
+            <button style="background:transparent; border:1px solid ${window.galleryLang==='es'?'#33FF33':'#444'}; color:${window.galleryLang==='es'?'#33FF33':'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="window.galleryLang='es';renderVisualGallery()">ESPAÑOL</button>
+            <button style="background:transparent; border:1px solid ${window.galleryLang==='en'?'#33FF33':'#444'}; color:${window.galleryLang==='en'?'#33FF33':'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="window.galleryLang='en';renderVisualGallery()">ENGLISH</button>
+        </div>
+    `;
+    legend.appendChild(langToggle);
+    
     const allBtn = document.createElement('div');
     allBtn.className = 'legend-item' + (currentFilter === 'ALL' ? ' active' : '');
     allBtn.style.setProperty('--legend-color', '#888');
-    allBtn.innerHTML = `<div class="legend-dot" style="background:#888"></div> TODAS`;
+    allBtn.innerHTML = `<div class="legend-dot" style="background:#888"></div> ${window.galleryLang === 'en' ? 'ALL' : 'TODAS'}`;
     allBtn.onclick = () => { currentFilter = 'ALL'; renderVisualGallery(); };
     legend.appendChild(allBtn);
     
@@ -1584,7 +1597,8 @@ function renderVisualGallery() {
         const item = document.createElement('div');
         item.className = 'legend-item' + (currentFilter === letter ? ' active' : '');
         item.style.setProperty('--legend-color', info.color);
-        item.innerHTML = `<div class="legend-dot" style="background:${info.color}"></div> ${info.name}`;
+        const catName = window.galleryLang === 'en' ? (info.name_en || info.name) : info.name;
+        item.innerHTML = `<div class="legend-dot" style="background:${info.color}"></div> ${catName}`;
         item.onclick = () => { currentFilter = letter; renderVisualGallery(); };
         legend.appendChild(item);
     });
@@ -1596,20 +1610,35 @@ function renderVisualGallery() {
         const card = document.createElement('div');
         card.className = 'shirt-card';
         card.style.setProperty('--cat-color', data.color);
-        card.onclick = () => showDecodeFromCode(code, showVisualGallery);
+        card.onclick = () => {
+            window.currentLang = window.galleryLang || 'es';
+            showDecodeFromCode(code, showVisualGallery);
+        };
         
         const hasES = data.stock.es > 0;
         const hasEN = data.stock.en > 0;
         let langBadge = '';
-        if (data.stock.es > 0 && data.stock.en > 0) langBadge = '<span style="color:#33FF33;">ES ● EN</span>';
-        else if (data.stock.es > 0) langBadge = '<span style="color:#33FF33;">ES</span> <span style="color:#333;">EN</span>';
-        else if (data.stock.en > 0) langBadge = '<span style="color:#333;">ES</span> <span style="color:#33FF33;">EN</span>';
-        else langBadge = '<span style="color:#FF3333;">AGOTADO</span>';
+        if (window.galleryLang === 'es') {
+            if (hasES && hasEN) langBadge = '<span style="color:#33FF33;">ES ● EN</span>';
+            else if (hasES) langBadge = '<span style="color:#33FF33;">ES</span> <span style="color:#333;">EN</span>';
+            else if (hasEN) langBadge = '<span style="color:#333;">ES</span> <span style="color:#33FF33;">EN</span>';
+            else langBadge = '<span style="color:#FF3333;">AGOTADO</span>';
+        } else {
+            if (hasEN && hasES) langBadge = '<span style="color:#33FF33;">EN ● ES</span>';
+            else if (hasEN) langBadge = '<span style="color:#33FF33;">EN</span> <span style="color:#333;">ES</span>';
+            else if (hasES) langBadge = '<span style="color:#333;">EN</span> <span style="color:#33FF33;">ES</span>';
+            else langBadge = '<span style="color:#FF3333;">SOLD OUT</span>';
+        }
+        
+        const displayText = window.galleryLang === 'en' ? data.short_en : data.short_es;
+        const stockTotal = data.stock.es + data.stock.en;
+        const stockLabel = window.galleryLang === 'en' ? (stockTotal + ' total units') : (stockTotal + ' unidades totales');
+        const catLabel = window.galleryLang === 'en' ? (CATEGORIES[code[0]]?.name_en || data.cat) : data.cat;
         
         card.innerHTML = `
             <div class="shirt-front">
                 <div class="shirt-line-top"></div>
-                <div class="shirt-msg">${data.short_es}</div>
+                <div class="shirt-msg">${displayText}</div>
             </div>
             <div class="shirt-back">
                 <div class="shirt-code">${code}</div>
@@ -1618,10 +1647,10 @@ function renderVisualGallery() {
             </div>
             <div class="shirt-meta">
                 <div class="shirt-code-id">${code}</div>
-                <div class="shirt-cat">${data.cat}</div>
+                <div class="shirt-cat">${catLabel}</div>
             </div>
             <div class="shirt-lang">${langBadge}</div>
-            <div class="shirt-stock">${data.stock.es + data.stock.en} unidades totales</div>
+            <div class="shirt-stock">${stockLabel}</div>
         `;
         grid.appendChild(card);
     });

@@ -1617,21 +1617,20 @@ function renderVisualGallery() {
         
         const displayText = window.galleryLang === 'en' ? data.short_en : data.short_es;
         const catLabel = window.galleryLang === 'en' ? (CATEGORIES[code[0]]?.name_en || data.cat) : data.cat;
+                const totalUnits = 5;
+        const esColor = data.stock.es > 0 ? '#33FF33' : '#555';
+        const enColor = data.stock.en > 0 ? '#33FF33' : '#555';
         
-        // Stock por idioma real
-        const langParts = [];
-        if (data.stock.es > 0) langParts.push('<span style="color:#33FF33;">ES</span>');
-        if (data.stock.en > 0) langParts.push('<span style="color:#33FF33;">EN</span>');
-        const langBadge = langParts.length > 0 
-            ? langParts.join(' <span style="color:#555;">●</span> ') 
-            : '<span style="color:#FF3333;">' + (window.galleryLang === 'en' ? 'SOLD OUT' : 'AGOTADO') + '</span>';
-        
-        const stockParts = [];
-        if (data.stock.es > 0) stockParts.push(`${data.stock.es} ES`);
-        if (data.stock.en > 0) stockParts.push(`${data.stock.en} EN`);
-        const stockDisplay = stockParts.length > 0 
-            ? stockParts.join(' · ') 
-            : (window.galleryLang === 'en' ? 'SOLD OUT' : 'AGOTADO');
+        let stockDisplay = '';
+        if (data.stock.es === 0 && data.stock.en === 0) {
+            stockDisplay = '<span style="color:#FF3333;">' + (window.galleryLang === 'en' ? 'SOLD OUT' : 'AGOTADO') + '</span>';
+        } else {
+            stockDisplay = `
+                <span style="color:${esColor}">${data.stock.es}/${totalUnits} ES</span>
+                <span style="color:#333;"> · </span>
+                <span style="color:${enColor}">${data.stock.en}/${totalUnits} EN</span>
+            `;
+        }
         
         card.innerHTML = `
             <div class="shirt-front">
@@ -1647,14 +1646,10 @@ function renderVisualGallery() {
                 <div class="shirt-code-id">${code}</div>
                 <div class="shirt-cat">${catLabel}</div>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:0 0.5rem 0.6rem; font-size:0.75rem;">
-                <div class="shirt-lang" style="margin-top:0;">${langBadge}</div>
-                <div class="shirt-stock" style="margin-top:0; color:#FFB000;">${stockDisplay}</div>
+            <div style="padding:0 0.5rem 0.6rem; font-size:0.75rem; text-align:right;">
+                ${stockDisplay}
             </div>
         `;
-        grid.appendChild(card);
-    });
-}
 
 // ==========================================
 // RENDER MODEL CODES

@@ -1310,6 +1310,7 @@ const DEMO_SHIRTS = {
 };
 
 const DEMO_MESSAGES = [
+    const DEMO_RATE_LIMIT = {}; // { 'userId_shirtId': timestamp }
     { id: 'demo-msg-1', shirt_id: 'demo-1', content: 'Hola, vi tu camiseta en el metro de Sol. Me hizo gracia lo del "single de verdad". ¿Tomamos algo?', author_name: 'ChicoDelMetro', is_anonymous: false, status: 'approved', created_at: new Date(Date.now() - 3600000).toISOString() },
     { id: 'demo-msg-2', shirt_id: 'demo-1', content: 'No sé si es atrevimiento o valentía llevar eso puesto. Me encanta.', author_name: 'Anónimo', is_anonymous: true, status: 'approved', created_at: new Date(Date.now() - 86400000).toISOString() },
     { id: 'demo-msg-3', shirt_id: 'demo-2', content: 'Mi alquiler también subió un 40%. Te entiendo perfectamente. Fuerza.', author_name: 'VecinaDel5o', is_anonymous: false, status: 'approved', created_at: new Date(Date.now() - 172800000).toISOString() }
@@ -1411,45 +1412,7 @@ function showMuroforo(accessToken) {
     const el = document.getElementById('muroforo');
     if (el) el.classList.remove('hidden');
     if (supabase) {
-        renderMuroforo(accessToken);
-    } else {
-        const container = document.getElementById('muroContent');
-        if (container) container.innerHTML = '<div class="section-sub">Muroforo en modo offline. Conecta Supabase para activar.</div>';
-    }
-}
-
-function showAuth() {
-    hideAll();
-    const el = document.getElementById('authSection');
-    if (el) el.classList.remove('hidden');
-}
-
-function showDashboard() {
-    if (!currentUser) { showAuth(); return; }
-    hideAll();
-    const el = document.getElementById('dashboard');
-    if (el) el.classList.remove('hidden');
-    if (supabase) renderDashboard();
-    else {
-        const container = document.getElementById('dashContent');
-        if (container) container.innerHTML = '<div class="section-sub">Dashboard requiere conexión a Supabase.</div>';
-    }
-}
-
-function showAdmin() {
-    if (!currentProfile?.is_admin) return;
-    hideAll();
-    const el = document.getElementById('adminPanel');
-    if (el) el.classList.remove('hidden');
-    if (supabase) renderAdmin();
-}
-
-function showClaim() {
-    hideAll();
-    const el = document.getElementById('claimShirt');
-    if (el) el.classList.remove('hidden');
-}
-
+        
 // ==========================================
 // AUTH
 // ==========================================
@@ -1803,6 +1766,7 @@ async function renderMuroforo(accessToken) {
     const shortText = dbData ? (dbData.short_es || dbData.short_en) : '';
     
     let html = '<div class="decode-header"><span class="decode-category" style="border-color:'+color+';color:'+color+'">'+cat+'</span><span class="decode-code">'+shirt.code+' — MUROFORO</span></div><div style="width:100%;height:2px;background:'+color+';margin-bottom:1.5rem;"></div>';
+    html += '<div style="font-size:0.75rem; color:#FF3333; margin-bottom:1.5rem; border-left:2px solid #FF3333; padding-left:0.8rem; line-height:1.4;">⚠️ <strong>ADVERTENCIA:</strong> Los mensajes publicados no se pueden borrar. Nadie puede. Ni tú. Ni el portador. Ni nosotros. Una vez enviados, permanecen.</div>';
     
     html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;"><div style="font-size:0.8rem;color:#666;">'+messages.length+' mensaje'+(messages.length!==1?'s':'')+' · '+(shirt.status==='active'?'<span style="color:#33FF33;">● ABIERTO</span>':shirt.status==='paused'?'<span style="color:#FFB000;">⏸️ PAUSADO</span>':'<span style="color:#FF3333;">⚪ CERRADO</span>')+(isDemo?' <span style="color:#555;">[DEMO]</span>':'')+'</div><div style="font-size:0.75rem;color:#444;border-left:2px solid '+color+';padding-left:0.8rem;">"'+shortText+'"</div></div>';
     
@@ -1896,10 +1860,11 @@ function appendMuroMessage(msg, color, shirtId, isDemo) {
 
 async function postMuroMessage(shirtId, color, isDemo = false) {
     if (!currentUser) {
-        alert('Necesitas iniciar sesión para publicar en el muroforo.');
+        alert('Necesitas iniciar sesión para publicar.');
         showAuth();
         return;
     }
+    
     const content = document.getElementById('muroText').value.trim();
     const isAnon = document.getElementById('muroAnon').checked;
     
@@ -1908,22 +1873,67 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
         return;
     }
     
+    // VERIFICAR RATE LIMIT: 1 mensaje por mes por camiseta
+    const userId = currentUser.id || currentUser.email || 'anon';
+    const rateKey = userId + '_' + shirtId;
+    const now = Date.now();
+    const oneMonth = 30 * 24 * 60 * 60 * 1000; // 30 días en ms
+    
     if (isDemo) {
+        if (DEMO_RATE_LIMIT[rateKey] && (now - DEMO_RATE_LIMIT[rateKey]) < oneMonth) {
+            const diasRestantes = Math.ceil((oneMonth - (now - DEMO_RATE_LIMIT[rateKey])) / (24 * 60 * 60 * 1000));
+            alert('⏳ Ya enviaste un mensaje a este muroforo recientemente.\n\nDebes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' para volver a escribir aquí.\n\nLímite: 1 mensaje por mes por código.');
+            return;
+        }
+    } else if (supabase) {
+        const thirtyDaysAgo = new Date(now - oneMonth).toISOString();
+        const { data: recentMsgs, error: countError } = await supabase
+            .from('messages')
+            .select('id, created_at')
+            .eq('shirt_id', shirtId)
+            .eq('author_id', currentUser.id)
+            .gte('created_at', thirtyDaysAgo);
+        
+        if (countError) { alert('Error de verificación: ' + countError.message); return; }
+        if (recentMsgs && recentMsgs.length > 0) {
+            const ultimo = new Date(recentMsgs[0].created_at);
+            const diasPasados = Math.floor((now - ultimo) / (24 * 60 * 60 * 1000));
+            const diasRestantes = 30 - diasPasados;
+            alert('⏳ Ya enviaste un mensaje a este muroforo hace ' + diasPasados + ' días.\n\nDebes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' más.\n\nLímite: 1 mensaje por mes por código.');
+            return;
+        }
+    }
+    
+    // CONFIRMACIÓN FINAL ANTES DE ENVÍO
+    const confirmSend = confirm(
+        '⚠️ ÚLTIMA ADVERTENCIA\n\n' +
+        'Este mensaje se publicará de forma irreversible.\n' +
+        'No podrás editarlo ni borrarlo.\n' +
+        'Solo podrás escribir 1 vez por mes en este muroforo.\n\n' +
+        '¿Estás seguro de que quieres enviarlo?'
+    );
+    if (!confirmSend) return;
+    
+    // REGISTRAR RATE LIMIT (demo)
+    if (isDemo) {
+        DEMO_RATE_LIMIT[rateKey] = now;
         const demoMsg = {
-            id: 'demo-new-' + Date.now(),
+            id: 'demo-new-' + now,
             shirt_id: shirtId,
             content: content,
             author_name: isAnon ? 'Anónimo' : (currentProfile?.username || 'Usuario Demo'),
+            author_id: userId,
             is_anonymous: isAnon,
             status: 'approved',
-            created_at: new Date().toISOString()
+            created_at: new Date(now).toISOString()
         };
         appendMuroMessage(demoMsg, color, shirtId, true);
         document.getElementById('muroText').value = '';
-        alert('Mensaje publicado en modo demo.');
+        alert('✅ Mensaje publicado irreversiblemente.\n\nPróximo mensaje disponible en 30 días.');
         return;
     }
     
+    // MODO REAL: Supabase
     if (!supabase) { alert('Supabase no conectado.'); return; }
     
     const { error } = await supabase.from('messages').insert({
@@ -1938,7 +1948,7 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
     if (error) alert(error.message);
     else {
         document.getElementById('muroText').value = '';
-        alert('Mensaje enviado. Aparecerá tras revisión.');
+        alert('✅ Mensaje enviado irreversiblemente.\n\nAparecerá tras revisión del portador.\nPróximo mensaje disponible en 30 días.');
     }
 }
 // ==========================================

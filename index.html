@@ -1735,9 +1735,15 @@ async function checkPrivate(code, color) {
         return;
     }
     
+    // MODO DEMO: verificar códigos de prueba
+    if (DEMO_SHIRTS[val]) {
+        showMuroforo(val);
+        return;
+    }
+    
+    // MODO REAL: Supabase
     if (!supabase) {
-        alert('Supabase no conectado. Modo demo: cualquier código de 6 dígitos abre el muroforo demo.');
-        showMuroforo('demo');
+        alert('Código privado no válido. Códigos de prueba: 123456, 987654, 555555');
         return;
     }
     
@@ -1757,13 +1763,6 @@ async function checkPrivate(code, color) {
     }
     
     showMuroforo(shirt.private_code);
-}
-
-function showNoCode(code, color) {
-    const msgSec = document.getElementById('msgSection');
-    const noCodeSec = document.getElementById('noCodeSection');
-    if (msgSec) msgSec.classList.add('hidden');
-    if (noCodeSec) noCodeSec.classList.remove('hidden');
 }
 // ==========================================
 // MUROFORO

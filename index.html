@@ -2507,7 +2507,7 @@ function showConfirm(message, color = '#33FF33') {
                 <div class="confirm-text">${escapeHtml(message).replace(/\n/g, '<br>')}</div>
                 <div class="confirm-actions">
                     <button class="btn" style="--cat-color:${color}" onclick="this.closest('.confirm-overlay').dataset.result='true'; this.closest('.confirm-overlay').remove();">[ ACEPTAR ]</button>
-                    <button class="btn" style="--cat-color:#555" onclick="this.closest('.confirm-overlay').dataset.result='false'; this.closest('.confirm-overlay').remove();">[ CANCELAR ]</button>
+                    <button class="btn" style="--cat-color:#FF3333" onclick="this.closest('.confirm-overlay').dataset.result='false'; this.closest('.confirm-overlay').remove();">[ CANCELAR ]</button>
                 </div>
             </div>
         `;

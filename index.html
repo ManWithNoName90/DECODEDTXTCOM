@@ -82,10 +82,11 @@
             margin-bottom: 3rem;
             letter-spacing: 2px;
         }
-        .terminal-text {
+         .terminal-text {
             font-size: 1.5rem;
             line-height: 1.4;
             margin-bottom: 1rem;
+            margin-top: 2.5rem;
         }
         .terminal-question {
             font-size: 1.2rem;
@@ -156,16 +157,18 @@
         }
         .terminal-link-alt:hover { text-decoration: underline; opacity: 0.8; }
         .auth-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
             font-size: 0.75rem;
             color: #555;
             z-index: 200;
-            text-align: right;
             display: flex;
             flex-direction: column;
+            align-items: flex-end;
+            gap: 0.3rem;
+        }
+        .auth-row {
+            display: flex;
             gap: 0.8rem;
+            align-items: center;
         }
         .auth-status a, .auth-status span {
             color: #33FF33;
@@ -881,9 +884,9 @@
 </head>
 <body>
 
-    <div class="auth-status" id="authStatus">
-        <a onclick="showAuth()">[ ACCEDER / REGISTRARSE ]</a>
-    </div>
+            <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem;">
+                <div class="auth-status"></div>
+            </div>
 
     <div id="landing" class="landing-wrap">
         <div class="terminal-container">
@@ -901,7 +904,7 @@
             <p class="terminal-question">¿Viste una camiseta en la calle? Hay un mensaje esperando. ¿No viste nada? También hay algo para ti.</p>
             
             <div class="terminal-actions">
-                <a class="terminal-link" onclick="showIntermedia()">NO HE VISTO EL CÓDIGO DE LA CAMISETA → Ver opciones</a>
+                <a class="terminal-link" onclick="showIntermedia()">NO HE VISTO EL CÓDIGO → Ver opciones</a>
                 <a class="terminal-link-alt" onclick="showAbout()">¿Qué es DECODED.TXT? →</a>
             </div>
         </div>
@@ -911,7 +914,10 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="XXXXXXXX">< [ YYYYYY ]</a>
+                </div>
             </div>
             <div class="section-title">> PROTOCOLO DECODED.TXT</div>
             <div class="section-sub">Una nueva forma de comunicar sin hablar.</div>
@@ -955,7 +961,10 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="XXXXXXXX">< [ YYYYYY ]</a>
+                </div>
             </div>
             <div class="section-title">> MODO DE ACCESO NO IDENTIFICADO</div>
             <div class="section-sub">¿Cómo prefieres entrar?</div>
@@ -978,7 +987,10 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <a class="back-link" onclick="showIntermedia()">< [ VOLVER ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="XXXXXXXX">< [ YYYYYY ]</a>
+                </div>
             </div>
             <div class="section-title">IDENTIFICA LA CAMISETA</div>
             <div class="section-sub">Si reconoces el diseño, haz clic para decodificar. Pasa el ratón para ver la parte trasera.</div>
@@ -994,7 +1006,10 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <a class="back-link" onclick="showIntermedia()">< [ VOLVER ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="XXXXXXXX">< [ YYYYYY ]</a>
+                </div>
             </div>
             <div class="section-title">TIENDA</div>
             <div class="section-sub">Elige modelo, código e idioma. Solo hacemos Edición limitada: 5 unidades por mensaje. 3 en español y 2 en ingles. idioma.</div>
@@ -1047,7 +1062,10 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <a class="back-link" onclick="showStore()">< [ TIENDA ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="XXXXXXXX">< [ YYYYYY ]</a>
+                </div>
             </div>
             <div id="modelHeader"></div>
             <div class="code-list" id="modelCodeList"></div>
@@ -1058,7 +1076,10 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <a class="back-link" id="decodeBack" onclick="showLanding()">< [ VOLVER ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="XXXXXXXX">< [ YYYYYY ]</a>
+                </div>
             </div>
             <div class="decode-container" id="decodeContent"></div>
         </div>
@@ -1068,7 +1089,10 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="XXXXXXXX">< [ YYYYYY ]</a>
+                </div>
             </div>
             <div id="muroContent"></div>
         </div>
@@ -1078,7 +1102,10 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="XXXXXXXX">< [ YYYYYY ]</a>
+                </div>
             </div>
             <div class="auth-box">
                 <div class="auth-tabs">
@@ -1118,9 +1145,12 @@
         <div class="page-container">
             <div class="top-bar">
                 <div class="logo">DECODED.<span>TXT</span></div>
-                <div style="display:flex;gap:1rem;">
-                    <a class="back-link" onclick="showAdmin()" id="adminLink" style="display:none">[ ADMIN ]</a>
-                    <a class="back-link" onclick="showLanding()">< [ SALIR ]</a>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <div style="display:flex;gap:1rem;">
+                        <a class="back-link" onclick="showAdmin()" id="adminLink" style="display:none">[ ADMIN ]</a>
+                        <a class="back-link" onclick="showLanding()">< [ SALIR ]</a>
+                    </div>
                 </div>
             </div>
             <div class="section-title">> ÁREA PRIVADA</div>

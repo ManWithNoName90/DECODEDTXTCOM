@@ -1892,14 +1892,64 @@ async function renderMuroforo(accessToken) {
         });
     }
     
-    if (!isDemo && supabase) {
+       if (!isDemo && supabase) {
         if (realtimeChannel) supabase.removeChannel(realtimeChannel);
         realtimeChannel = supabase.channel('muroforo-'+shirt.id).on('postgres_changes', { event:'INSERT', schema:'public', table:'messages', filter:'shirt_id=eq.'+shirt.id }, payload => {
             if (payload.new.status === 'approved') appendMuroMessage(payload.new, color, shirt.id, false);
         }).subscribe();
     }
+    
+    // Mostrar cuenta regresiva si el usuario ya está rate-limited
+    if (currentUser && shirt.status === 'active') {
+        checkAndShowRateLimit(shirt.id, color, isDemo);
+    }
 }
-
+async function checkAndShowRateLimit(shirtId, color, isDemo) {
+    if (!currentUser) return;
+    const userId = currentUser.id || currentUser.email || 'anon';
+    const rateKey = userId + '_' + shirtId;
+    const now = Date.now();
+    const oneMonth = 30 * 24 * 60 * 60 * 1000;
+    let blocked = false;
+    let expiresAt = 0;
+    
+    if (isDemo) {
+        if (DEMO_RATE_LIMIT[rateKey]) {
+            expiresAt = DEMO_RATE_LIMIT[rateKey] + oneMonth;
+            if (now < expiresAt) blocked = true;
+        }
+    } else if (supabase) {
+        const thirtyDaysAgo = new Date(now - oneMonth).toISOString();
+        const { data: recentMsgs } = await supabase
+            .from('messages')
+            .select('created_at')
+            .eq('shirt_id', shirtId)
+            .eq('author_id', currentUser.id)
+            .gte('created_at', thirtyDaysAgo)
+            .order('created_at', { ascending: false })
+            .limit(1);
+        if (recentMsgs && recentMsgs.length > 0) {
+            expiresAt = new Date(recentMsgs[0].created_at).getTime() + oneMonth;
+            if (now < expiresAt) blocked = true;
+        }
+    }
+    
+    if (blocked) {
+        const form = document.querySelector('.muro-form');
+        if (form) {
+            const timeLeft = expiresAt - now;
+            const dias = Math.floor(timeLeft / (24*60*60*1000));
+            const horas = Math.floor((timeLeft % (24*60*60*1000)) / (60*60*1000));
+            const minutos = Math.floor((timeLeft % (60*60*1000)) / (60*1000));
+            form.innerHTML = `<div style="text-align:center; color:#555; padding:1rem;">
+                <div style="font-size:1.5rem; margin-bottom:1rem;">⏳</div>
+                <div style="color:#FFB000; font-size:1.1rem; margin-bottom:0.5rem;">Ya enviaste un mensaje a este muroforo.</div>
+                <div style="color:#888; font-size:0.9rem;">Vuelve en <span style="color:#33FF33; font-weight:bold;">${dias} días, ${horas} horas, ${minutos} minutos</span>.</div>
+                <div style="font-size:0.75rem; color:#555; margin-top:1rem;">Límite: 1 mensaje por mes por código.</div>
+            </div>`;
+        }
+    }
+}
 function requestPrivateContact(shirtId, recipientId, color, isDemo) {
     if (!currentUser) {
         alert('Necesitas iniciar sesión para solicitar contacto privado.');
@@ -2031,6 +2081,7 @@ window.renderDecode = renderDecode;
 window.showNoCode = showNoCode;
 window.checkPrivate = checkPrivate;
 window.renderMuroforo = renderMuroforo;
+window.checkAndShowRateLimit = checkAndShowRateLimit;
 window.requestPrivateContact = requestPrivateContact;
 window.appendMuroMessage = appendMuroMessage;
 window.postMuroMessage = postMuroMessage;

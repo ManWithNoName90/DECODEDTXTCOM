@@ -1432,6 +1432,7 @@ function showMuroforo(accessToken) {
 }
 
 function showAuth() {
+    if (currentUser) { showLanding(); return; }
     hideAll();
     const el = document.getElementById('authSection');
     if (el) el.classList.remove('hidden');

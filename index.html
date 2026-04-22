@@ -1411,7 +1411,8 @@ function showMuroforo(accessToken) {
     hideAll();
     const el = document.getElementById('muroforo');
     if (el) el.classList.remove('hidden');
-    if (supabase) {
+    renderMuroforo(accessToken);
+}
         
 // ==========================================
 // AUTH

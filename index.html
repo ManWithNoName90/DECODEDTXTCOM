@@ -1292,8 +1292,8 @@ const CLOSE_PRESETS = [
 ];
 
 let currentFilter = 'ALL';
-let currentLang = 'es';
-let storeLang = 'es';
+window.currentLang = window.currentLang || 'es';
+window.storeLang = window.storeLang || 'es';
 let currentUser = null;
 let currentProfile = null;
 let realtimeChannel = null;
@@ -1573,24 +1573,24 @@ function renderModelCodes(model) {
     header.innerHTML = `
         <div class="section-title" style="color:#33FF33">${info.name}</div>
         <div class="section-sub">Precio base: ${info.price} ${info.extra} — Edición limitada: 5 unidades ES + 5 unidades EN. No se reponen.</div>
-          <div class="lang-toggle" style="margin-bottom:1rem;">
-            <button style="background:transparent; border:1px solid ${storeLang==='es'?'#33FF33':'#444'}; color:${storeLang==='es'?'#33FF33':'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="storeLang='es';renderModelCodes('${model}')">ESPAÑOL</button>
-            <button style="background:transparent; border:1px solid ${storeLang==='en'?'#33FF33':'#444'}; color:${storeLang==='en'?'#33FF33':'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="storeLang='en';renderModelCodes('${model}')">ENGLISH</button>
+        <div class="lang-toggle" style="margin-bottom:1rem;">
+            <button style="background:transparent; border:1px solid ${window.storeLang==='es'?'#33FF33':'#444'}; color:${window.storeLang==='es'?'#33FF33':'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="window.storeLang='es';renderModelCodes('${model}')">ESPAÑOL</button>
+            <button style="background:transparent; border:1px solid ${window.storeLang==='en'?'#33FF33':'#444'}; color:${window.storeLang==='en'?'#33FF33':'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="window.storeLang='en';renderModelCodes('${model}')">ENGLISH</button>
         </div>
         <div style="width:100%;height:2px;background:#33FF33;margin-bottom:2rem;"></div>
     `;
     
     list.innerHTML = '';
     Object.entries(DB).forEach(([code, data]) => {
-        const stockInLang = storeLang === 'es' ? data.stock.es : data.stock.en;
+        const stockInLang = window.storeLang === 'es' ? data.stock.es : data.stock.en;
         if (stockInLang === 0) return;
         
         const item = document.createElement('div');
         item.className = 'code-item';
         item.style.setProperty('--cat-color', data.color);
         
-        const shortText = storeLang === 'es' ? data.short_es : data.short_en;
-        const stockNum = storeLang === 'es' ? data.stock.es : data.stock.en;
+        const shortText = window.storeLang === 'es' ? data.short_es : data.short_en;
+        const stockNum = window.storeLang === 'es' ? data.stock.es : data.stock.en;
         
         item.innerHTML = `
             <div class="code-info">
@@ -1601,19 +1601,18 @@ function renderModelCodes(model) {
                     ${data.stock.en > 0 ? '<span style="color:#33FF33;margin-left:0.8rem;">● ' + data.stock.en + ' EN</span>' : '<span style="color:#333;margin-left:0.8rem;">● 0 EN</span>'}
                 </div>
                 <div class="code-stock" style="margin-top:0.3rem;">
-                    <span style="color:#FFB000;">${stockNum} unidades restantes en ${storeLang.toUpperCase()}</span>
+                    <span style="color:#FFB000;">${stockNum} unidades restantes en ${window.storeLang.toUpperCase()}</span>
                 </div>
             </div>
-            <button class="btn" onclick="alert('Compra demo: ${code} en ${info.name} [${storeLang.toUpperCase()}]')">COMPRAR ${info.price}</button>
+            <button class="btn" onclick="alert('Compra demo: ${code} en ${info.name} [${window.storeLang.toUpperCase()}]')">COMPRAR ${info.price}</button>
         `;
         list.appendChild(item);
     });
     
     if (list.innerHTML === '') {
-        list.innerHTML = '<div style="color:#555; padding:2rem;">No hay códigos disponibles en ' + storeLang.toUpperCase() + ' para este modelo en esta tanda.</div>';
+        list.innerHTML = '<div style="color:#555; padding:2rem;">No hay códigos disponibles en ' + window.storeLang.toUpperCase() + ' para este modelo en esta tanda.</div>';
     }
 }
-
 // ==========================================
 // RENDER DECODE
 // ==========================================
@@ -1623,8 +1622,8 @@ function renderDecode(code) {
     
     const container = document.getElementById('decodeContent');
     if (!container) return;
-    const short = currentLang === 'es' ? data.short_es : data.short_en;
-    const long = currentLang === 'es' ? data.long_es : data.long_en;
+    const short = window.currentLang === 'es' ? data.short_es : data.short_en;
+    const long = window.currentLang === 'es' ? data.long_es : data.long_en;
     
     container.innerHTML = `
         <div class="decode-header">
@@ -1632,8 +1631,8 @@ function renderDecode(code) {
             <span class="decode-code">${code} — ${data.color}</span>
         </div>
         <div class="lang-toggle">
-            <button style="background:transparent; border:1px solid ${currentLang==='es'?data.color:'#444'}; color:${currentLang==='es'?data.color:'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="currentLang='es';renderDecode('${code}')">ESPAÑOL</button>
-            <button style="background:transparent; border:1px solid ${currentLang==='en'?data.color:'#444'}; color:${currentLang==='en'?data.color:'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="currentLang='en';renderDecode('${code}')">ENGLISH</button>
+            <button style="background:transparent; border:1px solid ${window.currentLang==='es'?data.color:'#444'}; color:${window.currentLang==='es'?data.color:'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="window.currentLang='es';renderDecode('${code}')">ESPAÑOL</button>
+            <button style="background:transparent; border:1px solid ${window.currentLang==='en'?data.color:'#444'}; color:${window.currentLang==='en'?data.color:'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="window.currentLang='en';renderDecode('${code}')">ENGLISH</button>
         </div>
         <div class="decode-line" style="background:${data.color}"></div>
         <div class="decode-short">"${short}"</div>

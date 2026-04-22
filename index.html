@@ -2149,7 +2149,7 @@ function appendMuroMessage(msg, color, shirtId, isDemo) {
 
 async function postMuroMessage(shirtId, color, isDemo = false) {
     if (!currentUser) {
-        alert('Necesitas iniciar sesión para publicar.');
+        showToast('Necesitas iniciar sesión para publicar.', 'warning');
         showAuth();
         return;
     }
@@ -2158,7 +2158,7 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
     const isAnon = document.getElementById('muroAnon').checked;
     
     if (content.length < 10) {
-        alert('Mínimo 10 caracteres para asegurar coherencia.');
+        showToast('Mínimo 10 caracteres para asegurar coherencia.', 'warning');
         return;
     }
     
@@ -2170,7 +2170,7 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
     if (isDemo) {
         if (DEMO_RATE_LIMIT[rateKey] && (now - DEMO_RATE_LIMIT[rateKey]) < oneMonth) {
             const diasRestantes = Math.ceil((oneMonth - (now - DEMO_RATE_LIMIT[rateKey])) / (24 * 60 * 60 * 1000));
-            alert('⏳ Ya enviaste un mensaje a este muroforo recientemente.\n\nDebes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' para volver a escribir aquí.\n\nLímite: 1 mensaje por mes por código.');
+            showToast('⏳ Ya enviaste un mensaje a este muroforo. Debes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' para volver a escribir aquí. Límite: 1 mensaje por mes por código.', 'warning', 6000);
             return;
         }
     } else if (supabase) {
@@ -2182,24 +2182,25 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
             .eq('author_id', currentUser.id)
             .gte('created_at', thirtyDaysAgo);
         
-        if (countError) { alert('Error de verificación: ' + countError.message); return; }
+        if (countError) { showToast('Error de verificación: ' + countError.message, 'error'); return; }
         if (recentMsgs && recentMsgs.length > 0) {
             const ultimo = new Date(recentMsgs[0].created_at);
             const diasPasados = Math.floor((now - ultimo) / (24 * 60 * 60 * 1000));
             const diasRestantes = 30 - diasPasados;
-            alert('⏳ Ya enviaste un mensaje a este muroforo hace ' + diasPasados + ' días.\n\nDebes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' más.\n\nLímite: 1 mensaje por mes por código.');
+            showToast('⏳ Ya enviaste un mensaje a este muroforo hace ' + diasPasados + ' días. Debes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' más. Límite: 1 mensaje por mes por código.', 'warning', 6000);
             return;
         }
     }
     
-    const confirmSend = confirm(
+    const confirmed = await showConfirm(
         '⚠️ ÚLTIMA ADVERTENCIA\n\n' +
         'Este mensaje se publicará de forma irreversible.\n' +
         'No podrás editarlo ni borrarlo.\n' +
         'Solo podrás escribir 1 vez por mes en este muroforo.\n\n' +
-        '¿Estás seguro de que quieres enviarlo?'
+        '¿Estás seguro de que quieres enviarlo?',
+        color
     );
-    if (!confirmSend) return;
+    if (!confirmed) return;
     
     if (isDemo) {
         DEMO_RATE_LIMIT[rateKey] = now;
@@ -2215,13 +2216,13 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
         };
         appendMuroMessage(demoMsg, color, shirtId, true);
         document.getElementById('muroText').value = '';
-const charCount = document.getElementById('charCount');
-if (charCount) { charCount.textContent = '0 caracteres'; charCount.style.color = '#FF3333'; }
-        alert('✅ Mensaje publicado irreversiblemente.\n\nPróximo mensaje disponible en 30 días.');
+        const charCount = document.getElementById('charCount');
+        if (charCount) { charCount.textContent = '0 caracteres'; charCount.style.color = '#FF3333'; }
+        showToast('✅ Mensaje publicado irreversiblemente. Próximo mensaje disponible en 30 días.', 'success', 5000);
         return;
     }
     
-    if (!supabase) { alert('Supabase no conectado.'); return; }
+    if (!supabase) { showToast('Supabase no conectado.', 'error'); return; }
     
     const { error } = await supabase.from('messages').insert({
         shirt_id: shirtId,
@@ -2232,21 +2233,37 @@ if (charCount) { charCount.textContent = '0 caracteres'; charCount.style.color =
         status: 'pending'
     });
     
-    if (error) alert(error.message);
+    if (error) showToast(error.message, 'error');
     else {
         document.getElementById('muroText').value = '';
-const charCount = document.getElementById('charCount');
-if (charCount) { charCount.textContent = '0 caracteres'; charCount.style.color = '#FF3333'; }
-        alert('✅ Mensaje enviado irreversiblemente.\n\nAparecerá tras revisión del portador.\nPróximo mensaje disponible en 30 días.');
+        const charCount = document.getElementById('charCount');
+        if (charCount) { charCount.textContent = '0 caracteres'; charCount.style.color = '#FF3333'; }
+        showToast('✅ Mensaje enviado irreversiblemente. Aparecerá tras revisión del portador. Próximo mensaje disponible en 30 días.', 'success', 5000);
     }
 }
 
-// Exports para onclick dinámico
-window.renderDecode = renderDecode;
-window.showNoCode = showNoCode;
-window.checkPrivate = checkPrivate;
-window.renderMuroforo = renderMuroforo;
-window.checkAndShowRateLimit = checkAndShowRateLimit;
+function requestPrivateContact(shirtId, recipientId, color, isDemo) {
+    if (!currentUser) {
+        showToast('Necesitas iniciar sesión para solicitar contacto privado.', 'warning');
+        showAuth();
+        return;
+    }
+    showConfirm(
+        '⚠️ ADVERTENCIA DECODE_IT\n\n' +
+        'Solo puedes enviar 1 solicitud de contacto privado por mes.\n' +
+        'Una vez enviada, no se puede editar ni borrar.\n' +
+        'El destinatario debe aceptar para abrir el canal privado.\n\n' +
+        '¿Estás seguro?',
+        color
+    ).then(confirmed => {
+        if (!confirmed) return;
+        if (isDemo) {
+            showToast('📩 Solicitud enviada en modo demo. Límite real: 1 solicitud por mes.', 'success');
+        } else {
+            showToast('Función en desarrollo para producción.', 'info');
+        }
+    });
+}
 window.requestPrivateContact = requestPrivateContact;
 window.appendMuroMessage = appendMuroMessage;
 window.postMuroMessage = postMuroMessage;

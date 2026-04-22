@@ -1403,6 +1403,7 @@ function showVisualGallery() {
     hideAll();
     const el = document.getElementById('visualGallery');
     if (el) el.classList.remove('hidden');
+    window.galleryLang = 'es';
     renderVisualGallery();
 }
 
@@ -1575,7 +1576,6 @@ function renderVisualGallery() {
     
     window.galleryLang = window.galleryLang || 'es';
     
-    // Toggle de idioma (ocupa toda la fila, los items saltan debajo)
     const langToggle = document.createElement('div');
     langToggle.style.cssText = 'width:100%; margin-bottom:0.5rem;';
     langToggle.innerHTML = `
@@ -1615,25 +1615,23 @@ function renderVisualGallery() {
             showDecodeFromCode(code, showVisualGallery);
         };
         
-        const hasES = data.stock.es > 0;
-        const hasEN = data.stock.en > 0;
-        let langBadge = '';
-        if (window.galleryLang === 'es') {
-            if (hasES && hasEN) langBadge = '<span style="color:#33FF33;">ES ● EN</span>';
-            else if (hasES) langBadge = '<span style="color:#33FF33;">ES</span> <span style="color:#333;">EN</span>';
-            else if (hasEN) langBadge = '<span style="color:#333;">ES</span> <span style="color:#33FF33;">EN</span>';
-            else langBadge = '<span style="color:#FF3333;">AGOTADO</span>';
-        } else {
-            if (hasEN && hasES) langBadge = '<span style="color:#33FF33;">EN ● ES</span>';
-            else if (hasEN) langBadge = '<span style="color:#33FF33;">EN</span> <span style="color:#333;">ES</span>';
-            else if (hasES) langBadge = '<span style="color:#333;">EN</span> <span style="color:#33FF33;">ES</span>';
-            else langBadge = '<span style="color:#FF3333;">SOLD OUT</span>';
-        }
-        
         const displayText = window.galleryLang === 'en' ? data.short_en : data.short_es;
-        const stockTotal = data.stock.es + data.stock.en;
-        const stockLabel = window.galleryLang === 'en' ? (stockTotal + ' total units') : (stockTotal + ' unidades totales');
         const catLabel = window.galleryLang === 'en' ? (CATEGORIES[code[0]]?.name_en || data.cat) : data.cat;
+        
+        // Stock por idioma real
+        const langParts = [];
+        if (data.stock.es > 0) langParts.push('<span style="color:#33FF33;">ES</span>');
+        if (data.stock.en > 0) langParts.push('<span style="color:#33FF33;">EN</span>');
+        const langBadge = langParts.length > 0 
+            ? langParts.join(' <span style="color:#555;">●</span> ') 
+            : '<span style="color:#FF3333;">' + (window.galleryLang === 'en' ? 'SOLD OUT' : 'AGOTADO') + '</span>';
+        
+        const stockParts = [];
+        if (data.stock.es > 0) stockParts.push(`${data.stock.es} ES`);
+        if (data.stock.en > 0) stockParts.push(`${data.stock.en} EN`);
+        const stockDisplay = stockParts.length > 0 
+            ? stockParts.join(' · ') 
+            : (window.galleryLang === 'en' ? 'SOLD OUT' : 'AGOTADO');
         
         card.innerHTML = `
             <div class="shirt-front">
@@ -1645,12 +1643,14 @@ function renderVisualGallery() {
                 <div class="shirt-qr">QR</div>
                 <div class="shirt-private">847392</div>
             </div>
-            <div class="shirt-meta">
+            <div class="shirt-meta" style="padding:0.6rem 0.5rem 0.3rem;">
                 <div class="shirt-code-id">${code}</div>
                 <div class="shirt-cat">${catLabel}</div>
             </div>
-            <div class="shirt-lang">${langBadge}</div>
-            <div class="shirt-stock">${stockLabel}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0 0.5rem 0.6rem; font-size:0.75rem;">
+                <div class="shirt-lang" style="margin-top:0;">${langBadge}</div>
+                <div class="shirt-stock" style="margin-top:0; color:#FFB000;">${stockDisplay}</div>
+            </div>
         `;
         grid.appendChild(card);
     });

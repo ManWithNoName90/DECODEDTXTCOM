@@ -1097,7 +1097,7 @@
     <div id="muroforo" class="hidden">
         <div class="page-container">
             <div class="top-bar">
-                <div class="logo">DECODE<span>IT</span></div>
+                <div class="logo">DECODE-<span>IT</span></div>
                 <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
                     <div class="auth-status"></div>
                     <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
@@ -1110,7 +1110,7 @@
     <div id="authSection" class="hidden">
         <div class="page-container">
             <div class="top-bar">
-                <div class="logo">DECODE<span>IT</span></div>
+                <div class="logo">DECODE-<span>IT</span></div>
                 <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
                     <div class="auth-status"></div>
                     <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
@@ -1743,7 +1743,23 @@ function showNoCode(code, color) {
     const msgSec = document.getElementById('msgSection');
     const noCodeSec = document.getElementById('noCodeSection');
     if (msgSec) msgSec.classList.add('hidden');
-    if (noCodeSec) noCodeSec.classList.remove('hidden');
+    if (noCodeSec) {
+        noCodeSec.innerHTML = `
+            <div class="decode-question" style="color:#8C8C8C">Oh, no lo has visto.</div>
+            <div class="decode-sub">
+                La próxima vez, si ves un número de 6 dígitos en la parte inferior de la espalda, 
+                vuelves aquí. Ese número es la clave para acceder al muroforo de esa persona.
+                <br><br>
+                <span style="color:#555">Solo quien esté físicamente cerca puede verlo. Ese es el filtro.</span>
+            </div>
+            <div style="display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap;">
+                <button class="btn" style="--cat-color:#33FF33" onclick="showStore()">IR A LA TIENDA</button>
+                <button class="btn" style="--cat-color:#33FF33" onclick="showVisualGallery()">VER GALERÍA</button>
+                <button class="btn" style="--cat-color:#555" onclick="document.getElementById('noCodeSection').classList.add('hidden'); document.getElementById('msgSection').classList.remove('hidden'); document.getElementById('privateCodeInput').focus();">VOLVER A INTENTAR</button>
+            </div>
+        `;
+        noCodeSec.classList.remove('hidden');
+    }
 }
 
 async function checkPrivate(code, color) {
@@ -1984,6 +2000,8 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
         };
         appendMuroMessage(demoMsg, color, shirtId, true);
         document.getElementById('muroText').value = '';
+const charCount = document.getElementById('charCount');
+if (charCount) { charCount.textContent = '0 caracteres'; charCount.style.color = '#FF3333'; }
         alert('✅ Mensaje publicado irreversiblemente.\n\nPróximo mensaje disponible en 30 días.');
         return;
     }
@@ -2002,6 +2020,8 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
     if (error) alert(error.message);
     else {
         document.getElementById('muroText').value = '';
+const charCount = document.getElementById('charCount');
+if (charCount) { charCount.textContent = '0 caracteres'; charCount.style.color = '#FF3333'; }
         alert('✅ Mensaje enviado irreversiblemente.\n\nAparecerá tras revisión del portador.\nPróximo mensaje disponible en 30 días.');
     }
 }

@@ -918,7 +918,58 @@
         </div>
     </div>
 </div>
-    
+        <div id="votaciones" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODE_<span>IT</span></div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="showLanding()">< [ VOLVER ]</a>
+                </div>
+            </div>
+            <div class="section-title">> VOTACIONES</div>
+            <div class="section-sub">La comunidad decide qué mensajes existen. No nosotros.</div>
+            
+            <div class="about-content">
+                <div class="about-block">
+                    <h3>> CÓMO FUNCIONA</h3>
+                    <p>> Cada mes se abre una votación con <strong>20 propuestas</strong> enviadas por la comunidad.</p>
+                    <p>>> Tú puedes <strong>votar 1 modelo por categoría al mes</strong>. No más. Tu voto tiene peso.</p>
+                    <p>>>> También puedes <strong>proponer 1 modelo nuevo por categoría</strong>. Si la comunidad lo vota, entra a producción limitada: 5 unidades ES + 5 unidades EN.</p>
+                    <p>>>>> Los <strong>5 más votados</strong> de cada mes pasan a ser códigos oficiales. Los demás se archivan.</p>
+                </div>
+                <div class="about-block">
+                    <h3>> REGLAS</h3>
+                    <p><span style="color:#33FF33">1 voto por categoría al mes.</span> Si votas Single/Dating, no puedes votar otra Single hasta el mes siguiente.</p>
+                    <p><span style="color:#33FF33">1 propuesta por categoría.</span> Puedes sugerir un mensaje nuevo en cada categoría una vez.</p>
+                    <p><span style="color:#FFB000">Sin login, sin voto.</span> Necesitas una cuenta para votar o proponer. No pedimos datos innecesarios.</p>
+                </div>
+                <div class="about-cta" onclick="showVotacionesPanel()">
+                    <div class="about-cta-title">[ ENTRAR A LAS VOTACIONES ]</div>
+                    <div class="about-cta-sub">Ver propuestas actuales, votar o proponer un mensaje nuevo.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="votacionesPanel" class="hidden">
+        <div class="page-container">
+            <div class="top-bar">
+                <div class="logo">DECODE_<span>IT</span></div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+                    <div class="auth-status"></div>
+                    <a class="back-link" onclick="showVotaciones()">< [ VOTACIONES ]</a>
+                </div>
+            </div>
+            <div class="section-title">> PROPUESTAS EN VOTACIÓN</div>
+            <div class="section-sub">20 modelos community-based. 5 ganarán. Tú decides cuáles.</div>
+            <div class="lang-toggle" style="margin-bottom:1.5rem;">
+                <button style="background:transparent; border:1px solid #33FF33; color:#33FF33; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer;" onclick="window.voteLang='es';renderVotaciones()">ESPAÑOL</button>
+                <button style="background:transparent; border:1px solid #444; color:#666; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer;" onclick="window.voteLang='en';renderVotaciones()">ENGLISH</button>
+            </div>
+            <div id="votacionesContent"></div>
+        </div>
+    </div>
     <div id="about" class="hidden">
         <div class="page-container">
             <div class="top-bar">
@@ -982,7 +1033,7 @@
             </div>
             <div class="section-title">> MODO DE ACCESO NO IDENTIFICADO</div>
             <div class="section-sub">¿Cómo prefieres entrar?</div>
-            <div class="choice-grid">
+                        <div class="choice-grid">
                 <div class="choice-card" onclick="showVisualGallery()">
                     <div class="choice-num">[1]</div>
                     <div class="choice-title">VI UNA CAMISETA EN LA CALLE.</div>
@@ -991,7 +1042,12 @@
                 <div class="choice-card" onclick="showStore()">
                     <div class="choice-num">[2]</div>
                     <div class="choice-title">QUIERO EXPLORAR O RESPONDER.</div>
-                    <div class="choice-desc">Ver modelos, colecciones, y comprar mi propia camiseta DECODE-IT</div>
+                    <div class="choice-desc">Ver modelos, colecciones, y comprar mi propia camiseta DECODE_IT</div>
+                </div>
+                <div class="choice-card" onclick="showVotaciones()">
+                    <div class="choice-num">[3]</div>
+                    <div class="choice-title">VOTACIONES.</div>
+                    <div class="choice-desc">La comunidad decide los siguientes mensajes. Vota, propón, decide qué existe.</div>
                 </div>
             </div>
         </div>
@@ -1372,7 +1428,7 @@ let realtimeChannel = null;
 // NAVIGATION
 // ==========================================
 function hideAll() {
-    const ids = ['landing','about','intermedia','visualGallery','store','modelCodes','decodePage','muroforo','authSection','dashboard','adminPanel','claimShirt'];
+    const ids = ['landing','about','intermedia','visualGallery','store','modelCodes','decodePage','muroforo','authSection','dashboard','adminPanel','claimShirt','votaciones','votacionesPanel'];    
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
@@ -1469,7 +1525,19 @@ function showClaim() {
     const el = document.getElementById('claimShirt');
     if (el) el.classList.remove('hidden');
 }
+function showVotaciones() {
+    hideAll();
+    const el = document.getElementById('votaciones');
+    if (el) el.classList.remove('hidden');
+}
 
+function showVotacionesPanel() {
+    hideAll();
+    const el = document.getElementById('votacionesPanel');
+    if (el) el.classList.remove('hidden');
+    renderVotaciones();
+}
+    
 // ==========================================
 // AUTH
 // ==========================================
@@ -2447,6 +2515,8 @@ window.showAuth = showAuth;
 window.showDashboard = showDashboard;
 window.showAdmin = showAdmin;
 window.showClaim = showClaim;
+window.showVotaciones = showVotaciones;
+window.showVotacionesPanel = showVotacionesPanel;
 window.switchAuth = switchAuth;
 window.doLogin = doLogin;
 window.doRegister = doRegister;

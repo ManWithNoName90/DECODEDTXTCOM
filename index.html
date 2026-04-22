@@ -163,7 +163,9 @@
             color: #555;
             z-index: 200;
             text-align: right;
-            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
         }
         .auth-status a, .auth-status span {
             color: #33FF33;
@@ -887,16 +889,19 @@
         <div class="terminal-container">
             <div class="terminal-line"></div>
             <h1 class="terminal-title">DECODED.TXT</h1>
-            <p class="terminal-text">Da igual cómo hayas llegado. Si estás aquí, algo te trajo.</p>
-            <p class="terminal-question">¿Qué mensaje tenía la camiseta? O... ¿quieres descifrar el mensaje oculto?</p>
+            
             <div class="input-group">
                 <span class="prompt">></span>
-                <input type="text" id="codeInput" placeholder="S-017" autocomplete="off" autofocus>
+                <input type="text" id="codeInput" placeholder="S-017" autocomplete="off" autofocus maxlength="5">
                 <span class="cursor">_</span>
             </div>
-            <p class="terminal-hint">Escribe el código público (ej: S-017, B-023, G-012)</p>
+            <p class="terminal-hint">Formato: S-017 (letra, guion, 3 números)</p>
+            
+            <p class="terminal-text">Alguien lleva puesto lo que no se atreve a decir. Tú solo necesitas el código.</p>
+            <p class="terminal-question">¿Viste una camiseta en la calle? Hay un mensaje esperando. ¿No viste nada? También hay algo para ti.</p>
+            
             <div class="terminal-actions">
-                <a class="terminal-link" onclick="showIntermedia()">NO TENGO CÓDIGO → Ver opciones</a>
+                <a class="terminal-link" onclick="showIntermedia()">NO HE VISTO EL CÓDIGO DE LA CAMISETA → Ver opciones</a>
                 <a class="terminal-link-alt" onclick="showAbout()">¿Qué es DECODED.TXT? →</a>
             </div>
         </div>
@@ -2100,7 +2105,14 @@ if (supabase) {
 document.addEventListener('DOMContentLoaded', function() {
     const codeInput = document.getElementById('codeInput');
     if (codeInput) {
-        codeInput.addEventListener('keypress', function(e) {
+        codeInput.addEventListener('keydown', function(e) {
+            // Auto-guion: si escribe una letra y no hay guion, lo añade
+            if (e.key.length === 1 && /[a-zA-Z]/.test(e.key) && !this.value.includes('-')) {
+                this.value = e.key.toUpperCase() + '-';
+                e.preventDefault();
+                return;
+            }
+            // Enter para buscar
             if (e.key === 'Enter') {
                 const val = this.value.trim().toUpperCase();
                 if (DB[val]) {
@@ -2113,8 +2125,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 this.value = '';
             }
+            // Backspace borra todo si solo queda S-
+            if (e.key === 'Backspace' && /^[A-Z]-?$/.test(this.value)) {
+                this.value = '';
+                e.preventDefault();
+            }
         });
-        codeInput.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+        codeInput.addEventListener('input', function() {
+            // Forzar mayúsculas y limitar a formato X-NNN
+            let val = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (val.length > 0) {
+                const letter = val[0];
+                const nums = val.slice(1).replace(/[^0-9]/g, '').slice(0, 3);
+                this.value = letter + (nums ? '-' + nums : '');
+            }
+        });
         setTimeout(() => codeInput.focus(), 100);
     }
     

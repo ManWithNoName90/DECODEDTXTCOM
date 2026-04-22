@@ -861,6 +861,70 @@
             text-align: center;
             padding: 3rem 1rem;
         }
+                /* TOASTS Y CONFIRMS */
+        .decode-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #0A0A0A;
+            border: 1px solid;
+            color: #F0F0F0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            padding: 1rem 1.5rem;
+            z-index: 10000;
+            max-width: 400px;
+            line-height: 1.4;
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 3.7s forwards;
+            pointer-events: none;
+        }
+        .decode-toast.success { border-color: #33FF33; color: #33FF33; }
+        .decode-toast.error { border-color: #FF3333; color: #FF3333; }
+        .decode-toast.warning { border-color: #FFB000; color: #FFB000; }
+        .decode-toast.info { border-color: #00FFFF; color: #00FFFF; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(20px); }
+        }
+        .confirm-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .confirm-box {
+            background: #0A0A0A;
+            border: 1px solid;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        .confirm-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+        .confirm-text {
+            font-size: 0.9rem;
+            color: #AAA;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        .confirm-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
         .claim-serial {
             font-size: 2rem;
             letter-spacing: 0.5rem;
@@ -2398,7 +2462,57 @@ async function moderateMsg(msgId, status) {
     if (error) alert(error.message);
     else renderAdmin();
 }
+// ==========================================
+// TOASTS Y CONFIRMS
+// ==========================================
+function showToast(message, type = 'info', duration = 4000) {
+    const existing = document.querySelectorAll('.decode-toast');
+    existing.forEach(t => t.remove());
+    
+    const toast = document.createElement('div');
+    toast.className = 'decode-toast ' + type;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, duration);
+}
 
+function showConfirm(message, color = '#33FF33') {
+    return new Promise(resolve => {
+        const existing = document.querySelector('.confirm-overlay');
+        if (existing) existing.remove();
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'confirm-overlay';
+        overlay.innerHTML = `
+            <div class="confirm-box" style="border-color:${color}">
+                <div class="confirm-title" style="color:${color}">⚠️ CONFIRMACIÓN</div>
+                <div class="confirm-text">${escapeHtml(message).replace(/\n/g, '<br>')}</div>
+                <div class="confirm-actions">
+                    <button class="btn" style="--cat-color:${color}" onclick="this.closest('.confirm-overlay').dataset.result='true'; this.closest('.confirm-overlay').remove();">[ ACEPTAR ]</button>
+                    <button class="btn" style="--cat-color:#555" onclick="this.closest('.confirm-overlay').dataset.result='false'; this.closest('.confirm-overlay').remove();">[ CANCELAR ]</button>
+                </div>
+            </div>
+        `;
+        
+        overlay.addEventListener('click', e => {
+            if (e.target === overlay) {
+                overlay.dataset.result = 'false';
+                overlay.remove();
+            }
+        });
+        
+        const check = setInterval(() => {
+            if (!document.body.contains(overlay)) {
+                clearInterval(check);
+                resolve(overlay.dataset.result === 'true');
+            }
+        }, 100);
+        
+        document.body.appendChild(overlay);
+    });
+}
+    
 // ==========================================
 // INIT
 // ==========================================

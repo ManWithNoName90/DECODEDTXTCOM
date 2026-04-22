@@ -1310,11 +1310,12 @@ const DEMO_SHIRTS = {
 };
 
 const DEMO_MESSAGES = [
-    const DEMO_RATE_LIMIT = {}; // { 'userId_shirtId': timestamp }
     { id: 'demo-msg-1', shirt_id: 'demo-1', content: 'Hola, vi tu camiseta en el metro de Sol. Me hizo gracia lo del "single de verdad". ¿Tomamos algo?', author_name: 'ChicoDelMetro', is_anonymous: false, status: 'approved', created_at: new Date(Date.now() - 3600000).toISOString() },
     { id: 'demo-msg-2', shirt_id: 'demo-1', content: 'No sé si es atrevimiento o valentía llevar eso puesto. Me encanta.', author_name: 'Anónimo', is_anonymous: true, status: 'approved', created_at: new Date(Date.now() - 86400000).toISOString() },
     { id: 'demo-msg-3', shirt_id: 'demo-2', content: 'Mi alquiler también subió un 40%. Te entiendo perfectamente. Fuerza.', author_name: 'VecinaDel5o', is_anonymous: false, status: 'approved', created_at: new Date(Date.now() - 172800000).toISOString() }
 ];
+
+const DEMO_RATE_LIMIT = {}; // <-- FUERA del array, justo debajo
 
 // ==========================================
 // UTILS DE FECHA
@@ -1731,8 +1732,21 @@ async function checkPrivate(code, color) {
 // ==========================================
 // MUROFORO
 // ==========================================
+
+const DEMO_RATE_LIMIT = {}; // { 'userId_shirtId': timestamp }
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 async function renderMuroforo(accessToken) {
-       const container = document.getElementById('muroContent');
+    const container = document.getElementById('muroContent');
     if (!container) return;
     
     let shirt = null;
@@ -1767,6 +1781,7 @@ async function renderMuroforo(accessToken) {
     const shortText = dbData ? (dbData.short_es || dbData.short_en) : '';
     
     let html = '<div class="decode-header"><span class="decode-category" style="border-color:'+color+';color:'+color+'">'+cat+'</span><span class="decode-code">'+shirt.code+' — MUROFORO</span></div><div style="width:100%;height:2px;background:'+color+';margin-bottom:1.5rem;"></div>';
+    
     html += '<div style="font-size:0.75rem; color:#FF3333; margin-bottom:1.5rem; border-left:2px solid #FF3333; padding-left:0.8rem; line-height:1.4;">⚠️ <strong>ADVERTENCIA:</strong> Los mensajes publicados no se pueden borrar. Nadie puede. Ni tú. Ni el portador. Ni nosotros. Una vez enviados, permanecen.</div>';
     
     html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;"><div style="font-size:0.8rem;color:#666;">'+messages.length+' mensaje'+(messages.length!==1?'s':'')+' · '+(shirt.status==='active'?'<span style="color:#33FF33;">● ABIERTO</span>':shirt.status==='paused'?'<span style="color:#FFB000;">⏸️ PAUSADO</span>':'<span style="color:#FF3333;">⚪ CERRADO</span>')+(isDemo?' <span style="color:#555;">[DEMO]</span>':'')+'</div><div style="font-size:0.75rem;color:#444;border-left:2px solid '+color+';padding-left:0.8rem;">"'+shortText+'"</div></div>';
@@ -1827,13 +1842,14 @@ async function renderMuroforo(accessToken) {
         }).subscribe();
     }
 }
+
 function requestPrivateContact(shirtId, recipientId, color, isDemo) {
     if (!currentUser) {
         alert('Necesitas iniciar sesión para solicitar contacto privado.');
         showAuth();
         return;
     }
-    const confirmMsg = '⚠️ ADVERTENCIA DECODE IT\n\nSolo puedes enviar 1 solicitud de contacto privado por mes.\nUna vez enviada, no se puede editar ni borrar.\nEl destinatario debe aceptar para abrir el canal privado.\n\n¿Estás seguro?';
+    const confirmMsg = '⚠️ ADVERTENCIA DECODE-IT\n\nSolo puedes enviar 1 solicitud de contacto privado por mes.\nUna vez enviada, no se puede editar ni borrar.\nEl destinatario debe aceptar para abrir el canal privado.\n\n¿Estás seguro?';
     if (!confirm(confirmMsg)) return;
     if (isDemo) {
         alert('📩 Solicitud enviada en modo demo.\nLímite real: 1 solicitud por mes.');
@@ -1874,11 +1890,10 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
         return;
     }
     
-    // VERIFICAR RATE LIMIT: 1 mensaje por mes por camiseta
     const userId = currentUser.id || currentUser.email || 'anon';
     const rateKey = userId + '_' + shirtId;
     const now = Date.now();
-    const oneMonth = 30 * 24 * 60 * 60 * 1000; // 30 días en ms
+    const oneMonth = 30 * 24 * 60 * 60 * 1000;
     
     if (isDemo) {
         if (DEMO_RATE_LIMIT[rateKey] && (now - DEMO_RATE_LIMIT[rateKey]) < oneMonth) {
@@ -1905,7 +1920,6 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
         }
     }
     
-    // CONFIRMACIÓN FINAL ANTES DE ENVÍO
     const confirmSend = confirm(
         '⚠️ ÚLTIMA ADVERTENCIA\n\n' +
         'Este mensaje se publicará de forma irreversible.\n' +
@@ -1915,7 +1929,6 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
     );
     if (!confirmSend) return;
     
-    // REGISTRAR RATE LIMIT (demo)
     if (isDemo) {
         DEMO_RATE_LIMIT[rateKey] = now;
         const demoMsg = {
@@ -1934,7 +1947,6 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
         return;
     }
     
-    // MODO REAL: Supabase
     if (!supabase) { alert('Supabase no conectado.'); return; }
     
     const { error } = await supabase.from('messages').insert({
@@ -1952,6 +1964,10 @@ async function postMuroMessage(shirtId, color, isDemo = false) {
         alert('✅ Mensaje enviado irreversiblemente.\n\nAparecerá tras revisión del portador.\nPróximo mensaje disponible en 30 días.');
     }
 }
+
+window.requestPrivateContact = requestPrivateContact;
+window.appendMuroMessage = appendMuroMessage;
+window.postMuroMessage = postMuroMessage;
 // ==========================================
 // DASHBOARD
 // ==========================================

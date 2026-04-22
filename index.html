@@ -890,8 +890,13 @@
 
     <div id="landing" class="landing-wrap">
         <div class="terminal-container">
+            <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem;">
+                <div class="auth-status"></div>
+            </div>
+            
+            <div class="logo" style="margin-bottom:1rem;">DECODED.<span>TXT</span></div>
+            
             <div class="terminal-line"></div>
-            <h1 class="terminal-title">DECODED.TXT</h1>
             
             <div class="input-group">
                 <span class="prompt">></span>
@@ -1484,18 +1489,17 @@ async function loadSession() {
 }
 
 function updateAuthBar() {
-    const bar = document.getElementById('authStatus');
-    if (!bar) return;
-    if (currentUser) {
-        bar.innerHTML = `<span>${currentProfile?.username || currentUser.email || 'User'}</span><br>
-        <a onclick="showDashboard()">[ ÁREA PRIVADA ]</a> <a onclick="doLogout()">[ SALIR ]</a>`;
-        const adminLink = document.getElementById('adminLink');
-        if (adminLink) adminLink.style.display = currentProfile?.is_admin ? 'inline' : 'none';
-    } else {
-        bar.innerHTML = `<a onclick="showAuth()">[ ACCEDER / REGISTRARSE ]</a>`;
-        const adminLink = document.getElementById('adminLink');
-        if (adminLink) adminLink.style.display = 'none';
-    }
+    const bars = document.querySelectorAll('.auth-status');
+    bars.forEach(bar => {
+        if (currentUser) {
+            bar.innerHTML = `<span>${currentProfile?.username || currentUser.email || 'User'}</span>
+            <div class="auth-row"><a onclick="showDashboard()">[ ÁREA PRIVADA ]</a><a onclick="doLogout()">[ SALIR ]</a></div>`;
+        } else {
+            bar.innerHTML = `<a onclick="showAuth()">[ ACCEDER / REGISTRARSE ]</a>`;
+        }
+    });
+    const adminLink = document.getElementById('adminLink');
+    if (adminLink) adminLink.style.display = currentProfile?.is_admin ? 'inline' : 'none';
 }
 
 // ==========================================

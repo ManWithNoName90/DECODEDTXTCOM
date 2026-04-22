@@ -925,6 +925,33 @@
             gap: 1rem;
             justify-content: center;
         }
+                /* BOOT SEQUENCE */
+        .boot-line {
+            opacity: 0;
+            font-size: 1.2rem;
+            margin-bottom: 0.6rem;
+            letter-spacing: 1px;
+            animation: bootFadeIn 0.15s ease forwards;
+        }
+        .boot-line:nth-child(1) { animation-delay: 0.2s; }
+        .boot-line:nth-child(2) { animation-delay: 0.6s; }
+        .boot-line:nth-child(3) { animation-delay: 1.0s; }
+        .boot-line:nth-child(4) { animation-delay: 1.4s; }
+        .boot-line.boot-cta {
+            color: #555;
+            font-size: 0.85rem;
+            margin-top: 1.5rem;
+            animation-delay: 1.8s;
+        }
+        @keyframes bootFadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        #bootSequence.fade-out {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
         .claim-serial {
             font-size: 2rem;
             letter-spacing: 0.5rem;
@@ -952,7 +979,13 @@
     </style>
 </head>
 <body>
-
+    <div id="bootSequence" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0A0A0A; z-index:99999; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:3rem; font-family:'Courier New', Courier, monospace; color:#33FF33; cursor:pointer;">
+        <div class="boot-line">> DECODE_IT [v1.0-stable]</div>
+        <div class="boot-line">> INITIALIZING PROTOCOLS...</div>
+        <div class="boot-line">> LOADING MESSAGES...</div>
+        <div class="boot-line">> READY.</div>
+        <div class="boot-line boot-cta">[ CLICK OR PRESS ENTER ]</div>
+    </div>
     <div id="landing" class="landing-wrap">
     <div class="terminal-container">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
@@ -1327,11 +1360,21 @@
         </div>
     </div>
 
-    <div class="footer-label">DECODE IT</div>
+    <div class="footer-label">DECODE_IT</div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-(function(){
+// Boot sequence dismiss
+function dismissBoot() {
+    const boot = document.getElementById('bootSequence');
+    if (!boot || boot.classList.contains('fade-out')) return;
+    boot.classList.add('fade-out');
+    setTimeout(() => { if (boot && boot.parentNode) boot.parentNode.removeChild(boot); }, 600);
+}
+setTimeout(dismissBoot, 2500);
+document.addEventListener('click', dismissBoot, { once: true });
+document.addEventListener('keydown', dismissBoot, { once: true });
+        (function(){
     // ==========================================
 // CONFIGURACIÓN SUPABASE
 // ==========================================

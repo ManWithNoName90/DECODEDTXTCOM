@@ -2529,7 +2529,189 @@ function showConfirm(message, color = '#33FF33') {
         document.body.appendChild(overlay);
     });
 }
+// ==========================================
+// VOTACIONES
+// ==========================================
+const DEMO_VOTES = {}; // { 'userId_cat': timestamp }
+const DEMO_PROPUESTAS = [
+    { id:'prop-01', cat:'S', short_es:'NO HAGO GHOSTING. HAGO DESPEDIDAS.', short_en:'I DON\'T GHOST. I DO EXIT INTERVIEWS.', votes:47, proposer:'MariaK' },
+    { id:'prop-02', cat:'X', short_es:'MI CONSENTIMIENTO TIENE HASH.', short_en:'MY CONSENT HAS A HASH.', votes:32, proposer:'DevXXX' },
+    { id:'prop-03', cat:'B', short_es:'TU FIESTA DE LAS 4AM ES MI ALARMA.', short_en:'YOUR 4AM PARTY IS MY ALARM.', votes:28, proposer:'Vecino3' },
+    { id:'prop-04', cat:'M', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-05', cat:'G', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-06', cat:'F', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-07', cat:'H', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-08', cat:'P', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-09', cat:'C', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-10', cat:'T', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-11', cat:'S', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-12', cat:'X', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-13', cat:'B', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-14', cat:'M', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-15', cat:'G', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-16', cat:'F', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-17', cat:'H', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-18', cat:'P', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-19', cat:'C', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null },
+    { id:'prop-20', cat:'T', short_es:'[SLOT ABIERTO]', short_en:'[OPEN SLOT]', votes:0, proposer:null }
+];
+
+window.voteLang = window.voteLang || 'es';
+
+function renderVotaciones() {
+    const container = document.getElementById('votacionesContent');
+    if (!container) return;
     
+    let html = '<div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:1.5rem; margin-top:1rem;">';
+    
+    DEMO_PROPUESTAS.forEach(prop => {
+        const catInfo = CATEGORIES[prop.cat];
+        const color = catInfo?.color || '#888';
+        const catName = window.voteLang === 'en' ? (catInfo?.name_en || catInfo?.name) : catInfo?.name;
+        const text = window.voteLang === 'en' ? prop.short_en : prop.short_es;
+        const isOpen = prop.short_es === '[SLOT ABIERTO]';
+        const isDemo = true;
+        
+        html += `
+            <div style="border:1px solid #222; padding:1.5rem; position:relative; transition:all 0.3s;" onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='#222'">
+                <div style="font-size:0.7rem; color:${color}; margin-bottom:0.5rem; letter-spacing:1px;">${catName}</div>
+                <div style="font-size:1rem; color:#F0F0F0; line-height:1.4; margin-bottom:1rem; min-height:60px;">${text}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <div style="font-size:0.8rem; color:#555;">${prop.votes} voto${prop.votes!==1?'s':''}</div>
+                    ${prop.proposer ? '<div style="font-size:0.7rem; color:#444;">por '+prop.proposer+'</div>' : ''}
+                </div>
+                ${isOpen 
+                    ? '<button class="btn" style="--cat-color:#555; width:100%;" onclick="showProposalForm(\''+prop.id+'\',\''+color+'\')">[ PROPONER ]</button>'
+                    : '<button class="btn" style="--cat-color:'+color+'; width:100%;" onclick="voteProposal(\''+prop.id+'\',\''+prop.cat+'\',\''+color+'\')">[ VOTAR ]</button>'
+                }
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    
+    // Botón proponer nuevo al final
+    html += '<div style="margin-top:3rem; text-align:center; padding:2rem; border:1px solid #222;">';
+    html += '<div style="font-size:1.2rem; color:#F0F0F0; margin-bottom:1rem;">¿Tienes un mensaje que el mundo debería llevar puesto?</div>';
+    html += '<div style="font-size:0.85rem; color:#666; margin-bottom:1.5rem;">1 propuesta por categoría. Mínimo 30 caracteres. Si la comunidad vota, se fabrica.</div>';
+    html += '<button class="btn" style="--cat-color:#33FF33;" onclick="showProposalForm(null,\'#33FF33\')">[ CREAR PROPUESTA NUEVA ]</button>';
+    html += '</div>';
+    
+    container.innerHTML = html;
+}
+
+async function voteProposal(propId, catLetter, color) {
+    if (!currentUser) {
+        showToast('Necesitas iniciar sesión para votar.', 'warning');
+        showAuth();
+        return;
+    }
+    
+    const userId = currentUser.id || currentUser.email || 'anon';
+    const voteKey = userId + '_' + catLetter;
+    const now = Date.now();
+    const oneMonth = 30 * 24 * 60 * 60 * 1000;
+    
+    if (DEMO_VOTES[voteKey] && (now - DEMO_VOTES[voteKey]) < oneMonth) {
+        const diasRestantes = Math.ceil((oneMonth - (now - DEMO_VOTES[voteKey])) / (24 * 60 * 60 * 1000));
+        showToast('⏳ Ya votaste en esta categoría este mes. Debes esperar ' + diasRestantes + ' día' + (diasRestantes > 1 ? 's' : '') + ' para volver a votar aquí.', 'warning', 5000);
+        return;
+    }
+    
+    const prop = DEMO_PROPUESTAS.find(p => p.id === propId);
+    if (!prop) return;
+    
+    const confirmed = await showConfirm(
+        'CONFIRMAR VOTO\n\n' +
+        'Categoría: ' + (CATEGORIES[catLetter]?.name || catLetter) + '\n' +
+        'Propuesta: ' + prop.short_es + '\n\n' +
+        'Solo puedes votar 1 vez por categoría al mes.\n' +
+        '¿Confirmas tu voto?',
+        color
+    );
+    
+    if (!confirmed) return;
+    
+    DEMO_VOTES[voteKey] = now;
+    prop.votes += 1;
+    
+    showToast('✅ Voto registrado. ' + prop.votes + ' votos en total.', 'success');
+    renderVotaciones();
+}
+
+function showProposalForm(slotId, color) {
+    if (!currentUser) {
+        showToast('Necesitas iniciar sesión para proponer.', 'warning');
+        showAuth();
+        return;
+    }
+    
+    const catOptions = Object.entries(CATEGORIES).map(([letter, info]) => 
+        `<option value="${letter}">${info.name}</option>`
+    ).join('');
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.style.zIndex = '20000';
+    overlay.innerHTML = `
+        <div class="confirm-box" style="border-color:${color}; max-width:600px; text-align:left;">
+            <div class="confirm-title" style="color:${color}; text-align:center;">[ NUEVA PROPUESTA ]</div>
+            <div style="margin-bottom:1rem;">
+                <label style="color:#666; font-size:0.8rem;">Categoría:</label>
+                <select id="propCat" class="status-select" style="width:100%; margin-top:0.3rem;">${catOptions}</select>
+            </div>
+            <div style="margin-bottom:1rem;">
+                <label style="color:#666; font-size:0.8rem;">Texto en español (máx 60 caracteres):</label>
+                <input type="text" id="propES" class="auth-input" placeholder="Escribe el mensaje en español..." maxlength="60" style="margin-bottom:0.5rem;">
+            </div>
+            <div style="margin-bottom:1.5rem;">
+                <label style="color:#666; font-size:0.8rem;">Texto en inglés (máx 60 caracteres):</label>
+                <input type="text" id="propEN" class="auth-input" placeholder="Write the message in English..." maxlength="60">
+            </div>
+            <div class="confirm-actions" style="justify-content:space-between;">
+                <button class="btn" style="--cat-color:#FF3333" onclick="this.closest('.confirm-overlay').remove();">[ CANCELAR ]</button>
+                <button class="btn" style="--cat-color:${color}" onclick="submitProposal(this.closest('.confirm-overlay'))">[ ENVIAR PROPUESTA ]</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function submitProposal(overlay) {
+    const cat = overlay.querySelector('#propCat').value;
+    const es = overlay.querySelector('#propES').value.trim();
+    const en = overlay.querySelector('#propEN').value.trim();
+    
+    if (es.length < 10 || en.length < 10) {
+        showToast('Mínimo 10 caracteres en ambos idiomas.', 'warning');
+        return;
+    }
+    
+    const emptySlot = DEMO_PROPUESTAS.find(p => p.short_es === '[SLOT ABIERTO]');
+    if (!emptySlot) {
+        showToast('No hay slots disponibles. Espera a la siguiente tanda.', 'error');
+        overlay.remove();
+        return;
+    }
+    
+    emptySlot.cat = cat;
+    emptySlot.short_es = es;
+    emptySlot.short_en = en;
+    emptySlot.votes = 1;
+    emptySlot.proposer = currentProfile?.username || 'Usuario';
+    
+    const userId = currentUser.id || currentUser.email || 'anon';
+    DEMO_VOTES[userId + '_' + cat] = Date.now();
+    
+    overlay.remove();
+    showToast('✅ Propuesta enviada y votada. Si entra en top 5, se fabrica.', 'success', 5000);
+    renderVotaciones();
+}
+
+window.renderVotaciones = renderVotaciones;
+window.voteProposal = voteProposal;
+window.showProposalForm = showProposalForm;
+window.submitProposal = submitProposal; 
 // ==========================================
 // INIT
 // ==========================================

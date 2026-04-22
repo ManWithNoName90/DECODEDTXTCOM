@@ -1573,9 +1573,9 @@ function renderModelCodes(model) {
     header.innerHTML = `
         <div class="section-title" style="color:#33FF33">${info.name}</div>
         <div class="section-sub">Precio base: ${info.price} ${info.extra} — Edición limitada: 5 unidades ES + 5 unidades EN. No se reponen.</div>
-        <div class="lang-toggle" style="margin-bottom:1rem;">
-            <button class="${storeLang==='es'?'active':''}" onclick="storeLang='es';renderModelCodes('${model}')">ESPAÑOL</button>
-            <button class="${storeLang==='en'?'active':''}" onclick="storeLang='en';renderModelCodes('${model}')">ENGLISH</button>
+          <div class="lang-toggle" style="margin-bottom:1rem;">
+            <button style="background:transparent; border:1px solid ${storeLang==='es'?'#33FF33':'#444'}; color:${storeLang==='es'?'#33FF33':'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="storeLang='es';renderModelCodes('${model}')">ESPAÑOL</button>
+            <button style="background:transparent; border:1px solid ${storeLang==='en'?'#33FF33':'#444'}; color:${storeLang==='en'?'#33FF33':'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="storeLang='en';renderModelCodes('${model}')">ENGLISH</button>
         </div>
         <div style="width:100%;height:2px;background:#33FF33;margin-bottom:2rem;"></div>
     `;
@@ -1632,8 +1632,8 @@ function renderDecode(code) {
             <span class="decode-code">${code} — ${data.color}</span>
         </div>
         <div class="lang-toggle">
-            <button class="${currentLang==='es'?'active':''}" onclick="currentLang='es';renderDecode('${code}')">ESPAÑOL</button>
-            <button class="${currentLang==='en'?'active':''}" onclick="currentLang='en';renderDecode('${code}')">ENGLISH</button>
+            <button style="background:transparent; border:1px solid ${currentLang==='es'?data.color:'#444'}; color:${currentLang==='es'?data.color:'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="currentLang='es';renderDecode('${code}')">ESPAÑOL</button>
+            <button style="background:transparent; border:1px solid ${currentLang==='en'?data.color:'#444'}; color:${currentLang==='en'?data.color:'#666'}; font-family:'Courier New',monospace; font-size:0.85rem; padding:0.4rem 1rem; cursor:pointer; transition:all 0.3s;" onclick="currentLang='en';renderDecode('${code}')">ENGLISH</button>
         </div>
         <div class="decode-line" style="background:${data.color}"></div>
         <div class="decode-short">"${short}"</div>
@@ -2233,6 +2233,10 @@ window.saveCloseMessage = saveCloseMessage;
 window.postMonthly = postMonthly;
 window.doClaim = doClaim;
 window.moderateMsg = moderateMsg;
+window.currentLang = currentLang;
+window.storeLang = storeLang;
+
+})();
 
 })();
 </script>

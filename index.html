@@ -1005,6 +1005,37 @@
         @media (max-width: 500px) {
             .visual-gallery { grid-template-columns: 1fr; }
         }
+                /* BREADCRUMBS */
+        .breadcrumb-bar {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            color: #444;
+            padding: 0.6rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #1a1a1a;
+            letter-spacing: 0.5px;
+        }
+        .breadcrumb-bar a {
+            color: #555;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .breadcrumb-bar a:hover {
+            color: #33FF33;
+            text-decoration: underline;
+        }
+        .breadcrumb-sep {
+            color: #333;
+            margin: 0 0.3rem;
+        }
+        .breadcrumb-end {
+            color: #888;
+        }
+        /* LOGO CLICKABLE */
+        .logo {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -1565,11 +1596,51 @@ let currentFilter = 'ALL';
 let currentUser = null;
 let currentProfile = null;
 let realtimeChannel = null;
-    // ==========================================
-// NAVIGATION
+// ==========================================
+// BREADCRUMBS
+// ==========================================
+function renderBreadcrumb(steps) {
+    const visiblePage = document.querySelector('body > div:not(.hidden):not(#bootSequence)');
+    if (!visiblePage) return;
+    const container = visiblePage.querySelector('.page-container');
+    if (!container) return;
+    
+    const old = container.querySelector('.breadcrumb-bar');
+    if (old) old.remove();
+    
+    let html = '<div class="breadcrumb-bar"><span style="color:#222;">C:\\</span>';
+    steps.forEach((step, i) => {
+        if (i > 0) html += '<span class="breadcrumb-sep">\\</span>';
+        if (step.action) {
+            html += `<a onclick="${step.action}">${step.label}</a>`;
+        } else {
+            html += `<span class="breadcrumb-end">${step.label}</span>`;
+        }
+    });
+    html += '</div>';
+    
+    const topBar = container.querySelector('.top-bar');
+    if (topBar) {
+        topBar.insertAdjacentHTML('afterend', html);
+    } else {
+        container.insertAdjacentHTML('afterbegin', html);
+    }
+}
+
+// Logo clickable global
+document.addEventListener('click', function(e) {
+    const logo = e.target.closest('.logo');
+    if (logo) {
+        e.preventDefault();
+        e.stopPropagation();
+        showLanding();
+    }
+});
+// ==========================================
+// NAVIGATION (SIEMPRE DISPONIBLE)
 // ==========================================
 function hideAll() {
-    const ids = ['landing','about','intermedia','visualGallery','store','modelCodes','decodePage','muroforo','authSection','dashboard','adminPanel','claimShirt','votaciones','votacionesPanel'];    
+    const ids = ['landing','about','intermedia','visualGallery','store','modelCodes','decodePage','muroforo','authSection','dashboard','adminPanel','claimShirt','votaciones','votacionesPanel'];
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
@@ -1588,12 +1659,20 @@ function showAbout() {
     hideAll();
     const el = document.getElementById('about');
     if (el) el.classList.remove('hidden');
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'PROTOCOLO', action: null}
+    ]);
 }
 
 function showIntermedia() {
     hideAll();
     const el = document.getElementById('intermedia');
     if (el) el.classList.remove('hidden');
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'MODO_DE_ACCESO', action: null}
+    ]);
 }
 
 function showVisualGallery() {
@@ -1602,12 +1681,20 @@ function showVisualGallery() {
     if (el) el.classList.remove('hidden');
     window.galleryLang = 'es';
     renderVisualGallery();
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'GALERIA', action: null}
+    ]);
 }
 
 function showStore() {
     hideAll();
     const el = document.getElementById('store');
     if (el) el.classList.remove('hidden');
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'TIENDA', action: null}
+    ]);
 }
 
 function showModelCodes(model) {
@@ -1615,6 +1702,11 @@ function showModelCodes(model) {
     const el = document.getElementById('modelCodes');
     if (el) el.classList.remove('hidden');
     renderModelCodes(model);
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'TIENDA', action: 'showStore()'},
+        {label: 'MODELOS', action: null}
+    ]);
 }
 
 function showDecodeFromCode(code, backTo) {
@@ -1623,22 +1715,35 @@ function showDecodeFromCode(code, backTo) {
     if (el) el.classList.remove('hidden');
     const back = document.getElementById('decodeBack');
     if (back) back.onclick = backTo || showLanding;
-    window.currentLang = window.galleryLang || 'es';
+    window.currentLang = 'es';
     renderDecode(code);
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: code, action: null}
+    ]);
 }
-    
+
 function showMuroforo(accessToken) {
     hideAll();
     const el = document.getElementById('muroforo');
     if (el) el.classList.remove('hidden');
     renderMuroforo(accessToken);
+    const shirt = DEMO_SHIRTS[accessToken];
+    const label = shirt ? shirt.code : 'MUROFORO';
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: label, action: null}
+    ]);
 }
 
 function showAuth() {
-    if (currentUser) { showLanding(); return; }
     hideAll();
     const el = document.getElementById('authSection');
     if (el) el.classList.remove('hidden');
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'AUTENTICACION', action: null}
+    ]);
 }
 
 function showDashboard() {
@@ -1651,6 +1756,10 @@ function showDashboard() {
         const container = document.getElementById('dashContent');
         if (container) container.innerHTML = '<div class="section-sub">Dashboard requiere conexión a Supabase.</div>';
     }
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'AREA_PRIVADA', action: null}
+    ]);
 }
 
 function showAdmin() {
@@ -1659,17 +1768,31 @@ function showAdmin() {
     const el = document.getElementById('adminPanel');
     if (el) el.classList.remove('hidden');
     if (supabase) renderAdmin();
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'AREA_PRIVADA', action: 'showDashboard()'},
+        {label: 'ADMIN', action: null}
+    ]);
 }
 
 function showClaim() {
     hideAll();
     const el = document.getElementById('claimShirt');
     if (el) el.classList.remove('hidden');
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'VINCULAR', action: null}
+    ]);
 }
+
 function showVotaciones() {
     hideAll();
     const el = document.getElementById('votaciones');
     if (el) el.classList.remove('hidden');
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'VOTACIONES', action: null}
+    ]);
 }
 
 function showVotacionesPanel() {
@@ -1677,8 +1800,12 @@ function showVotacionesPanel() {
     const el = document.getElementById('votacionesPanel');
     if (el) el.classList.remove('hidden');
     renderVotaciones();
+    renderBreadcrumb([
+        {label: 'DECODE_IT', action: 'showLanding()'},
+        {label: 'VOTACIONES', action: 'showVotaciones()'},
+        {label: 'PANEL', action: null}
+    ]);
 }
-    
 // ==========================================
 // AUTH
 // ==========================================
